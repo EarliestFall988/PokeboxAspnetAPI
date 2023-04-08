@@ -16,26 +16,26 @@ namespace PokemonBox
             _connectionString = connectionString;
         }
 
-        
-        public IReadOnlyList<Pokemon> RetrieveUserPokemon(uint userID)
-        {
-            using(var connection = new SqlConnection(_connectionString))
-            {
-                using( var command = new SqlCommand("User.RetrieveUsersPokemon", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.AddWithValue("UserID", userID);
-
-                    connection.Open();
-
-                    using( var reader = command.ExecuteReader())
-                    {
-                        return TranslatePokemon(reader);
-                    }
-                }
-            }
-        }
+        //TODO see if needed
+        //public IReadOnlyList<Pokemon> RetrieveUserPokemon(uint userID)
+        //{
+        //    using(var connection = new SqlConnection(_connectionString))
+        //    {
+        //        using( var command = new SqlCommand("User.RetrieveUsersPokemon", connection))
+        //        {
+        //            command.CommandType = CommandType.StoredProcedure;
+        //
+        //            command.Parameters.AddWithValue("UserID", userID);
+        //
+        //            connection.Open();
+        //
+        //            using( var reader = command.ExecuteReader())
+        //            {
+        //                return TranslatePokemon(reader);
+        //            }
+        //        }
+        //    }
+        //}
 
         public User CreateUser(uint itemsOwnedID, uint pokeOwnedID, string userName, string password, string firstName, string lastName, bool isAdmin)
         {

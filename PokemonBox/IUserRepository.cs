@@ -7,7 +7,8 @@ namespace PokemonBox
     {
         IReadOnlyList<User> RetrieveUsers();
 
-        IReadOnlyList<Pokemon> RetrieveUserPokemon(uint userID);
+        //TODO See if needed
+        //IReadOnlyList<Pokemon> RetrieveUserPokemon(uint userID);
 
         /// <summary>
         /// Gets the user with the given userID

@@ -11,6 +11,6 @@ namespace PokemonBox
 
         Pokemon FetchPokemon(uint pokemonID);
 
-        Pokemon CreatePokemon(string pokemonName, uint pokedexNumber, string decription, DateTimeOffset dateAdded, bool isLegendary);
+        Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string decription, DateTimeOffset dateAdded, bool isLegendary);
     }
 }

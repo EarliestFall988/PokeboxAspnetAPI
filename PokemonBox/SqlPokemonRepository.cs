@@ -16,7 +16,7 @@ namespace PokemonBox
             _connectionString = connectionString;
         }
 
-        public Pokemon CreatePokemon(string pokemonName, uint pokedexNumber, string decription, DateTimeOffset dateAdded, bool isLegendary)
+        public Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string decription, DateTimeOffset dateAdded, bool isLegendary)
         {
             if (pokemonName == null)
                 throw new ArgumentNullException(nameof(pokemonName));
@@ -34,7 +34,7 @@ namespace PokemonBox
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {                                       //TODO: Rename to proper procedure
-                    using (var command = new SqlCommand("Pokemon.CreatePokemon", connection))
+                    using (var command = new SqlCommand("Pokemon.AddPokemon", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
