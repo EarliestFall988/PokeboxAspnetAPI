@@ -1,0 +1,104 @@
+IF SCHEMA_ID(N'Pokebox') IS NULL
+   EXEC(N'CREATE SCHEMA [Pokebox];');
+GO
+
+DROP TABLE IF EXISTS Pokebox.PokeType;
+DROP TABLE IF EXISTS Pokebox.PokeOwned;
+DROP TABLE IF EXISTS Pokebox.ItemOwned;
+DROP TABLE IF EXISTS Pokebox.PokemonType;
+DROP TABLE IF EXISTS Pokebox.Pokemon;
+DROP TABLE IF EXISTS Pokebox.[User];
+DROP TABLE IF EXISTS Pokebox.Item;
+DROP TABLE IF EXISTS Pokebox.ItemType;
+GO
+
+CREATE TABLE Pokebox.ItemType
+(
+    ItemTypeID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    ItemTypeName NVARCHAR(64) NOT NULL,
+
+    UNIQUE(ItemTypeName)
+)
+
+CREATE TABLE Pokebox.Item
+(
+    ItemID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    ItemTypeID INT NOT NULL FOREIGN KEY
+        REFERENCES Pokebox.ItemType(ItemTypeID),
+    ItemName NVARCHAR(64) NOT NULL,
+    [Description] NVARCHAR(128) NOT NULL,
+    DateAdded DATETIMEOFFSET NOT NULL DEFAULT(SYSDATETIMEOFFSET()),
+
+    UNIQUE(ItemName)
+)
+
+CREATE TABLE Pokebox.[User]
+(
+    UserID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    Username NVARCHAR(32) NOT NULL,
+    [Password] NVARCHAR(32) NOT NULL,
+    FirstName NVARCHAR(32) NOT NULL,
+    LastName NVARCHAR(32) NOT NULL,
+    IsAdmin INT NOT NULL DEFAULT(0),
+    DateCreated DATETIMEOFFSET NOT NULL DEFAULT(SYSDATETIME())
+
+    UNIQUE(UserName)
+)
+
+CREATE TABLE Pokebox.Pokemon
+(
+    PokemonID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    PokemonName NVARCHAR(32) NOT NULL,
+    PokedexNumber INT NOT NULL,
+    IsLegendary INT NOT NULL DEFAULT(0),
+    [Description] NVARCHAR(128) NOT NULL,
+    DateAdded DATETIMEOFFSET NOT NULL DEFAULT(SYSDATETIMEOFFSET()),
+
+    UNIQUE(PokemonName),
+
+    UNIQUE(PokedexNumber)
+
+)
+
+CREATE TABLE Pokebox.PokemonType
+(
+    PokemonTypeID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    PokemonTypeName NVARCHAR(16) NOT NULL,
+
+    UNIQUE(PokemonTypeName) 
+)
+
+CREATE TABLE Pokebox.PokeType
+(
+    PokemonID INT NOT NULL FOREIGN KEY
+        REFERENCES Pokebox.Pokemon(PokemonID),
+    PokemonTypeID INT NOT NULL FOREIGN KEY
+        REFERENCES Pokebox.PokemonType(PokemonTypeID),
+
+    PRIMARY KEY(PokemonID, PokemonTypeID)
+)
+
+CREATE TABLE Pokebox.PokeOwned
+(
+    PokeOwnedID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    UserID INT NOT NULL FOREIGN KEY
+        REFERENCES Pokebox.[User](UserID),
+    PokemonID INT NOT NULL FOREIGN KEY
+        REFERENCES Pokebox.Pokemon(PokemonID),
+    [Name] NVARCHAR(64) NOT NULL,
+    Gender NVARCHAR(1) NOT NULL,
+    [Level] INT NOT NULL DEFAULT(1),
+    DatePutInBox DATETIMEOFFSET NOT NULL DEFAULT(SYSDATETIMEOFFSET())   
+)
+
+CREATE TABLE Pokebox.ItemOwned
+(
+    ItemOwnedID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    UserID INT NOT NULL FOREIGN KEY
+        REFERENCES Pokebox.[User](UserID),
+    ItemID INT NOT NULL FOREIGN KEY
+        REFERENCES Pokebox.Item(ItemID),
+    DatePutInBox DATETIMEOFFSET NOT NULL DEFAULT(SYSDATETIMEOFFSET())
+)
+
+
