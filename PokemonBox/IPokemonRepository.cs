@@ -5,8 +5,12 @@ namespace PokemonBox
 {
     public interface IPokemonRepository
     {
-        IReadOnlyList<Pokemon> RetrievePokemon(uint pokemonID);
+        IReadOnlyList<Pokemon> RetrievePokemon();
 
-        void SavePokemon(uint pokemonID, string PokemonName, uint PokedexNumber, string decription, DateTimeOffset dateAdded, bool isLegendary);
+        Pokemon GetPokemon(string pokemonName);
+
+        Pokemon FetchPokemon(uint pokemonID);
+
+        Pokemon CreatePokemon(string pokemonName, uint pokedexNumber, string decription, DateTimeOffset dateAdded, bool isLegendary);
     }
 }

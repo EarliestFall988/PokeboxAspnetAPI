@@ -16,7 +16,7 @@ namespace PokemonBox
             _connectionString = connectionString;
         }
 
-        public void SavePokemon(uint pokemonID, string pokemonName, uint pokedexNumber, string decription, DateTimeOffset dateAdded, bool isLegendary)
+        public Pokemon CreatePokemon(string pokemonName, uint pokedexNumber, string decription, DateTimeOffset dateAdded, bool isLegendary)
         {
             if (pokemonName == null)
                 throw new ArgumentNullException(nameof(pokemonName));
@@ -34,11 +34,10 @@ namespace PokemonBox
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {                                       //TODO: Rename to proper procedure
-                    using (var command = new SqlCommand("Pokemon.SavePokemon", connection))
+                    using (var command = new SqlCommand("Pokemon.CreatePokemon", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
-                        command.Parameters.AddWithValue("PokemonID", pokemonID);
                         command.Parameters.AddWithValue("PokemonName", pokemonName);
                         command.Parameters.AddWithValue("PokedexNumber", pokedexNumber);
                         command.Parameters.AddWithValue("Decription", decription);
@@ -50,17 +49,21 @@ namespace PokemonBox
                         command.ExecuteNonQuery();
 
                         transaction.Complete();
+
+                        var pokemonID = (uint)command.Parameters["PokemonID"].Value;
+
+                        return new Pokemon(pokemonID, pokemonName, pokedexNumber, decription, dateAdded, isLegendary);
                     }
                 }
             }
 
         }
 
-        public IReadOnlyList<Pokemon> RetrievePokemon(uint pokemonID)
+        public Pokemon FetchPokemon(uint pokemonID)
         {
-            using (var connection = new SqlConnection(_connectionString)) 
-            {                                       //TODO: Rename to proper procedure
-                using (var command = new SqlCommand("Pokemon.RetrieveAddressesForPerson", connection))
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("User.FetchPokemon", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
@@ -68,7 +71,34 @@ namespace PokemonBox
 
                     connection.Open();
 
-                    using (var reader = command.ExecuteReader()) 
+                    using (var reader = command.ExecuteReader())
+                    {
+                        var user = TranslatePokemon(reader);
+
+                        if (user == null)
+                        {
+                            throw new RecordNotFoundException(pokemonID.ToString());
+                        }
+
+                        return user;
+                    }
+                }
+            }
+        }
+
+        public Pokemon GetPokemon(string pokemonName)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("User.GetUserByUserName"))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("PokemonName", pokemonName);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
                     {
                         return TranslatePokemon(reader);
                     }
@@ -76,7 +106,44 @@ namespace PokemonBox
             }
         }
 
-        private IReadOnlyList<Pokemon> TranslatePokemon(SqlDataReader reader)
+        public IReadOnlyList<Pokemon> RetrievePokemon()
+        {
+            using (var connection = new SqlConnection(_connectionString)) 
+            {                                       //TODO: Rename to proper procedure
+                using (var command = new SqlCommand("Pokemon.RetrieveAddresseForPerson", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader()) 
+                    {
+                        return TranslatePokeman(reader);
+                    }
+                }
+            }
+        }
+
+        private Pokemon TranslatePokemon(SqlDataReader reader)
+        {
+            var pokemonID = reader.GetOrdinal("PokemonID");
+            var pokemonName = reader.GetOrdinal("PokemonName");
+            var pokedexNumber = reader.GetOrdinal("PokedexNumber");
+            var decription = reader.GetOrdinal("Decription");
+            var dateAdded = reader.GetOrdinal("DateAdded");
+            var isLegendary = reader.GetOrdinal("IsLegendary");
+
+            return new Pokemon(
+                    (uint)reader.GetInt32(pokemonID),
+                    reader.GetString(pokemonName),
+                    (uint)reader.GetInt32(pokedexNumber),
+                    reader.GetString(decription),
+                    reader.GetDateTimeOffset(dateAdded),
+                    reader.GetBoolean(isLegendary));                    
+
+        }
+
+        private IReadOnlyList<Pokemon> TranslatePokeman(SqlDataReader reader)
         {
             //my plural distinction of pokemon, pokeman
             var pokeman = new List<Pokemon>();
@@ -88,7 +155,7 @@ namespace PokemonBox
             var dateAdded = reader.GetOrdinal("DateAdded");
             var isLegendary = reader.GetOrdinal("IsLegendary");
 
-            while(reader.Read())
+            while (reader.Read())
             {
                 pokeman.Add(new Pokemon(
                     (uint)reader.GetInt32(pokemonID),
@@ -96,11 +163,10 @@ namespace PokemonBox
                     (uint)reader.GetInt32(pokedexNumber),
                     reader.GetString(decription),
                     reader.GetDateTimeOffset(dateAdded),
-                    reader.GetBoolean(isLegendary)));                    
+                    reader.GetBoolean(isLegendary)));
             }
 
             return pokeman;
         }
-
     }
 }
