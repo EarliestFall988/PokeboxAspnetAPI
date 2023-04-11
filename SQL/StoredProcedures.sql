@@ -58,7 +58,7 @@ VALUES (@PokemonName, @PokedexNumber, @IsLegendary, @Description);
 
 GO
 
-CREATE OR ALTER PROCEDURE Pokebox.AddPokemonOwned
+CREATE OR ALTER PROCEDURE Pokebox.AddPokeOwned
     @Username NVARCHAR(32),
     @PokemonName NVARCHAR(64),
     @Name NVARCHAR(64),
@@ -134,3 +134,16 @@ DECLARE @ItemID INT =
 
 INSERT Pokebox.ItemOwned(UserID, ItemID)
 VALUES(@UserID, @ItemID);
+
+------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+

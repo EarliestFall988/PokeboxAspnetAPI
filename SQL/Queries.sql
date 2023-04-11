@@ -4,9 +4,9 @@ EXEC Pokebox.AddPokemon N'Taylor', 2, 1, 'Literally God'
 
 EXEC Pokebox.AddUser N'a', N'a', N'a', N'a', 1
 
-EXEC Pokebox.AddPokemonOwned N'a', N'Taylor', N'Quirky White Bitch', 'N', 69
+EXEC Pokebox.AddPokeOwned N'a', N'Taylor', N'Quirky White Bitch', 'N', 69
 
-EXEC Pokebox.AddPokemonOwned N'a', N'Emma', N'Quirkiest White Bitch', 'N', 69
+EXEC Pokebox.AddPokeOwned N'a', N'Emma', N'Quirkiest White Bitch', 'N', 69
 
 EXEC Pokebox.AddPokemonType N'Fire'
 
@@ -41,3 +41,7 @@ FROM Pokebox.ItemType
 
 SELECT *
 FROM Pokebox.Item
+
+EXEC Pokebox.SelectAllPokemonOwnedByUser N'a'
+
+EXEC Pokebox.SelectAllItemsOwnedByUser N'a'
