@@ -16,27 +16,6 @@ namespace PokemonBox
             _connectionString = connectionString;
         }
 
-        //TODO see if needed
-        //public IReadOnlyList<Pokemon> RetrieveUserPokemon(uint userID)
-        //{
-        //    using(var connection = new SqlConnection(_connectionString))
-        //    {
-        //        using( var command = new SqlCommand("User.RetrieveUsersPokemon", connection))
-        //        {
-        //            command.CommandType = CommandType.StoredProcedure;
-        //
-        //            command.Parameters.AddWithValue("UserID", userID);
-        //
-        //            connection.Open();
-        //
-        //            using( var reader = command.ExecuteReader())
-        //            {
-        //                return TranslatePokemon(reader);
-        //            }
-        //        }
-        //    }
-        //}
-
         public User AddUser(string userName, string password, string firstName, string lastName, bool isAdmin)
         {
             if (string.IsNullOrWhiteSpace(firstName))
@@ -80,32 +59,6 @@ namespace PokemonBox
                     }
                 }
             }
-        }
-
-        private IReadOnlyList<Pokemon> TranslatePokemon(SqlDataReader reader)
-        {
-            //my plural distinction of pokemon, pokeman
-            var pokeman = new List<Pokemon>();
-
-            var pokemonID = reader.GetOrdinal("PokemonID");
-            var pokemonName = reader.GetOrdinal("PokemonName");
-            var pokedexNumber = reader.GetOrdinal("PokedexNumber");
-            var decription = reader.GetOrdinal("Decription");
-            var dateAdded = reader.GetOrdinal("DateAdded");
-            var isLegendary = reader.GetOrdinal("IsLegendary");
-
-            while (reader.Read())
-            {
-                pokeman.Add(new Pokemon(
-                    (uint)reader.GetInt32(pokemonID),
-                    reader.GetString(pokemonName),
-                    (uint)reader.GetInt32(pokedexNumber),
-                    reader.GetString(decription),
-                    reader.GetDateTimeOffset(dateAdded),
-                    reader.GetBoolean(isLegendary)));
-            }
-
-            return pokeman;
         }
 
         private IReadOnlyList<User> TranslateUsers(SqlDataReader reader)

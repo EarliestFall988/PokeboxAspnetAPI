@@ -1,0 +1,14 @@
+CREATE TABLE Pokebox.PokeOwned
+(
+    PokeOwnedID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    UserID INT NOT NULL FOREIGN KEY
+        REFERENCES Pokebox.[User](UserID),
+    PokemonID INT NOT NULL FOREIGN KEY
+        REFERENCES Pokebox.Pokemon(PokemonID),
+    [Name] NVARCHAR(64) NOT NULL,
+    Gender NVARCHAR(1) NOT NULL,
+    [Level] INT NOT NULL DEFAULT(1),
+    DatePutInBox DATETIMEOFFSET NOT NULL DEFAULT(SYSDATETIMEOFFSET()),
+
+    UNIQUE(UserID, PokemonID, [Name])
+)
