@@ -7,10 +7,10 @@ namespace PokemonBox
     {
         IReadOnlyList<Pokemon> RetrievePokemon();
 
-        Pokemon GetPokemon(string pokemonName);
+        Pokemon GetPokemon(string pokemonName); //using unique key
 
-        Pokemon FetchPokemon(uint pokemonID);
+        Pokemon FetchPokemon(uint pokemonID); //prim key
 
-        Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string decription, DateTimeOffset dateAdded, bool isLegendary);
+        Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string decription, bool isLegendary);
     }
 }

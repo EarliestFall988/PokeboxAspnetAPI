@@ -7,7 +7,7 @@ namespace PokemonBox
     {
         IReadOnlyList<Pokemon> RetrieveAllOwnedPokemon();
 
-        PokeOwned CreatePokeOwned(uint userID, uint pokemonID, string pokeName, DateTimeOffset datePutInBox, pokeGender Gender, uint level );
+        PokeOwned CreatePokeOwned(string userName, string pokeName, DateTimeOffset datePutInBox, pokeGender Gender, uint level );
     
         
     

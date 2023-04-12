@@ -16,7 +16,7 @@ namespace PokemonBox
             _connectionString = connectionString;
         }
 
-        public Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string decription, DateTimeOffset dateAdded, bool isLegendary)
+        public Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string decription, bool isLegendary)
         {
             if (pokemonName == null)
                 throw new ArgumentNullException(nameof(pokemonName));
@@ -27,21 +27,17 @@ namespace PokemonBox
             if(decription == null) 
                 throw new ArgumentNullException(nameof(decription));
 
-            if (dateAdded.Year < 1960)
-                throw new ArgumentOutOfRangeException(nameof(dateAdded));
-
             using (var transaction = new TransactionScope())
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {                                       //TODO: Rename to proper procedure
-                    using (var command = new SqlCommand("Pokemon.AddPokemon", connection))
+                    using (var command = new SqlCommand("Pokebox.AddPokemon", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
                         command.Parameters.AddWithValue("PokemonName", pokemonName);
                         command.Parameters.AddWithValue("PokedexNumber", pokedexNumber);
                         command.Parameters.AddWithValue("Decription", decription);
-                        command.Parameters.AddWithValue("DateAdded", dateAdded);
                         command.Parameters.AddWithValue("IsLegendary", isLegendary);
 
                         connection.Open();
@@ -51,6 +47,7 @@ namespace PokemonBox
                         transaction.Complete();
 
                         var pokemonID = (uint)command.Parameters["PokemonID"].Value;
+                        var dateAdded = (DateTimeOffset)command.Parameters["DateAdded"].Value;
 
                         return new Pokemon(pokemonID, pokemonName, pokedexNumber, decription, dateAdded, isLegendary);
                     }
