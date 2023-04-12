@@ -24,7 +24,7 @@ namespace PokemonBox
         /// <returns></returns>
         User GetUser(string UserName);
 
-        User CreateUser(uint itemsOwnedID, uint pokeOwnedID, string userName, string password, string firstName, string lastName, bool isAdmin);
+        User AddUser(string userName, string password, string firstName, string lastName, bool isAdmin);
 
     }
 }

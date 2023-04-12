@@ -37,7 +37,7 @@ namespace PokemonBox
         //    }
         //}
 
-        public User CreateUser(uint itemsOwnedID, uint pokeOwnedID, string userName, string password, string firstName, string lastName, bool isAdmin)
+        public User AddUser(string userName, string password, string firstName, string lastName, bool isAdmin)
         {
             if (string.IsNullOrWhiteSpace(firstName))
                 throw new ArgumentException("The parameter cannot be null or empty.", nameof(firstName));
@@ -55,7 +55,7 @@ namespace PokemonBox
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    using (var command = new SqlCommand("User.CreateUser", connection))
+                    using (var command = new SqlCommand("Pokebox.AddUser", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
@@ -63,8 +63,6 @@ namespace PokemonBox
                         command.Parameters.AddWithValue("LastName", lastName);
                         command.Parameters.AddWithValue("UserName", userName);
                         command.Parameters.AddWithValue("Password", password);
-                        command.Parameters.AddWithValue("ItemsOwnedID", itemsOwnedID);
-                        command.Parameters.AddWithValue("PokeOwnedID", pokeOwnedID);
                         command.Parameters.AddWithValue("IsAdmin", isAdmin);
 
                         var p = command.Parameters.Add("UserId", SqlDbType.Int);
@@ -78,7 +76,7 @@ namespace PokemonBox
 
                         var userID = (uint)command.Parameters["UserId"].Value;
 
-                        return new User(userID, itemsOwnedID, pokeOwnedID, userName, password, firstName, lastName, isAdmin);
+                        return new User(userID, userName, password, firstName, lastName, isAdmin);
                     }
                 }
             }
@@ -128,8 +126,6 @@ namespace PokemonBox
             {
                 users.Add(new User(
                     (uint)reader.GetInt32(userID),
-                    (uint)reader.GetInt32(itemsOwnedID),
-                    (uint)reader.GetInt32(pokeOwnedID),
                     reader.GetString(userName),
                     reader.GetString(password),
                     reader.GetString(firstName),
@@ -205,8 +201,6 @@ namespace PokemonBox
 
             return new User(
                     (uint)reader.GetInt32(userID),
-                    (uint)reader.GetInt32(itemsOwnedID),
-                    (uint)reader.GetInt32(pokeOwnedID),
                     reader.GetString(userName),
                     reader.GetString(password),
                     reader.GetString(firstName),

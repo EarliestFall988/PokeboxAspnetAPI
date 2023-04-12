@@ -4,10 +4,6 @@
     {
         public uint UserID { get; }
 
-        public uint ItemsOwnedID { get; }
-
-        public uint PokeOwnedID { get; }
-
         public string UserName { get; }
 
         public string Password { get; }
@@ -18,13 +14,10 @@
 
         public bool IsAdmin { get; }
 
-        public User(uint userID, uint itemsOwnedID, uint pokeOwnedID,
-            string userName, string password, string firstName,
+        public User(uint userID, string userName, string password, string firstName,
             string lastName, bool isAdmin) 
         {
             UserID = userID;
-            ItemsOwnedID = itemsOwnedID;
-            PokeOwnedID = pokeOwnedID;
             UserName = userName;
             Password = password;
             FirstName = firstName;
