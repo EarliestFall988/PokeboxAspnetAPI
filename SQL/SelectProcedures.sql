@@ -53,7 +53,7 @@ FROM Pokebox.ItemType
 
 GO
 CREATE OR ALTER PROCEDURE Pokebox.SelectAllPokemonOwnedByUser
-    @Username NVARCHAR(32)
+    @Username NVARCHAR(128)
 AS
 
 SELECT PO.Name, PO.[Level], PO.Gender, P.PokemonName, POT.PokemonTypeName, P.IsLegendary, PO.DatePutInBox
@@ -68,7 +68,7 @@ WHERE U.Username = @Username
 
 GO
 CREATE OR ALTER PROCEDURE Pokebox.SelectAllItemsOwnedByUser
-    @Username NVARCHAR(32)
+    @Username NVARCHAR(128)
 AS
 
 SELECT I.ItemName, IT.ItemTypeName, IOW.DatePutInBox
