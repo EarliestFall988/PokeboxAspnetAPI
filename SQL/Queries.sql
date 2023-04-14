@@ -79,9 +79,9 @@ FROM Pokebox.ItemType
 SELECT *
 FROM Pokebox.Item
 
-EXEC Pokebox.SelectAllPokemonOwnedByUser N'b'
+EXEC Pokebox.SelectAllPokemonOwnedByUser N'et.rutrum@google.net'
 
-EXEC Pokebox.SelectAllItemsOwnedByUser N'a'
+EXEC Pokebox.SelectAllItemsOwnedByUser N'et.rutrum@google.net'
 
 EXEC Pokebox.RemoveItemOwned N'a', N'Health Potion'
 
@@ -93,4 +93,4 @@ EXEC Pokebox.PokeTypeCount '2023-04-01', '2023-04-30'
 
 EXEC Pokebox.AverageLevel
 
-EXEC Pokebox.PokeRank N'Taylor'
+EXEC Pokebox.PokeRank N'Numel'

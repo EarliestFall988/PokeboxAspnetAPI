@@ -26,7 +26,7 @@ CREATE TABLE Pokebox.Item
     ItemTypeID INT NOT NULL FOREIGN KEY
         REFERENCES Pokebox.ItemType(ItemTypeID),
     ItemName NVARCHAR(64) NOT NULL,
-    [Description] NVARCHAR(128) NOT NULL,
+    [Description] NVARCHAR(256) NOT NULL,
     DateAdded DATETIMEOFFSET NOT NULL DEFAULT(SYSDATETIMEOFFSET()),
 
     UNIQUE(ItemName)
@@ -35,7 +35,7 @@ CREATE TABLE Pokebox.Item
 CREATE TABLE Pokebox.[User]
 (
     UserID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    Username NVARCHAR(32) NOT NULL,
+    Username NVARCHAR(128) NOT NULL,
     [Password] NVARCHAR(32) NOT NULL,
     FirstName NVARCHAR(32) NOT NULL,
     LastName NVARCHAR(32) NOT NULL,

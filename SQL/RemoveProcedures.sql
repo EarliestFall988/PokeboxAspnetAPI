@@ -1,5 +1,5 @@
 CREATE OR ALTER PROCEDURE Pokebox.RemovePokeOwned
-    @Username NVARCHAR(32),
+    @Username NVARCHAR(128),
     @PokemonName NVARCHAR(64),
     @Name NVARCHAR(64)
 AS
@@ -26,7 +26,7 @@ WHERE UserID = @UserID AND [PokemonID] = @PokemonID AND [Name] = @Name
 GO
 
 CREATE OR ALTER PROCEDURE Pokebox.RemoveItemOwned
-    @Username NVARCHAR(32),
+    @Username NVARCHAR(128),
     @ItemName NVARCHAR(64)
 AS
 

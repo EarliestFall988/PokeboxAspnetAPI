@@ -32,7 +32,7 @@ WHERE IT.ItemTypeName = @ItemTypeName;
 GO
 
 CREATE OR ALTER PROCEDURE Pokebox.AddUser
-    @Username NVARCHAR(32),
+    @Username NVARCHAR(128),
     @Password NVARCHAR(32),
     @FirstName NVARCHAR(32),
     @LastName NVARCHAR(32),
@@ -59,7 +59,7 @@ VALUES (@PokemonName, @PokedexNumber, @IsLegendary, @Description);
 GO
 
 CREATE OR ALTER PROCEDURE Pokebox.AddPokeOwned
-    @Username NVARCHAR(32),
+    @Username NVARCHAR(128),
     @PokemonName NVARCHAR(64),
     @Name NVARCHAR(64),
     @Gender NVARCHAR(1),
@@ -114,7 +114,7 @@ VALUES(@PokemonTypeID, @PokemonID);
 
 GO
 CREATE OR ALTER PROCEDURE Pokebox.AddItemOwned
-    @Username NVARCHAR(32),
+    @Username NVARCHAR(128),
     @ItemName NVARCHAR(64)
 AS
 
