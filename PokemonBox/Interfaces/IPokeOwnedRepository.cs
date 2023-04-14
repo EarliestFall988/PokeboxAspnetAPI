@@ -5,11 +5,9 @@ namespace PokemonBox
 {
     public interface IPokeOwnedRepository
     {
-        IReadOnlyList<Pokemon> RetrieveAllOwnedPokemon();
+        PokeOwned CreatePokeOwned(string userName, string pokemonName, string name, pokeGender gender, uint level );
 
-        PokeOwned CreatePokeOwned(string userName, string pokeName, DateTimeOffset datePutInBox, pokeGender Gender, uint level );
-    
-        
+        void RemovePokeOwned(uint userID, uint pokemonID, string pokeName);
     
     }
 }

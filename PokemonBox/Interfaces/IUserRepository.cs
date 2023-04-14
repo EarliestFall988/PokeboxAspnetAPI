@@ -26,5 +26,8 @@ namespace PokemonBox
 
         User AddUser(string userName, string password, string firstName, string lastName, bool isAdmin);
 
+        //TODO Add procedure that gets all pokemon owned by user
+        //TODO Add procedure that gets all items owned by user
+
     }
 }

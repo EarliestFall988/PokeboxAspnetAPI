@@ -30,7 +30,7 @@ namespace PokemonBox
             using (var transaction = new TransactionScope())
             {
                 using (var connection = new SqlConnection(_connectionString))
-                {                                       //TODO: Rename to proper procedure
+                {                                       
                     using (var command = new SqlCommand("Pokebox.AddPokemon", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
@@ -56,58 +56,58 @@ namespace PokemonBox
 
         }
 
-        public Pokemon FetchPokemon(uint pokemonID)
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                using (var command = new SqlCommand("User.FetchPokemon", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
+        //public Pokemon FetchPokemon(uint pokemonID)
+        //{
+        //    using (var connection = new SqlConnection(_connectionString))
+        //    {
+        //        using (var command = new SqlCommand("User.FetchPokemon", connection))
+        //        {
+        //            command.CommandType = CommandType.StoredProcedure;
+        //
+        //            command.Parameters.AddWithValue("PokemonID", pokemonID);
+        //
+        //            connection.Open();
+        //
+        //            using (var reader = command.ExecuteReader())
+        //            {
+        //                var user = TranslatePokemon(reader);
+        //
+        //                if (user == null)
+        //                {
+        //                    throw new RecordNotFoundException(pokemonID.ToString());
+        //                }
+        //
+        //                return user;
+        //            }
+        //        }
+        //    }
+        //}
 
-                    command.Parameters.AddWithValue("PokemonID", pokemonID);
+        //public Pokemon GetPokemon(string pokemonName)
+        //{
+        //    using (var connection = new SqlConnection(_connectionString))
+        //    {
+        //        using (var command = new SqlCommand("User.GetUserByUserName"))
+        //        {
+        //            command.CommandType = CommandType.StoredProcedure;
+        //
+        //            command.Parameters.AddWithValue("PokemonName", pokemonName);
+        //
+        //            connection.Open();
+        //
+        //            using (var reader = command.ExecuteReader())
+        //            {
+        //                return TranslatePokemon(reader);
+        //            }
+        //        }
+        //    }
+        //}
 
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        var user = TranslatePokemon(reader);
-
-                        if (user == null)
-                        {
-                            throw new RecordNotFoundException(pokemonID.ToString());
-                        }
-
-                        return user;
-                    }
-                }
-            }
-        }
-
-        public Pokemon GetPokemon(string pokemonName)
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                using (var command = new SqlCommand("User.GetUserByUserName"))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.AddWithValue("PokemonName", pokemonName);
-
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        return TranslatePokemon(reader);
-                    }
-                }
-            }
-        }
-
-        public IReadOnlyList<Pokemon> RetrievePokemon()
+        public IReadOnlyList<Pokemon> SelectPokemon()
         {
             using (var connection = new SqlConnection(_connectionString)) 
             {                                       //TODO: Rename to proper procedure
-                using (var command = new SqlCommand("Pokemon.RetrieveAddresseForPerson", connection))
+                using (var command = new SqlCommand("Pokemon.SelectPokemon", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
