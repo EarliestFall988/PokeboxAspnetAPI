@@ -23,11 +23,14 @@ namespace PokemonBox.SqlRepositories
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    using (var command = new SqlCommand("Pokebox.AddPokemon", connection))
+                    using (var command = new SqlCommand("Pokebox.AddPokemonType", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
-                        command.Parameters.AddWithValue("PokemonTypeName", TypeName);
+                        command.Parameters.AddWithValue("TypeName", TypeName);
+
+                        var p = command.Parameters.Add("PokemonTypeId", SqlDbType.Int);
+                        p.Direction = ParameterDirection.Output;
 
                         connection.Open();
 
@@ -35,9 +38,9 @@ namespace PokemonBox.SqlRepositories
 
                         transaction.Complete();
 
-                        var pokemonTypeID = (uint)command.Parameters["PokemonTypeID"].Value;
+                        var pokemonTypeID = (int)command.Parameters["PokemonTypeID"].Value;
 
-                        return new PokemonType(pokemonTypeID, TypeName);
+                        return new PokemonType((uint)pokemonTypeID, TypeName);
                     }
                 }
             }
@@ -47,7 +50,7 @@ namespace PokemonBox.SqlRepositories
         {
             using (var connection = new SqlConnection(_connectionString))
             {                                       
-                using (var command = new SqlCommand("Pokemon.SelectPokemonType", connection))
+                using (var command = new SqlCommand("Pokebox.SelectPokemonType", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
@@ -65,12 +68,14 @@ namespace PokemonBox.SqlRepositories
         {
             var pokemonTypes = new List<PokemonType>();
 
-            var pokemonTypeID = (uint)reader.GetOrdinal("PokemonID");
-            var pokemonTypeName = reader.GetString("PokemonName");
+            var pokemonTypeID = reader.GetOrdinal("PokemonTypeID");
+            var pokemonTypeName = reader.GetOrdinal("PokemonTypeName");
 
             while (reader.Read())
             {
-                pokemonTypes.Add(new PokemonType(pokemonTypeID, pokemonTypeName));
+                var id = (uint)reader.GetInt32(pokemonTypeID);
+                var name = reader.GetString(pokemonTypeName);
+                pokemonTypes.Add(new PokemonType(id, name));
             }
 
             return pokemonTypes;
