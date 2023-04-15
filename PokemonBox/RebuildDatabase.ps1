@@ -7,10 +7,10 @@ Param(
 # The below commands may be required.
 
 # To check whether the module is installed.
-# Get-Module -ListAvailable -Name SqlServer;
+Get-Module -ListAvailable -Name SqlServer;
 
 # Install the SQL Server Module
-# Install-Module -Name SqlServer -Scope CurrentUser
+Install-Module -Name SqlServer -Scope CurrentUser
 
 $CurrentDrive = (Get-Location).Drive.Name + ":"
 
@@ -58,6 +58,8 @@ Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\Select
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.SelectPokemon.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.SelectPokemonType.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.SelectPokeType.sql"
+Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.SelectPokeOwned.sql"
+Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.SelectUser.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\StoredProcedures\Pokebox.AddItem.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\StoredProcedures\Pokebox.AddItemOwned.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\StoredProcedures\Pokebox.AddItemType.sql"
