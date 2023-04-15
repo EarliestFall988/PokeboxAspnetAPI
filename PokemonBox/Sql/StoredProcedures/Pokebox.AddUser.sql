@@ -1,5 +1,5 @@
 CREATE OR ALTER PROCEDURE Pokebox.AddUser
-    @Username NVARCHAR(32),
+    @Username NVARCHAR(64),
     @Password NVARCHAR(32),
     @FirstName NVARCHAR(32),
     @LastName NVARCHAR(32),

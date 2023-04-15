@@ -1,5 +1,5 @@
 CREATE OR ALTER PROCEDURE Pokebox.AddPokemonOwned
-    @Username NVARCHAR(32),
+    @Username NVARCHAR(64),
     @PokemonName NVARCHAR(64),
     @Name NVARCHAR(64),
     @Gender NVARCHAR(1),

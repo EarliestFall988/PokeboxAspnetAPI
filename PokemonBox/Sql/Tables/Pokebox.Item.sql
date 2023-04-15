@@ -4,7 +4,7 @@ CREATE TABLE Pokebox.Item
     ItemTypeID INT NOT NULL FOREIGN KEY
         REFERENCES Pokebox.ItemType(ItemTypeID),
     ItemName NVARCHAR(64) NOT NULL,
-    [Description] NVARCHAR(128) NOT NULL,
+    [Description] NVARCHAR(256) NOT NULL,
     DateAdded DATETIMEOFFSET NOT NULL DEFAULT(SYSDATETIMEOFFSET()),
 
     UNIQUE(ItemName)

@@ -1,5 +1,5 @@
 CREATE OR ALTER PROCEDURE Pokebox.AddItemOwned
-    @Username NVARCHAR(32),
+    @Username NVARCHAR(64),
     @ItemName NVARCHAR(64)
 AS
 

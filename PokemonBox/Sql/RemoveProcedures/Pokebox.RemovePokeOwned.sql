@@ -1,5 +1,5 @@
 CREATE OR ALTER PROCEDURE Pokebox.RemovePokeOwned
-    @Username NVARCHAR(32),
+    @Username NVARCHAR(64),
     @PokemonName NVARCHAR(64),
     @Name NVARCHAR(64)
 AS

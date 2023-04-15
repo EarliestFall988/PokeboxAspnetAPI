@@ -1,7 +1,7 @@
 CREATE TABLE Pokebox.[User]
 (
     UserID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    Username NVARCHAR(32) NOT NULL,
+    Username NVARCHAR(64) NOT NULL,
     [Password] NVARCHAR(32) NOT NULL,
     FirstName NVARCHAR(32) NOT NULL,
     LastName NVARCHAR(32) NOT NULL,
