@@ -23,7 +23,7 @@ namespace PokemonBox
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    using (var command = new SqlCommand("Pokebox.AddPokemon", connection))
+                    using (var command = new SqlCommand("Pokebox.AddPokemonType", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
@@ -72,12 +72,12 @@ namespace PokemonBox
 
                         transaction.Complete();
 
-                        //var pokemonTypeID = (uint)command.Parameters["PokemonTypeID"].Value;
-                        //var pokemonTypeID = (uint)command.Parameters["PokemonTypeID"].Value;
-                        //var pokemonTypeID = (uint)command.Parameters["PokemonTypeID"].Value;
-                        //
-                        //return new PokeOwned();
-                        return null;
+                        var pokeOwnedID = (uint)command.Parameters["PokeOwnedID"].Value;
+                        var userID = (uint)command.Parameters["UserID"].Value;
+                        var pokemonID = (uint)command.Parameters["PokemonID"].Value;
+                        var datePutInBox = (DateTimeOffset)command.Parameters["DatePutInBox"].Value;
+
+                        return new PokeOwned(pokeOwnedID, userID, pokemonID, pokemonName, datePutInBox, gender, level);
                     }
                 }
             }
@@ -88,7 +88,7 @@ namespace PokemonBox
             throw new NotImplementedException();
         }
 
-        public IReadOnlyList<PokemonType> SelectPokemonType()
+        public IReadOnlyList<PokemonType> SelectPokemonTypes()
         {
             using (var connection = new SqlConnection(_connectionString))
             {

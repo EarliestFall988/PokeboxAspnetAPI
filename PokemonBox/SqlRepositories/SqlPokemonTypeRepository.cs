@@ -43,7 +43,7 @@ namespace PokemonBox.SqlRepositories
             }
         }
 
-        public IReadOnlyList<PokemonType> SelectPokemonType()
+        public IReadOnlyList<PokemonType> SelectPokemonTypes()
         {
             using (var connection = new SqlConnection(_connectionString))
             {                                       

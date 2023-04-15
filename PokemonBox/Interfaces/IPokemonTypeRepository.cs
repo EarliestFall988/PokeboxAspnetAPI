@@ -5,7 +5,7 @@ namespace PokemonBox
 {
     public interface IPokemonTypeRepository
     {
-        IReadOnlyList<PokemonType> SelectPokemonType();
+        IReadOnlyList<PokemonType> SelectPokemonTypes();
         PokemonType AddPokemonType(string TypeName);
     }
 }
