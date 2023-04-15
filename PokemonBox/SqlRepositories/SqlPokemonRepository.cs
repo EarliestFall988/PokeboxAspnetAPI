@@ -16,7 +16,7 @@ namespace PokemonBox
             _connectionString = connectionString;
         }
 
-        public Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string decription, bool isLegendary)
+        public Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string description, bool isLegendary)
         {
             if (pokemonName == null)
                 throw new ArgumentNullException(nameof(pokemonName));
@@ -24,8 +24,8 @@ namespace PokemonBox
             if(pokedexNumber == 0)
                 throw new ArgumentNullException(nameof(pokedexNumber));
 
-            if(decription == null) 
-                throw new ArgumentNullException(nameof(decription));
+            if(description == null) 
+                throw new ArgumentNullException(nameof(description));
 
             using (var transaction = new TransactionScope())
             {
@@ -36,9 +36,14 @@ namespace PokemonBox
                         command.CommandType = CommandType.StoredProcedure;
 
                         command.Parameters.AddWithValue("PokemonName", pokemonName);
-                        command.Parameters.AddWithValue("PokedexNumber", pokedexNumber);
-                        command.Parameters.AddWithValue("Decription", decription);
+                        command.Parameters.AddWithValue("PokedexNumber", (int)pokedexNumber);
+                        command.Parameters.AddWithValue("Description", description);
                         command.Parameters.AddWithValue("IsLegendary", isLegendary);
+
+                        var p = command.Parameters.Add("PokemonID", SqlDbType.Int);
+                        p.Direction = ParameterDirection.Output;
+                        var t = command.Parameters.Add("DateAdded", SqlDbType.DateTimeOffset);
+                        t.Direction = ParameterDirection.Output;
 
                         connection.Open();
 
@@ -46,10 +51,10 @@ namespace PokemonBox
 
                         transaction.Complete();
 
-                        var pokemonID = (uint)command.Parameters["PokemonID"].Value;
+                        var pokemonID = (int)command.Parameters["PokemonID"].Value;
                         var dateAdded = (DateTimeOffset)command.Parameters["DateAdded"].Value;
 
-                        return new Pokemon(pokemonID, pokemonName, pokedexNumber, decription, dateAdded, isLegendary);
+                        return new Pokemon((uint)pokemonID, pokemonName, pokedexNumber, description, dateAdded, isLegendary);
                     }
                 }
             }
@@ -106,8 +111,8 @@ namespace PokemonBox
         public IReadOnlyList<Pokemon> SelectPokemon()
         {
             using (var connection = new SqlConnection(_connectionString)) 
-            {                                       //TODO: Rename to proper procedure
-                using (var command = new SqlCommand("Pokemon.SelectPokemon", connection))
+            {                                       
+                using (var command = new SqlCommand("Pokebox.SelectPokemon", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
@@ -148,19 +153,28 @@ namespace PokemonBox
             var pokemonID = reader.GetOrdinal("PokemonID");
             var pokemonName = reader.GetOrdinal("PokemonName");
             var pokedexNumber = reader.GetOrdinal("PokedexNumber");
-            var decription = reader.GetOrdinal("Decription");
+            var decription = reader.GetOrdinal("Description");
             var dateAdded = reader.GetOrdinal("DateAdded");
             var isLegendary = reader.GetOrdinal("IsLegendary");
 
             while (reader.Read())
             {
+                bool leg;
+                if(reader.GetInt32(isLegendary) == 1)
+                {
+                    leg = true;
+                }
+                else
+                {
+                    leg = false;
+                }
                 pokeman.Add(new Pokemon(
                     (uint)reader.GetInt32(pokemonID),
                     reader.GetString(pokemonName),
                     (uint)reader.GetInt32(pokedexNumber),
                     reader.GetString(decription),
                     reader.GetDateTimeOffset(dateAdded),
-                    reader.GetBoolean(isLegendary)));
+                    leg));
             }
 
             return pokeman;

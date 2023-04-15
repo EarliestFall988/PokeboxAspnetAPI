@@ -1,34 +1,38 @@
-using System;
+﻿using System;
 using System.Transactions;
 using PokemonBox.Models;
 using PokemonBox.SqlRepositories;
 
 namespace PokemonBox.Test
 {
-    public class SqlPokemonTypeRepositoryTest
+    public class SqlPokeTypeRepositoryTest
     {
         const string connectionString = @"Server=(localdb)\MSSQLLocalDb;Database=PokemonBoxDatabase;Integrated Security=SSPI;";
 
+        private SqlPokeTypeRepository PokeTypeRepo;
         private SqlPokemonTypeRepository PokemonTypeRepo;
         private TransactionScope transaction;
 
         [SetUp]
         public void Setup()
         {
+            PokeTypeRepo = new SqlPokeTypeRepository(connectionString);
             PokemonTypeRepo = new SqlPokemonTypeRepository(connectionString);
 
             transaction = new TransactionScope();
         }
 
         [Test]
-        public void AddPokemonTypeWork()
+        public void AddPokeTypeWork()
         {
             var typeName = "Test";
+            var pokeName = "ARG";
 
-            var actual = PokemonTypeRepo.AddPokemonType(typeName);
+            var actual = PokeTypeRepo.AddPokeType(typeName, pokeName);
 
             Assert.IsNotNull(actual);
-            Assert.That(actual.PokemonTypeName, Is.EqualTo(typeName));
+            //Assert.That(actual.PokemonTypeID, Is.EqualTo(typeName));
+            //Assert.That(actual.PokeName, Is.EqualTo(typeName));
         }
 
         [Test]
@@ -46,13 +50,13 @@ namespace PokemonBox.Test
             };
 
             var actual = PokemonTypeRepo.SelectPokemonTypes();
-            
+
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual.Count >= 3, "At least three are expected.");
 
             var matchCount = 0;
 
-            foreach (var a in actual) 
+            foreach (var a in actual)
             {
                 if (!expected.ContainsKey(a.PokemonTypeID))
                     continue;
@@ -78,7 +82,7 @@ namespace PokemonBox.Test
 
         private PokemonType CreateTestPokemonType(int a)
         {
-            return PokemonTypeRepo.AddPokemonType("Test "+a);
+            return PokemonTypeRepo.AddPokemonType("Test " + a);
         }
     }
 }

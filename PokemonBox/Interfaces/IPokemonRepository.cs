@@ -12,6 +12,6 @@ namespace PokemonBox
         //TODO: No procedure made for 
         //Pokemon FetchPokemon(uint pokemonID); //prim key
 
-        Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string decription, bool isLegendary);
+        Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string description, bool isLegendary);
     }
 }
