@@ -22,4 +22,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// try this in postman: https://localhost:7071/test/<your name>
+app.MapGet("/test/{name}", (string name) => "{\n\'status\': \'200\',\n\'message\': \'Hello " + name + "\'\n}");
+
+//you should get status: 200, message: 'Hello <your name>'
+
 app.Run();
