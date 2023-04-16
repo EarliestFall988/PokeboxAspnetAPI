@@ -32,16 +32,21 @@ namespace PokemonBox.SqlRepositories
                         command.Parameters.AddWithValue("PokemonTypeName", pokemonTypeName);
                         command.Parameters.AddWithValue("PokemonName", pokemonName);
 
+                        var p = command.Parameters.Add("OutPokeID", SqlDbType.Int);
+                        p.Direction = ParameterDirection.Output;
+                        var t = command.Parameters.Add("OutTypeID", SqlDbType.Int);
+                        t.Direction = ParameterDirection.Output;
+
                         connection.Open();
 
                         command.ExecuteNonQuery();
 
                         transaction.Complete();
 
-                        var pokemonTypeID = (uint)command.Parameters["PokemonTypeID"].Value;
-                        var pokemonID = (uint)command.Parameters["PokemonID"].Value;
+                        var pokemonTypeID = (int)command.Parameters["OutTypeID"].Value;
+                        var pokemonID = (int)command.Parameters["OutPokeID"].Value;
 
-                        return new PokeType(pokemonTypeID, pokemonID);
+                        return new PokeType((uint)pokemonID, (uint)pokemonTypeID);
                     }
                 }
             }
@@ -51,7 +56,7 @@ namespace PokemonBox.SqlRepositories
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("Pokemon.SelectPokemonType", connection))
+                using (var command = new SqlCommand("Pokebox.SelectPokeType", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 

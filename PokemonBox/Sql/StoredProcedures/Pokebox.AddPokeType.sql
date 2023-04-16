@@ -1,6 +1,8 @@
 CREATE OR ALTER PROCEDURE Pokebox.AddPokeType
     @PokemonTypeName NVARCHAR(16),
-    @PokemonName NVARCHAR(64)
+    @PokemonName NVARCHAR(64),
+    @OutTypeID INT OUTPUT,
+    @OutPokeID INT OUTPUT
 AS
 
 DECLARE @PokemonTypeID INT =
@@ -19,4 +21,6 @@ DECLARE @PokemonID INT =
 
 INSERT Pokebox.PokeType(PokemonTypeID, PokemonID)
 VALUES(@PokemonTypeID, @PokemonID);
+SET @OutTypeID = @PokemonTypeID;
+SET @OutPokeID = @PokemonID;
 GO

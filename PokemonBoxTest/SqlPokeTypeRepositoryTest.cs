@@ -11,6 +11,7 @@ namespace PokemonBox.Test
 
         private SqlPokeTypeRepository PokeTypeRepo;
         private SqlPokemonTypeRepository PokemonTypeRepo;
+        private SqlPokemonRepository PokemonRepo;
         private TransactionScope transaction;
 
         [SetUp]
@@ -18,6 +19,7 @@ namespace PokemonBox.Test
         {
             PokeTypeRepo = new SqlPokeTypeRepository(connectionString);
             PokemonTypeRepo = new SqlPokemonTypeRepository(connectionString);
+            PokemonRepo = new SqlPokemonRepository(connectionString);
 
             transaction = new TransactionScope();
         }
@@ -25,64 +27,69 @@ namespace PokemonBox.Test
         [Test]
         public void AddPokeTypeWork()
         {
-            var typeName = "Test";
-            var pokeName = "ARG";
+            var type = CreateTestPokemonType(1);
+            var poke = CreateTestPokemon(1, 3888);
 
-            var actual = PokeTypeRepo.AddPokeType(typeName, pokeName);
+            var actual = PokeTypeRepo.AddPokeType(type.PokemonTypeName, poke.PokemonName);
 
             Assert.IsNotNull(actual);
-            //Assert.That(actual.PokemonTypeID, Is.EqualTo(typeName));
-            //Assert.That(actual.PokeName, Is.EqualTo(typeName));
+            Assert.That(actual.PokemonTypeID, Is.EqualTo(type.PokemonTypeID));
+            Assert.That(actual.PokemonID, Is.EqualTo(poke.PokemonID));
         }
 
-        [Test]
-        public void SelectPokemonTypesWork()
+        //[Test]
+        //public void SelectPokemonTypesWork()
+        //{
+        //    var p1 = CreateTestPokemonType(1);
+        //    var p2 = CreateTestPokemonType(2);
+        //    var p3 = CreateTestPokemonType(3);
+        //
+        //    var expected = new Dictionary<uint, PokemonType>
+        //    {
+        //        {p1.PokemonTypeID, p1 },
+        //        {p2.PokemonTypeID, p2 },
+        //        {p3.PokemonTypeID, p3 }
+        //    };
+        //
+        //    var actual = PokemonTypeRepo.SelectPokemonTypes();
+        //
+        //    Assert.IsNotNull(actual);
+        //    Assert.IsTrue(actual.Count >= 3, "At least three are expected.");
+        //
+        //    var matchCount = 0;
+        //
+        //    foreach (var a in actual)
+        //    {
+        //        if (!expected.ContainsKey(a.PokemonTypeID))
+        //            continue;
+        //
+        //        PokemonType test;
+        //        expected.TryGetValue(a.PokemonTypeID, out test);
+        //        AssertPokemonTypeAreEqual(test, a);
+        //
+        //        matchCount++;
+        //    }
+        //
+        //    Assert.That(matchCount, Is.EqualTo(expected.Count));
+        //
+        //
+        //}
+
+        private static void AssertPokeTypeAreEqual(PokeType expected, PokeType actual)
         {
-            var p1 = CreateTestPokemonType(1);
-            var p2 = CreateTestPokemonType(2);
-            var p3 = CreateTestPokemonType(3);
-
-            var expected = new Dictionary<uint, PokemonType>
-            {
-                {p1.PokemonTypeID, p1 },
-                {p2.PokemonTypeID, p2 },
-                {p3.PokemonTypeID, p3 }
-            };
-
-            var actual = PokemonTypeRepo.SelectPokemonTypes();
-
             Assert.IsNotNull(actual);
-            Assert.IsTrue(actual.Count >= 3, "At least three are expected.");
-
-            var matchCount = 0;
-
-            foreach (var a in actual)
-            {
-                if (!expected.ContainsKey(a.PokemonTypeID))
-                    continue;
-
-                PokemonType test;
-                expected.TryGetValue(a.PokemonTypeID, out test);
-                AssertPokemonTypeAreEqual(test, a);
-
-                matchCount++;
-            }
-
-            Assert.That(matchCount, Is.EqualTo(expected.Count));
-
-
-        }
-
-        private static void AssertPokemonTypeAreEqual(PokemonType expected, PokemonType actual)
-        {
-            Assert.IsNotNull(actual);
-            Assert.That(actual.PokemonTypeName, Is.EqualTo(expected.PokemonTypeName));
             Assert.That(actual.PokemonTypeID, Is.EqualTo(expected.PokemonTypeID));
+            Assert.That(actual.PokemonID, Is.EqualTo(expected.PokemonID));
         }
 
         private PokemonType CreateTestPokemonType(int a)
         {
-            return PokemonTypeRepo.AddPokemonType("Test " + a);
+            return PokemonTypeRepo.AddPokemonType("TestType " + a);
+        }
+
+        private Pokemon CreateTestPokemon(int a, uint b)
+        {
+            return PokemonRepo.AddPokemon("TestPoke " + a, b, "wordssss" + a, false);
         }
     }
 }
