@@ -37,43 +37,51 @@ namespace PokemonBox.Test
             Assert.That(actual.PokemonID, Is.EqualTo(poke.PokemonID));
         }
 
-        //[Test]
-        //public void SelectPokemonTypesWork()
-        //{
-        //    var p1 = CreateTestPokemonType(1);
-        //    var p2 = CreateTestPokemonType(2);
-        //    var p3 = CreateTestPokemonType(3);
-        //
-        //    var expected = new Dictionary<uint, PokemonType>
-        //    {
-        //        {p1.PokemonTypeID, p1 },
-        //        {p2.PokemonTypeID, p2 },
-        //        {p3.PokemonTypeID, p3 }
-        //    };
-        //
-        //    var actual = PokemonTypeRepo.SelectPokemonTypes();
-        //
-        //    Assert.IsNotNull(actual);
-        //    Assert.IsTrue(actual.Count >= 3, "At least three are expected.");
-        //
-        //    var matchCount = 0;
-        //
-        //    foreach (var a in actual)
-        //    {
-        //        if (!expected.ContainsKey(a.PokemonTypeID))
-        //            continue;
-        //
-        //        PokemonType test;
-        //        expected.TryGetValue(a.PokemonTypeID, out test);
-        //        AssertPokemonTypeAreEqual(test, a);
-        //
-        //        matchCount++;
-        //    }
-        //
-        //    Assert.That(matchCount, Is.EqualTo(expected.Count));
-        //
-        //
-        //}
+        [Test]
+        public void SelectPokemonTypesWork()
+        {
+            var t1 = CreateTestPokemonType(10);
+            var t2 = CreateTestPokemonType(20);
+            var t3 = CreateTestPokemonType(30);
+
+            var p1 = CreateTestPokemon(10, 3889);
+            var p2 = CreateTestPokemon(20, 3890);
+            var p3 = CreateTestPokemon(30, 3891);
+
+            var pt1 = PokeTypeRepo.AddPokeType(t1.PokemonTypeName, p1.PokemonName);
+            var pt2 = PokeTypeRepo.AddPokeType(t2.PokemonTypeName, p2.PokemonName);
+            var pt3 = PokeTypeRepo.AddPokeType(t3.PokemonTypeName, p3.PokemonName);
+
+            var expected = new Dictionary<uint, PokeType>
+            {
+                {pt1.PokemonTypeID, pt1 },
+                {pt2.PokemonTypeID, pt2 },
+                {pt3.PokemonTypeID, pt3 }
+            };
+        
+            var actual = PokeTypeRepo.SelectPokeType();
+        
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual.Count >= 3, "At least three are expected.");
+        
+            var matchCount = 0;
+        
+            foreach (var a in actual)
+            {
+                if (!expected.ContainsKey(a.PokemonTypeID))
+                    continue;
+        
+                PokeType test;
+                expected.TryGetValue(a.PokemonTypeID, out test);
+                //if(a.PokemonID.Equals(test.PokemonID))
+                //{
+                    matchCount++;
+            }
+        
+            Assert.That(matchCount, Is.EqualTo(expected.Count));
+        
+        
+        }
 
         private static void AssertPokeTypeAreEqual(PokeType expected, PokeType actual)
         {

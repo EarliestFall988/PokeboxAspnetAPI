@@ -74,12 +74,14 @@ namespace PokemonBox.SqlRepositories
         {
             var pokemonTypes = new List<PokeType>();
 
-            var pokemonTypeID = (uint)reader.GetOrdinal("PokemonTypeID");
-            var pokemonID = (uint)reader.GetOrdinal("PokemonID");
+            var pokemonTypeID = reader.GetOrdinal("PokemonTypeID");
+            var pokemonID = reader.GetOrdinal("PokemonID");
 
             while (reader.Read())
             {
-                pokemonTypes.Add(new PokeType(pokemonID, pokemonTypeID));
+                var PokeId = (uint)reader.GetInt32(pokemonTypeID);
+                var TypeId = (uint)reader.GetInt32(pokemonID);
+                pokemonTypes.Add(new PokeType(PokeId, TypeId));
             }
 
             return pokemonTypes;
