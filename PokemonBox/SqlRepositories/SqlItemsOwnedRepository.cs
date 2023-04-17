@@ -54,7 +54,6 @@ namespace PokemonBox.SqlRepositories
                     }
                 }
             }
-            throw new NotImplementedException();
         }
 
         public void RemoveItemsOwned(string userName, string itemName)
