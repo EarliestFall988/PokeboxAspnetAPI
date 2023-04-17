@@ -12,10 +12,10 @@ namespace PokemonBox.Interfaces
 {
     public interface IItemsOwnedRepository
     {
-        PokeOwned CreateItemsOwned(string userName, string itemName);
+        ItemsOwned CreateItemsOwned(string userName, string itemName);
 
         void RemoveItemsOwned(string userName, string itemName);
 
-        IReadOnlyList<ItemsOwned> SelectAllPItemsOwnedByUser(string userName);
+        IReadOnlyList<ItemsOwned> SelectAllItemsOwnedByUser(string userName);
     }
 }

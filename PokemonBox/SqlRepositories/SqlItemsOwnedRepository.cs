@@ -5,13 +5,14 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Transactions;
 using PokemonBox.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 /*
  * Last updated: 4/17/2023
  * Procedures for translating ItemsOwned data from SQL to front-end
  * 
- * TODO: Fix create ItemsOwned
- *       Implement remaining methods
+ * TODO: Review & change based on feedback
+ *       Implement private void RemovePokeOwned(SqlDataReader reader)
  */
 
 namespace PokemonBox.SqlRepositories
@@ -25,7 +26,7 @@ namespace PokemonBox.SqlRepositories
             _connectionString = connectionString;
         }
 
-        public PokeOwned CreateItemsOwned(string userName, string itemName)
+        public ItemsOwned CreateItemsOwned(string userName, string itemName)
         {
             if (userName == null)
                 throw new ArgumentNullException(nameof(userName));
@@ -41,16 +42,15 @@ namespace PokemonBox.SqlRepositories
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("UserName", userName);
                         command.Parameters.AddWithValue("ItemName", itemName);
-                        var u = command.Parameters.Add("OutUserName", SqlDbType.NVarChar);
-                        u.Direction = ParameterDirection.Output;
-                        var i = command.Parameters.Add("OutItemName", SqlDbType.NVarChar);
-                        i.Direction = ParameterDirection.Output;
+
                         connection.Open();
                         command.ExecuteNonQuery();
                         transaction.Complete();
-                        var userName = (string)command.Parameters["OutUserName"].Value;
-                        var itemName = (string)command.Parameters["OutItemName"].Value;
-                        return new ItemsOwned(userName, itemName);
+                        var itemsOwnedID = (uint)command.Parameters["ItemsOwnedID"].Value;
+                        var userID = (uint)command.Parameters["UserID"].Value;
+                        var itemID = (uint)command.Parameters["ItemID"].Value;
+                        var datePutInBox = (DateTimeOffset)command.Parameters["DatePutInBox"].Value;
+                        return new ItemsOwned(itemsOwnedID, userID, itemID, datePutInBox);
                     }
                 }
             }
@@ -58,12 +58,70 @@ namespace PokemonBox.SqlRepositories
 
         public void RemoveItemsOwned(string userName, string itemName)
         {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.RemoveItemsOwned", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Username", userName);
+                    command.Parameters.AddWithValue("ItemName", itemName);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        RemoveItemsOwned(reader);
+                    }
+                }
+            }
+        }
+
+        private void RemoveItemsOwned(SqlDataReader reader)
+        {
             throw new NotImplementedException();
         }
 
-        public IReadOnlyList<ItemsOwned> SelectAllPItemsOwnedByUser(string userName)
+        public IReadOnlyList<ItemsOwned> SelectAllItemsOwnedByUser(string userName)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.SelectAllItemsOwnedByUser", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Username", userName);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return TranslateItemsOwned(reader);
+                    }
+                }
+            }
+        }
+
+        private IReadOnlyList<ItemsOwned> TranslateItemsOwned(SqlDataReader reader)
+        {
+            var itemsOwned = new List<ItemsOwned>();
+
+            var itemOwnedID = reader.GetOrdinal("ItemOwnedID");
+            var userID = reader.GetOrdinal("UserID");
+            var itemID = reader.GetOrdinal("ItemID");
+            var datePutInBox = reader.GetOrdinal("DatePutInBox");
+
+            while(reader.Read())
+            {
+                var oID = (uint)reader.GetInt32(itemOwnedID);
+                var uID = (uint)reader.GetInt32(userID);
+                var iID = (uint)reader.GetInt32(itemID);
+                var date = reader.GetDateTimeOffset(datePutInBox);
+
+                itemsOwned.Add(new ItemsOwned(oID, uID, iID, date));
+            }
+
+            return itemsOwned;
         }
     }
 }

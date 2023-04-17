@@ -4,16 +4,16 @@
     {
         public uint ItemOwnedID { get; }
 
-        public uint ItemsBoxID { get; }
+        public uint UserID { get; }
 
         public uint ItemID { get; }
 
         public DateTimeOffset DatePutInBox { get; }
 
-        public ItemsOwned(uint itemsOwnedID, uint itemsBoxID, uint  itemID, DateTimeOffset datePutInBox)
+        public ItemsOwned(uint itemsOwnedID, uint userID, uint  itemID, DateTimeOffset datePutInBox)
         {
             ItemOwnedID = itemsOwnedID;
-            ItemsBoxID = itemsBoxID;
+            UserID = userID;
             ItemID = itemID;
             DatePutInBox = datePutInBox;
         }
