@@ -43,6 +43,8 @@ namespace PokemonBox.SqlRepositories
 
                         var iID = command.Parameters.Add("ItemID", SqlDbType.Int);
                         iID.Direction = ParameterDirection.Output;
+                        var iTID = command.Parameters.Add("OutItemTypeID", SqlDbType.Int);
+                        iTID.Direction = ParameterDirection.Output;
                         var date = command.Parameters.Add("DateAdded", SqlDbType.DateTimeOffset);
                         date.Direction = ParameterDirection.Output;
 
@@ -53,7 +55,7 @@ namespace PokemonBox.SqlRepositories
                         transaction.Complete();
 
                         var itemID = (int)command.Parameters["ItemID"].Value;
-                        var itemTypeID = (int)command.Parameters["ItemTypeID"].Value;
+                        var itemTypeID = (int)command.Parameters["OutItemTypeID"].Value;
                         var dateAdded = (DateTimeOffset)command.Parameters["DateAdded"].Value;
 
                         return new Item((uint)itemID, (uint)itemTypeID, itemName, dateAdded, description);

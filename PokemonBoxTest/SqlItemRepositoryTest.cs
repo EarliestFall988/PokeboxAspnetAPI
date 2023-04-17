@@ -27,9 +27,9 @@ namespace PokemonBox.Test
         [Test]
         public void AddItemWork()
         {
-            var itemName = "Sleep";
-            var description = "cool thing";
-            var itemTypeName = "Needs";
+            var itemTypeName = "other";
+            var itemName = "testItem";
+            var description = "WORDSSSS";
 
             var actual = ItemRepo.AddItem(itemName, description, itemTypeName);
 
@@ -41,7 +41,7 @@ namespace PokemonBox.Test
         [Test]
         public void SelectItemWork()
         {
-            var itemTypeName = "needs";
+            var itemTypeName = "other";
             var p1 = CreateTestItem(1, 0, itemTypeName);
             var p2 = CreateTestItem(2, 1, itemTypeName);
             var p3 = CreateTestItem(3, 2, itemTypeName);

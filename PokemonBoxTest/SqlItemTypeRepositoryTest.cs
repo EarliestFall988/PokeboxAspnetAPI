@@ -36,7 +36,7 @@ namespace PokemonBox.Test
         }
 
         [Test]
-        public void SelectPokemonWork()
+        public void SelectItemWorkType()
         {
             var p1 = CreateTestItemType("Test1");
             var p2 = CreateTestItemType("Test2");
