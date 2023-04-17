@@ -59,6 +59,7 @@ Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\Select
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.SelectPokemonType.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.SelectPokeType.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.SelectPokeOwned.sql"
+Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.SelectSinglePokeOwned.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.SelectUser.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\StoredProcedures\Pokebox.AddItem.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\StoredProcedures\Pokebox.AddItemOwned.sql"
