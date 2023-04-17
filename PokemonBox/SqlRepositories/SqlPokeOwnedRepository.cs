@@ -60,7 +60,7 @@ namespace PokemonBox
                         var pokemonID = (int)command.Parameters["OutPokeID"].Value;
                         var datePutInBox = (DateTimeOffset)command.Parameters["DatePutInBox"].Value;
 
-                        return new PokeOwned((uint)pokeOwnedID, (uint)userID, (uint)pokemonID, pokemonName, nickName, datePutInBox, gender, level);
+                        return new PokeOwned((uint)pokeOwnedID, (uint)userID, (uint)pokemonID, nickName, datePutInBox, gender, level);
                     }
                 }
             }
@@ -116,7 +116,6 @@ namespace PokemonBox
             var pokeOwnedID = reader.GetOrdinal("PokeOwnedID");
             var userID = reader.GetOrdinal("UserID");
             var pokemonID = reader.GetOrdinal("PokemonID");
-            var pokeName = reader.GetOrdinal("PokemonName");
             var name = reader.GetOrdinal("Name");
             var datePutInBox = reader.GetOrdinal("DatePutInBox");
             var gender = reader.GetOrdinal("Gender");
@@ -129,10 +128,9 @@ namespace PokemonBox
                 var pID = reader.GetInt32(pokemonID);
                 var g = (pokeGender)reader.GetInt32(gender);
                 var l = (uint)reader.GetInt32(level);
-                var pokemonName = reader.GetString(pokeName);
                 var nickName = reader.GetString(name);
                 var date = reader.GetDateTimeOffset(datePutInBox);
-                pokeOwned.Add(new PokeOwned((uint)oID, (uint)uID, (uint)pID, pokemonName, nickName, date, g, l));
+                pokeOwned.Add(new PokeOwned((uint)oID, (uint)uID, (uint)pID, nickName, date, g, l));
             }
 
             return pokeOwned;
@@ -141,6 +139,49 @@ namespace PokemonBox
         private void RemovePokeOwned(SqlDataReader reader)
         {
             throw new NotImplementedException();
+        }
+
+        public PokeOwned SelectSinglePokeOwned(string userName, string pokemonName, string nickName)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.SelectSinglePokeOwned", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Username", userName);
+                    command.Parameters.AddWithValue("PokemonName", pokemonName);
+                    command.Parameters.AddWithValue("Name", nickName);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return TranslateSinglePokeOwned(reader);
+                    }
+                }
+            }
+        }
+
+        private PokeOwned TranslateSinglePokeOwned(SqlDataReader reader)
+        {
+
+            var pokeOwnedID = reader.GetOrdinal("PokeOwnedID");
+            var userID = reader.GetOrdinal("UserID");
+            var pokemonID = reader.GetOrdinal("PokemonID");
+            var name = reader.GetOrdinal("Name");
+            var datePutInBox = reader.GetOrdinal("DatePutInBox");
+            var gender = reader.GetOrdinal("Gender");
+            var level = reader.GetOrdinal("Level");
+
+            var oID = reader.GetInt32(pokeOwnedID);
+            var uID = reader.GetInt32(userID);
+            var pID = reader.GetInt32(pokemonID);
+            var g = (pokeGender)reader.GetInt32(gender);
+            var l = (uint)reader.GetInt32(level);
+            var nickName = reader.GetString(name);
+            var date = reader.GetDateTimeOffset(datePutInBox);
+            return new PokeOwned((uint)oID, (uint)uID, (uint)pID, nickName, date, g, l);
         }
     }
 }
