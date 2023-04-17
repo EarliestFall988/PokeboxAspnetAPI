@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Data;
 using System.Transactions;
+using System.Xml.Linq;
 
 namespace PokemonBox
 {
@@ -14,14 +15,16 @@ namespace PokemonBox
             _connectionString = connectionString;
         }
 
-        public PokeOwned CreatePokeOwned(string userName, string pokemonName, string name, pokeGender gender, uint level)
+        public PokeOwned CreatePokeOwned(string userName, string pokemonName, string nickName, pokeGender gender, uint level)
         {
             if (userName == null)
                 throw new ArgumentNullException(nameof(userName));
             if (pokemonName == null)
                 throw new ArgumentNullException(nameof(pokemonName));
-            if (name == null)
-                throw new ArgumentNullException(nameof(name));
+            if (nickName == null)
+                throw new ArgumentNullException(nameof(nickName));
+            if (pokemonName == null)
+                throw new ArgumentNullException(nameof(pokemonName));
 
             using (var transaction = new TransactionScope())
             {
@@ -33,9 +36,18 @@ namespace PokemonBox
 
                         command.Parameters.AddWithValue("Username", userName);
                         command.Parameters.AddWithValue("PokemonName", pokemonName);
-                        command.Parameters.AddWithValue("Name", name);
+                        command.Parameters.AddWithValue("Name", nickName);
                         command.Parameters.AddWithValue("Gender", gender);
                         command.Parameters.AddWithValue("Level", (int)level);
+
+                        var p = command.Parameters.Add("OutPokeID", SqlDbType.Int);
+                        p.Direction = ParameterDirection.Output;
+                        var u = command.Parameters.Add("OutUserID", SqlDbType.Int);
+                        u.Direction = ParameterDirection.Output;
+                        var o = command.Parameters.Add("PokeOwnedID", SqlDbType.Int);
+                        o.Direction = ParameterDirection.Output;
+                        var d = command.Parameters.Add("DatePutInBox", SqlDbType.DateTimeOffset);
+                        d.Direction = ParameterDirection.Output;
 
                         connection.Open();
 
@@ -43,12 +55,12 @@ namespace PokemonBox
 
                         transaction.Complete();
 
-                        var pokeOwnedID = (uint)command.Parameters["PokeOwnedID"].Value;
-                        var userID = (uint)command.Parameters["UserID"].Value;
-                        var pokemonID = (uint)command.Parameters["PokemonID"].Value;
+                        var pokeOwnedID = (int)command.Parameters["PokeOwnedID"].Value;
+                        var userID = (int)command.Parameters["OutUserID"].Value;
+                        var pokemonID = (int)command.Parameters["OutPokeID"].Value;
                         var datePutInBox = (DateTimeOffset)command.Parameters["DatePutInBox"].Value;
 
-                        return new PokeOwned(pokeOwnedID, userID, pokemonID, pokemonName, datePutInBox, gender, level);
+                        return new PokeOwned((uint)pokeOwnedID, (uint)userID, (uint)pokemonID, pokemonName, nickName, datePutInBox, gender, level);
                     }
                 }
             }
@@ -104,21 +116,23 @@ namespace PokemonBox
             var pokeOwnedID = reader.GetOrdinal("PokeOwnedID");
             var userID = reader.GetOrdinal("UserID");
             var pokemonID = reader.GetOrdinal("PokemonID");
-            var pokeName = reader.GetOrdinal("PokeName");
+            var pokeName = reader.GetOrdinal("PokemonName");
+            var name = reader.GetOrdinal("Name");
             var datePutInBox = reader.GetOrdinal("DatePutInBox");
             var gender = reader.GetOrdinal("Gender");
             var level = reader.GetOrdinal("Level");
 
             while (reader.Read())
             {
-                var oID = (uint)reader.GetInt32(pokeOwnedID);
-                var uID = (uint)reader.GetInt32(userID);
-                var pID = (uint)reader.GetInt32(pokemonID);
+                var oID = reader.GetInt32(pokeOwnedID);
+                var uID = reader.GetInt32(userID);
+                var pID = reader.GetInt32(pokemonID);
                 var g = (pokeGender)reader.GetInt32(gender);
                 var l = (uint)reader.GetInt32(level);
-                var name = reader.GetString(pokeName);
+                var pokemonName = reader.GetString(pokeName);
+                var nickName = reader.GetString(name);
                 var date = reader.GetDateTimeOffset(datePutInBox);
-                pokeOwned.Add(new PokeOwned(oID, uID, pID, name, date, g, l));
+                pokeOwned.Add(new PokeOwned((uint)oID, (uint)uID, (uint)pID, pokemonName, nickName, date, g, l));
             }
 
             return pokeOwned;

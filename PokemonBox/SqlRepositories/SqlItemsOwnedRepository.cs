@@ -38,22 +38,23 @@ namespace PokemonBox.SqlRepositories
                 {
                     using (var command = new SqlCommand("Pokebox.CreateItemsOwned", connection))
                     {
-                        command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("UserName", userName);
-                        command.Parameters.AddWithValue("ItemName", itemName);
-                        var u = command.Parameters.Add("OutUserName", SqlDbType.NVarChar);
-                        u.Direction = ParameterDirection.Output;
-                        var i = command.Parameters.Add("OutItemName", SqlDbType.NVarChar);
-                        i.Direction = ParameterDirection.Output;
-                        connection.Open();
-                        command.ExecuteNonQuery();
-                        transaction.Complete();
-                        var userName = (string)command.Parameters["OutUserName"].Value;
-                        var itemName = (string)command.Parameters["OutItemName"].Value;
-                        return new ItemsOwned(userName, itemName);
+                        //command.CommandType = CommandType.StoredProcedure;
+                        //command.Parameters.AddWithValue("UserName", userName);
+                        //command.Parameters.AddWithValue("ItemName", itemName);
+                        //var u = command.Parameters.Add("OutUserName", SqlDbType.NVarChar);
+                        //u.Direction = ParameterDirection.Output;
+                        //var i = command.Parameters.Add("OutItemName", SqlDbType.NVarChar);
+                        //i.Direction = ParameterDirection.Output;
+                        //connection.Open();
+                        //command.ExecuteNonQuery();
+                        //transaction.Complete();
+                        //var userName = (string)command.Parameters["OutUserName"].Value;
+                        //var itemName = (string)command.Parameters["OutItemName"].Value;
+                        //return new ItemsOwned(userName, itemName);
                     }
                 }
             }
+            throw new NotImplementedException();
         }
 
         public void RemoveItemsOwned(string userName, string itemName)

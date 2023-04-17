@@ -14,13 +14,16 @@ namespace PokemonBox.Test
         const string connectionString = @"Server=(localdb)\MSSQLLocalDb;Database=PokemonBoxDatabase;Integrated Security=SSPI;";
 
         private SqlPokeOwnedRepository PokeOwnedRepo;
+        private SqlUserRepository UserRepo;
+        private SqlPokemonRepository PokemonRepo;
         private TransactionScope transaction;
 
         [SetUp]
         public void Setup()
         {
             PokeOwnedRepo = new SqlPokeOwnedRepository(connectionString);
-
+            UserRepo = new SqlUserRepository(connectionString);
+            PokemonRepo = new SqlPokemonRepository(connectionString);
             transaction = new TransactionScope();
         }
 
@@ -29,14 +32,17 @@ namespace PokemonBox.Test
         {
             var userName = "TestUser";
             var pokemonName = "TestPokemon";
-            var name = "JustAName";
+            var nickName = "JustAName";
             var gender = pokeGender.unknown;
             var level = (uint)15;
 
-            var actual = PokeOwnedRepo.CreatePokeOwned(userName, pokemonName, name, gender, level);
+            var user = CreateTestUser(userName, "pass1234", "fName", "LName", false);
+            var pokemon = CreateTestPokemon(pokemonName, 45000);
+
+            var actual = PokeOwnedRepo.CreatePokeOwned(userName, pokemonName, nickName, gender, level);
 
             Assert.IsNotNull(actual);
-            Assert.That(actual.PokeName, Is.EqualTo(name));
+            Assert.That(actual.NickName, Is.EqualTo(nickName));
             Assert.That(actual.Gender, Is.EqualTo(gender));
             Assert.That(actual.Level, Is.EqualTo(level));
         }
@@ -44,11 +50,20 @@ namespace PokemonBox.Test
         [Test]
         public void SelectAllPokemonOwnedByUserWork()
         {
-            var userName = "ThisTestBud";
+            var userName = "TestUser";
+            var pokemonName1 = "Poke1";
+            var pokemonName2 = "Poke2";
+            var pokemonName3 = "Poke3";
 
-            var p1 = CreateTestPokeOwned(userName, "Poke1", "Bob", pokeGender.unknown, 10);
-            var p2 = CreateTestPokeOwned(userName, "Poke3", "Gab", pokeGender.unknown, 10);
-            var p3 = CreateTestPokeOwned(userName, "Poke3", "Sog", pokeGender.unknown, 10);
+
+            var user = CreateTestUser(userName, "pass1234", "fName", "LName", false);
+            var pokemon1 = CreateTestPokemon(pokemonName1, 45010);
+            var pokemon2 = CreateTestPokemon(pokemonName2, 45020);
+            var pokemon3 = CreateTestPokemon(pokemonName3, 45030);
+
+            var p1 = CreateTestPokeOwned(userName, pokemonName1, "Bob", pokeGender.unknown, 10);
+            var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 10);
+            var p3 = CreateTestPokeOwned(userName, pokemonName3, "Sog", pokeGender.unknown, 10);
 
             var expected = new Dictionary<string, PokeOwned>
             {
@@ -95,6 +110,16 @@ namespace PokemonBox.Test
         private PokeOwned CreateTestPokeOwned(string userName, string pokemonName, string name, pokeGender gender, uint level)
         {
             return PokeOwnedRepo.CreatePokeOwned(userName, pokemonName, name, gender, level);
+        }
+
+        private User CreateTestUser(string userName, string password, string firstName, string lastName, bool admin)
+        {
+            return UserRepo.AddUser(userName, password, firstName, lastName, admin);
+        }
+
+        private Pokemon CreateTestPokemon(string pokemonName, uint dexNum)
+        {
+            return PokemonRepo.AddPokemon(pokemonName, dexNum, "wordssss" + dexNum, false);
         }
     }
 }
