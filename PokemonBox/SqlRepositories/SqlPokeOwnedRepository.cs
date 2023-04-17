@@ -145,8 +145,17 @@ namespace PokemonBox
                     g = pokeGender.unknown;
                 }
 
-
-                pokeOwned.Add(new PokeOwned((uint)oID, (uint)uID, (uint)pID, nickName, date, g, l));
+                bool same = false;
+                var newPoke = new PokeOwned((uint)oID, (uint)uID, (uint)pID, nickName, date, g, l);
+                foreach (var p in pokeOwned)
+                {
+                    same = arePokeOwnedSame(p, newPoke);
+                }
+                if(!same)
+                {
+                    pokeOwned.Add(new PokeOwned((uint)oID, (uint)uID, (uint)pID, nickName, date, g, l));
+                }
+                
             }
 
             return pokeOwned;
@@ -216,6 +225,19 @@ namespace PokemonBox
                     }
                 }
             }
+        }
+
+        private bool arePokeOwnedSame(PokeOwned a, PokeOwned b)
+        {
+            if(a.PokeOwnedID ==  b.PokeOwnedID)
+            {
+                return true;
+            }
+            else if(a.NickName == b.NickName && a.PokemonID == b.PokemonID) 
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
