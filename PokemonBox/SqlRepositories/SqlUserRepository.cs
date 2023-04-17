@@ -53,9 +53,9 @@ namespace PokemonBox
 
                         transaction.Complete();
 
-                        var userID = (uint)command.Parameters["UserId"].Value;
+                        var userID = (int)command.Parameters["UserId"].Value;
 
-                        return new User(userID, userName, password, firstName, lastName, isAdmin);
+                        return new User((uint)userID, userName, password, firstName, lastName, isAdmin);
                     }
                 }
             }
@@ -63,12 +63,9 @@ namespace PokemonBox
 
         private IReadOnlyList<User> TranslateUsers(SqlDataReader reader)
         {
-            //my plural distinction of pokemon, pokeman
             var users = new List<User>();
 
             var userID = reader.GetOrdinal("UserID");
-            var itemsOwnedID = reader.GetOrdinal("ItemsOwnedID");
-            var pokeOwnedID = reader.GetOrdinal("PokeOwnedID");
             var userName = reader.GetOrdinal("UserName");
             var password = reader.GetOrdinal("Password");
             var firstName = reader.GetOrdinal("FirstName");
@@ -77,70 +74,30 @@ namespace PokemonBox
 
             while (reader.Read())
             {
+                bool admin;
+                if(reader.GetInt32(isAdmin) == 1)
+                {
+                    admin = true;
+                }
+                else
+                {
+                    admin = false;
+                }
                 users.Add(new User(
                     (uint)reader.GetInt32(userID),
                     reader.GetString(userName),
                     reader.GetString(password),
                     reader.GetString(firstName),
                     reader.GetString(lastName),
-                    reader.GetBoolean(isAdmin)));
+                    admin));
             }
 
             return users;
         }
 
-        public User FetchUser(uint userID)
-        {
-            using(var connection = new SqlConnection(_connectionString))
-            {
-                using(var command = new SqlCommand("User.FetchUser", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.AddWithValue("UserID", userID);
-
-                    connection.Open();
-
-                    using(var reader = command.ExecuteReader())
-                    {
-                        var user = TranslateUser(reader);   
-
-                        if(user == null)
-                        {
-                            throw new RecordNotFoundException(userID.ToString());
-                        }
-
-                        return user;
-                    }
-                }
-            }
-        }
-
-        public User GetUser(string UserName)
-        {
-            using(var connection = new SqlConnection(_connectionString))
-            {
-                using(var command = new SqlCommand("User.GetUserByUserName"))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.AddWithValue("Username", UserName);
-
-                    connection.Open();
-
-                    using(var reader = command.ExecuteReader())
-                    {
-                        return TranslateUser(reader);
-                    }
-                }
-            }
-        }
-
         private User TranslateUser(SqlDataReader reader)
         {
             var userID = reader.GetOrdinal("UserID");
-            var itemsOwnedID = reader.GetOrdinal("ItemsOwnedID");
-            var pokeOwnedID = reader.GetOrdinal("PokeOwnedID");
             var userName = reader.GetOrdinal("UserName");
             var password = reader.GetOrdinal("Password");
             var firstName = reader.GetOrdinal("FirstName");
@@ -161,11 +118,11 @@ namespace PokemonBox
                     reader.GetBoolean(isAdmin));
         }
 
-        public IReadOnlyList<User> RetrieveUsers()
+        public IReadOnlyList<User> SelectUser()
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("User.RetrieveUsersPokemon", connection))
+                using (var command = new SqlCommand("Pokebox.SelectUser", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
