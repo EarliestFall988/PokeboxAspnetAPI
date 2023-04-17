@@ -3,7 +3,11 @@ CREATE OR ALTER PROCEDURE Pokebox.AddPokemonOwned
     @PokemonName NVARCHAR(64),
     @Name NVARCHAR(64),
     @Gender NVARCHAR(1),
-    @Level INT
+    @Level INT,
+    @PokeOwnedID INT OUTPUT,
+    @DatePutInBox DATETIMEOFFSET OUTPUT,
+    @OutUserID INT OUTPUT,
+    @OutPokeID INT OUTPUT
 AS
 
 DECLARE @UserID INT =
@@ -22,4 +26,9 @@ DECLARE @PokemonID INT =
 
 INSERT Pokebox.PokeOwned(UserID, PokemonID, [Name], Gender, [Level])
 VALUES(@UserID, @PokemonID, @Name, @Gender, @Level);
+
+SET @PokeOwnedID = SCOPE_IDENTITY();
+SET @DatePutInBox = SYSDATETIMEOFFSET();
+SET @OutUserID = @UserID;
+SET @OutPokeID = @PokemonID;
 GO
