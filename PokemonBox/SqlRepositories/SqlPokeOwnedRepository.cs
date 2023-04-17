@@ -14,35 +14,6 @@ namespace PokemonBox
             _connectionString = connectionString;
         }
 
-        public PokemonType AddPokemonType(string typeName)
-        {
-            if (typeName == null)
-                throw new ArgumentNullException(nameof(typeName));
-
-            using (var transaction = new TransactionScope())
-            {
-                using (var connection = new SqlConnection(_connectionString))
-                {
-                    using (var command = new SqlCommand("Pokebox.AddPokemonType", connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-
-                        command.Parameters.AddWithValue("PokemonTypeName", typeName);
-
-                        connection.Open();
-
-                        command.ExecuteNonQuery();
-
-                        transaction.Complete();
-
-                        var pokemonTypeID = (uint)command.Parameters["PokemonTypeID"].Value;
-
-                        return new PokemonType(pokemonTypeID, typeName);
-                    }
-                }
-            }
-        }
-
         public PokeOwned CreatePokeOwned(string userName, string pokemonName, string name, pokeGender gender, uint level)
         {
             if (userName == null)
@@ -83,42 +54,79 @@ namespace PokemonBox
             }
         }
 
-        public void RemovePokeOwned(uint userID, uint pokemonID, string pokeName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IReadOnlyList<PokemonType> SelectPokemonTypes()
+        public void RemovePokeOwned(string userName, string pokemonName, string pokeName)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("Pokemon.SelectPokemonType", connection))
+                using (var command = new SqlCommand("Pokebox.RemovePokeOwned", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Username", userName);
+                    command.Parameters.AddWithValue("PokemonName", pokemonName);
+                    command.Parameters.AddWithValue("Name", pokeName);
 
                     connection.Open();
 
                     using (var reader = command.ExecuteReader())
                     {
-                        return TranslatePokemonTypes(reader);
+                        RemovePokeOwned(reader);
+                    }
+
+                }
+            }
+        }
+
+        public IReadOnlyList<PokeOwned> SelectAllPokemonOwnedByUser(string userName)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.SelectAllPokemonOwnedByUser", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Username", userName);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return TranslatePokeOwned(reader);
                     }
                 }
             }
         }
 
-        private IReadOnlyList<PokemonType> TranslatePokemonTypes(SqlDataReader reader)
+        private IReadOnlyList<PokeOwned> TranslatePokeOwned(SqlDataReader reader)
         {
-            var pokemonTypes = new List<PokemonType>();
+            var pokeOwned = new List<PokeOwned>();
 
-            var pokemonTypeID = (uint)reader.GetOrdinal("PokemonID");
-            var pokemonTypeName = reader.GetString("PokemonName");
+            var pokeOwnedID = reader.GetOrdinal("PokeOwnedID");
+            var userID = reader.GetOrdinal("UserID");
+            var pokemonID = reader.GetOrdinal("PokemonID");
+            var pokeName = reader.GetOrdinal("PokeName");
+            var datePutInBox = reader.GetOrdinal("DatePutInBox");
+            var gender = reader.GetOrdinal("Gender");
+            var level = reader.GetOrdinal("Level");
 
             while (reader.Read())
             {
-                pokemonTypes.Add(new PokemonType(pokemonTypeID, pokemonTypeName));
+                var oID = (uint)reader.GetInt32(pokeOwnedID);
+                var uID = (uint)reader.GetInt32(userID);
+                var pID = (uint)reader.GetInt32(pokemonID);
+                var g = (pokeGender)reader.GetInt32(gender);
+                var l = (uint)reader.GetInt32(level);
+                var name = reader.GetString(pokeName);
+                var date = reader.GetDateTimeOffset(datePutInBox);
+                pokeOwned.Add(new PokeOwned(oID, uID, pID, name, date, g, l));
             }
 
-            return pokemonTypes;
+            return pokeOwned;
+        }
+
+        private void RemovePokeOwned(SqlDataReader reader)
+        {
+            throw new NotImplementedException();
         }
     }
 }

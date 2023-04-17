@@ -7,7 +7,9 @@ namespace PokemonBox
     {
         PokeOwned CreatePokeOwned(string userName, string pokemonName, string name, pokeGender gender, uint level );
 
-        void RemovePokeOwned(uint userID, uint pokemonID, string pokeName);
+        void RemovePokeOwned(string userName, string pokemonName, string pokeName);
+
+        IReadOnlyList<PokeOwned> SelectAllPokemonOwnedByUser(string userName);
     
     }
 }

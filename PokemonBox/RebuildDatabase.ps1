@@ -10,7 +10,7 @@ Param(
 Get-Module -ListAvailable -Name SqlServer;
 
 # Install the SQL Server Module
-Install-Module -Name SqlServer -Scope CurrentUser
+#Install-Module -Name SqlServer -Scope CurrentUser
 
 $CurrentDrive = (Get-Location).Drive.Name + ":"
 
