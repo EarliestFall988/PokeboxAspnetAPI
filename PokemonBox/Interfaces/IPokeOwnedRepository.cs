@@ -10,6 +10,8 @@ namespace PokemonBox
         void RemovePokeOwned(string userName, string pokemonName, string pokeName);
 
         IReadOnlyList<PokeOwned> SelectAllPokemonOwnedByUser(string userName);
-    
+
+        PokeOwned SelectSinglePokeOwned(string userName, string pokemonName, string nickName);
+
     }
 }

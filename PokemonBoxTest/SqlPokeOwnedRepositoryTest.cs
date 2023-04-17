@@ -3,6 +3,8 @@ using PokemonBox.SqlRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -50,7 +52,7 @@ namespace PokemonBox.Test
         [Test]
         public void SelectAllPokemonOwnedByUserWork()
         {
-            var userName = "TestUser";
+            var userName = "TestUser2";
             var pokemonName1 = "Poke1";
             var pokemonName2 = "Poke2";
             var pokemonName3 = "Poke3";
@@ -67,9 +69,9 @@ namespace PokemonBox.Test
 
             var expected = new Dictionary<string, PokeOwned>
             {
-                {p1.PokeName, p1 },
-                {p2.PokeName, p2 },
-                {p3.PokeName, p3 }
+                {p1.NickName, p1 },
+                {p2.NickName, p2 },
+                {p3.NickName, p3 }
             };
 
             var actual = PokeOwnedRepo.SelectAllPokemonOwnedByUser(userName);
@@ -81,11 +83,11 @@ namespace PokemonBox.Test
 
             foreach (var a in actual)
             {
-                if (!expected.ContainsKey(a.PokeName))
+                if (!expected.ContainsKey(a.NickName))
                     continue;
 
                 PokeOwned test;
-                expected.TryGetValue(a.PokeName, out test);
+                expected.TryGetValue(a.NickName, out test);
                 AssertPokemonTypeAreEqual(test, a);
 
                 matchCount++;
@@ -96,6 +98,42 @@ namespace PokemonBox.Test
 
         }
 
+        [Test]
+        public void SelectSinglePokeOwnedWork()
+        {
+            var userName = "TestUser3";
+            var pokemonName1 = "PokeA1";
+            var pokemonName2 = "PokeA2";
+            var pokemonName3 = "PokeA3";
+
+
+            var user = CreateTestUser(userName, "pass1234", "fName", "LName", false);
+            var pokemon1 = CreateTestPokemon(pokemonName1, 45011);
+            var pokemon2 = CreateTestPokemon(pokemonName2, 45021);
+            var pokemon3 = CreateTestPokemon(pokemonName3, 45031);
+
+            var p1 = CreateTestPokeOwned(userName, pokemonName1, "Bob", pokeGender.unknown, 10);
+            var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 10);
+            var p3 = CreateTestPokeOwned(userName, pokemonName3, "Sog", pokeGender.unknown, 10);
+
+            var expected = new Dictionary<string, PokeOwned>
+            {
+                {p1.NickName, p1 },
+                {p2.NickName, p2 },
+                {p3.NickName, p3 }
+            };
+
+            var actual = PokeOwnedRepo.SelectSinglePokeOwned(userName, pokemonName1, "Bob");
+
+            Assert.IsNotNull(actual);
+
+
+            Assert.That(actual.NickName, Is.EqualTo("Bob"));
+            Assert.That(actual.Gender, Is.EqualTo(pokeGender.unknown));
+            Assert.That(actual.Level, Is.EqualTo(10));
+
+        }
+
         private static void AssertPokemonTypeAreEqual(PokeOwned expected, PokeOwned actual)
         {
             Assert.IsNotNull(actual);
@@ -103,7 +141,6 @@ namespace PokemonBox.Test
             Assert.That(actual.PokeOwnedID, Is.EqualTo(expected.PokeOwnedID));
             Assert.That(actual.UserID, Is.EqualTo(expected.UserID));
             Assert.That(actual.Gender, Is.EqualTo(expected.Gender));
-            Assert.That(actual.PokeName, Is.EqualTo(expected.PokeName));
             Assert.That(actual.PokemonID, Is.EqualTo(expected.PokemonID));
         }
 
