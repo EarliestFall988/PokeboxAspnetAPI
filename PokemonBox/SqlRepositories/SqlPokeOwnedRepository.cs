@@ -27,7 +27,7 @@ namespace PokemonBox
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    using (var command = new SqlCommand("Pokebox.AddPokeOwned", connection))
+                    using (var command = new SqlCommand("Pokebox.AddPokemonOwned", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
@@ -35,7 +35,7 @@ namespace PokemonBox
                         command.Parameters.AddWithValue("PokemonName", pokemonName);
                         command.Parameters.AddWithValue("Name", name);
                         command.Parameters.AddWithValue("Gender", gender);
-                        command.Parameters.AddWithValue("Level", level);
+                        command.Parameters.AddWithValue("Level", (int)level);
 
                         connection.Open();
 
