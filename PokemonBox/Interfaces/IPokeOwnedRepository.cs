@@ -11,6 +11,8 @@ namespace PokemonBox
 
         IReadOnlyList<PokeOwned> SelectAllPokemonOwnedByUser(string userName);
 
+        IReadOnlyList<PokeOwned> SelectAllPokemonOwned();
+
         PokeOwned SelectSinglePokeOwned(string userName, string pokemonName, string nickName);
 
     }

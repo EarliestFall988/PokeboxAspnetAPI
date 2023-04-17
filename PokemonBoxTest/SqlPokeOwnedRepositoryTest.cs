@@ -50,6 +50,55 @@ namespace PokemonBox.Test
         }
 
         [Test]
+        public void SelectAllPokemonOwnedWork()
+        {
+            var userName = "TestUserAHHHH";
+            var pokemonName1 = "Poke1AHHH";
+            var pokemonName2 = "Poke2AHHH";
+            var pokemonName3 = "Poke3AHHH";
+
+
+            var user = CreateTestUser(userName, "pass1234", "fName", "LName", false);
+            var pokemon1 = CreateTestPokemon(pokemonName1, 45010);
+            var pokemon2 = CreateTestPokemon(pokemonName2, 45020);
+            var pokemon3 = CreateTestPokemon(pokemonName3, 45030);
+
+            var p1 = CreateTestPokeOwned(userName, pokemonName1, "Bob1", pokeGender.unknown, 10);
+            var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab2", pokeGender.unknown, 10);
+            var p3 = CreateTestPokeOwned(userName, pokemonName3, "Sog3", pokeGender.unknown, 10);
+
+            var expected = new Dictionary<string, PokeOwned>
+            {
+                {p1.NickName, p1 },
+                {p2.NickName, p2 },
+                {p3.NickName, p3 }
+            };
+
+            var actual = PokeOwnedRepo.SelectAllPokemonOwned();
+
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual.Count >= 3, "At least three are expected.");
+
+            var matchCount = 0;
+
+            foreach (var a in actual)
+            {
+                if (!expected.ContainsKey(a.NickName))
+                    continue;
+
+                PokeOwned test;
+                expected.TryGetValue(a.NickName, out test);
+                AssertPokeOwnedAreEqual(test, a);
+
+                matchCount++;
+            }
+
+            Assert.That(matchCount, Is.EqualTo(expected.Count));
+
+
+        }
+
+        [Test]
         public void SelectAllPokemonOwnedByUserWork()
         {
             var userName = "TestUser2";
@@ -88,7 +137,7 @@ namespace PokemonBox.Test
 
                 PokeOwned test;
                 expected.TryGetValue(a.NickName, out test);
-                AssertPokemonTypeAreEqual(test, a);
+                AssertPokeOwnedAreEqual(test, a);
 
                 matchCount++;
             }
@@ -134,7 +183,7 @@ namespace PokemonBox.Test
 
         }
 
-        private static void AssertPokemonTypeAreEqual(PokeOwned expected, PokeOwned actual)
+        private static void AssertPokeOwnedAreEqual(PokeOwned expected, PokeOwned actual)
         {
             Assert.IsNotNull(actual);
             Assert.That(actual.Level, Is.EqualTo(expected.Level));

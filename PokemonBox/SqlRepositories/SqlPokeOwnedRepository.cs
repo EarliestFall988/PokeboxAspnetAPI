@@ -126,10 +126,26 @@ namespace PokemonBox
                 var oID = reader.GetInt32(pokeOwnedID);
                 var uID = reader.GetInt32(userID);
                 var pID = reader.GetInt32(pokemonID);
-                var g = (pokeGender)reader.GetInt32(gender);
+                var gCheck = reader.GetString(gender);
                 var l = (uint)reader.GetInt32(level);
                 var nickName = reader.GetString(name);
                 var date = reader.GetDateTimeOffset(datePutInBox);
+                pokeGender g;
+
+                if(gCheck.Equals("female"))
+                {
+                    g = pokeGender.female;
+                }
+                else if(gCheck.Equals("male"))
+                {
+                    g = pokeGender.male;
+                }
+                else
+                {
+                    g = pokeGender.unknown;
+                }
+
+
                 pokeOwned.Add(new PokeOwned((uint)oID, (uint)uID, (uint)pID, nickName, date, g, l));
             }
 
@@ -182,6 +198,24 @@ namespace PokemonBox
             var nickName = reader.GetString(name);
             var date = reader.GetDateTimeOffset(datePutInBox);
             return new PokeOwned((uint)oID, (uint)uID, (uint)pID, nickName, date, g, l);
+        }
+
+        public IReadOnlyList<PokeOwned> SelectAllPokemonOwned()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.SelectPokeOwned", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return TranslatePokeOwned(reader);
+                    }
+                }
+            }
         }
     }
 }
