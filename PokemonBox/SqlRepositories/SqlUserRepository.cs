@@ -5,6 +5,13 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Transactions;
 
+/*
+ * Last updated: 4/17/2023
+ * Procedures(?) for translating User data from SQL to front-end
+ * 
+ * TODO: Double-check accuracy of the above description :p
+ */
+
 namespace PokemonBox
 {
     public class SqlUserRepository : IUserRepository
