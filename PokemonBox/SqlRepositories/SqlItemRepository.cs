@@ -17,17 +17,56 @@ namespace PokemonBox.SqlRepositories
 {
     public class SqlItemRepository : IItemRepository
     {
-        public Pokemon AddItem(string itemName)
+        private readonly string _connectionString;
+
+        public SqlItemRepository(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
+        public Item AddItem(string itemName, string description)
+        {
+            if (itemName == null) throw new ArgumentNullException(nameof(itemName));
+            if (description == null) throw new ArgumentNullException(nameof(description));
+
+            using (var transaction = new TransactionScope())
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    using (var command = new SqlCommand("Pokebox.AddItem", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("ItemName", itemName);
+                        command.Parameters.AddWithValue("Description", description);
+
+                        var iID = command.Parameters.Add("ItemID", SqlDbType.Int);
+                        iID.Direction = ParameterDirection.Output;
+                        var date = command.Parameters.Add("DateAdded", SqlDbType.DateTimeOffset);
+                        date.Direction = ParameterDirection.Output;
+
+                        connection.Open();
+
+                        command.ExecuteNonQuery();
+
+                        transaction.Complete();
+
+                        var itemID = (int)command.Parameters["ItemID"].Value;
+                        var itemTypeID = (int)command.Parameters["ItemTypeID"].Value;
+                        var dateAdded = (DateTimeOffset)command.Parameters["DateAdded"].Value;
+
+                        return new Item((uint)itemID, (uint)itemTypeID, itemName, dateAdded, description);
+                    }
+                }
+            }
+        }
+
+        public Item FetchItem(uint itemID)
         {
             throw new NotImplementedException();
         }
 
-        public Pokemon FetchItem(uint itemID)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Pokemon GetItem(string itemName)
+        public Item GetItem(string itemName)
         {
             throw new NotImplementedException();
         }

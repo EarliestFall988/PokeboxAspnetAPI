@@ -14,8 +14,8 @@ namespace PokemonBox.Interfaces
     public interface IItemRepository
     {
         IReadOnlyList<Item> SelectItem();
-        Pokemon GetItem(string itemName);
-        Pokemon FetchItem(uint itemID);
-        Pokemon AddItem(string itemName);
+        Item GetItem(string itemName);
+        Item FetchItem(uint itemID);
+        Item AddItem(string itemName, string description);
     }
 }
