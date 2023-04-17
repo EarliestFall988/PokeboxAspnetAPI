@@ -24,7 +24,7 @@ namespace PokemonBox.SqlRepositories
             _connectionString = connectionString;
         }
 
-        public Item AddItem(string itemName, string description)
+        public Item AddItem(string itemName, string description, string itemTypeName)
         {
             if (itemName == null) throw new ArgumentNullException(nameof(itemName));
             if (description == null) throw new ArgumentNullException(nameof(description));
@@ -39,6 +39,7 @@ namespace PokemonBox.SqlRepositories
 
                         command.Parameters.AddWithValue("ItemName", itemName);
                         command.Parameters.AddWithValue("Description", description);
+                        command.Parameters.AddWithValue("ItemTypeName", itemTypeName);
 
                         var iID = command.Parameters.Add("ItemID", SqlDbType.Int);
                         iID.Direction = ParameterDirection.Output;
@@ -61,16 +62,16 @@ namespace PokemonBox.SqlRepositories
             }
         }
 
-        public Item FetchItem(uint itemID)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Item GetItem(string itemName)
-        {
-            throw new NotImplementedException();
-        }
-
+        //public Item FetchItem(uint itemID)
+        //{
+        //    throw new NotImplementedException();
+        //}
+        //
+        //public Item GetItem(string itemName)
+        //{
+        //    throw new NotImplementedException();
+        //}
+        //
         public IReadOnlyList<Item> SelectItem()
         {
             throw new NotImplementedException();

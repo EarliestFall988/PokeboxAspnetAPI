@@ -24,12 +24,10 @@ namespace PokemonBox.SqlRepositories
             _connectionString = connectionString;
         }
 
-        public ItemType AddItemType(string itemTypeName, string itemName)
+        public ItemType AddItemType(string itemTypeName)
         {
             if (itemTypeName == null)
                 throw new ArgumentNullException(nameof(itemTypeName));
-            if (itemName == null)
-                throw new ArgumentNullException(nameof(itemName));
 
             using (var transaction = new TransactionScope())
             {
@@ -38,8 +36,7 @@ namespace PokemonBox.SqlRepositories
                     using (var command = new SqlCommand("Pokebox.AddItemType", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("ItemTypeName", itemTypeName);
-                        command.Parameters.AddWithValue("ItemName", itemName);
+                        command.Parameters.AddWithValue("TypeName", itemTypeName);
                         var t = command.Parameters.Add("OutItemTypeID", SqlDbType.Int);
                         t.Direction = ParameterDirection.Output;
                         connection.Open();
