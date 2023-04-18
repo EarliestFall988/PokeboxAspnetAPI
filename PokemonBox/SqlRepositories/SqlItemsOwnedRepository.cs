@@ -133,6 +133,23 @@ namespace PokemonBox.SqlRepositories
             return itemsOwned;
         }
 
+        private ItemsOwned TranslateItemOwned(SqlDataReader reader)
+        {
+            var itemsOwned = new List<ItemsOwned>();
+
+            var itemOwnedID = reader.GetOrdinal("ItemOwnedID");
+            var userID = reader.GetOrdinal("UserID");
+            var itemID = reader.GetOrdinal("ItemID");
+            var datePutInBox = reader.GetOrdinal("DatePutInBox");
+
+            var oID = (uint)reader.GetInt32(itemOwnedID);
+            var uID = (uint)reader.GetInt32(userID);
+            var iID = (uint)reader.GetInt32(itemID);
+            var date = reader.GetDateTimeOffset(datePutInBox);
+
+            return new ItemsOwned(oID, uID, iID, date);
+        }
+
         public IReadOnlyList<ItemsOwned> SelectAllItemsOwned()
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -146,6 +163,27 @@ namespace PokemonBox.SqlRepositories
                     using (var reader = command.ExecuteReader())
                     {
                         return TranslateItemsOwned(reader);
+                    }
+                }
+            }
+        }
+
+        public ItemsOwned SelectSingleItemOwned(string userName, string itemName)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.SelectSingleItemOwned", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Username", userName);
+                    command.Parameters.AddWithValue("ItemName", itemName);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return TranslateItemOwned(reader);
                     }
                 }
             }

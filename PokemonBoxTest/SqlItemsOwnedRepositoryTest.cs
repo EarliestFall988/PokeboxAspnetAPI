@@ -126,6 +126,33 @@ namespace PokemonBox.Test
 
         }
 
+        [Test]
+        public void SelectSingleItemOwnedByUserWork()
+        {
+            var itemName = "master-ball";
+            var itemName2 = "ultra-ball";
+            var itemName3 = "great-ball";
+            var userName = "in.lorem@outlook.couk";
+
+            var i1 = ItemOwnedRepo.CreateItemsOwned(userName, itemName);
+            var i2 = ItemOwnedRepo.CreateItemsOwned(userName, itemName2);
+            var i3 = ItemOwnedRepo.CreateItemsOwned(userName, itemName3);
+
+            var expected = new Dictionary<uint, ItemsOwned>
+            {
+                {i1.ItemOwnedID, i1 },
+                {i2.ItemOwnedID, i2 },
+                {i3.ItemOwnedID, i3 }
+            };
+
+            var actual = ItemOwnedRepo.SelectSingleItemOwned(userName, itemName);
+
+            Assert.IsNotNull(actual);
+            AssertItemsOwnedAreEqual(actual, i1);
+
+
+        }
+
         private static void AssertItemsOwnedAreEqual(ItemsOwned expected, ItemsOwned actual)
         {
             Assert.IsNotNull(actual);
