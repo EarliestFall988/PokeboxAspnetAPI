@@ -67,7 +67,7 @@ namespace PokemonBox.Test
 
                 Item test;
                 expected.TryGetValue(a.ItemID, out test);
-                AssertPokemonAreEqual(test, a);
+                AssertItemAreEqual(test, a);
 
                 matchCount++;
             }
@@ -77,14 +77,12 @@ namespace PokemonBox.Test
 
         }
 
-        private static void AssertPokemonAreEqual(Item expected, Item actual)
+        private static void AssertItemAreEqual(Item expected, Item actual)
         {
             Assert.IsNotNull(actual);
             Assert.That(actual.ItemID, Is.EqualTo(expected.ItemID));
             Assert.That(actual.ItemName, Is.EqualTo(expected.ItemName));
             Assert.That(actual.Description, Is.EqualTo(expected.Description));
-
-            //Assert.That(actual.DateAdded.ToString("MM / dd / yyyy hh: mm:ss"), Is.EqualTo(expected.DateAdded.ToString("MM / dd / yyyy hh: mm:ss")));
 
         }
 

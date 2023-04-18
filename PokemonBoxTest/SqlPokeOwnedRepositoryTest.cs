@@ -38,7 +38,7 @@ namespace PokemonBox.Test
             var gender = pokeGender.unknown;
             var level = (uint)15;
 
-            var user = CreateTestUser(userName, "pass1234", "fName", "LName", false);
+            var user = UserRepo.AddUser(userName, "pass1234", "fName", "LName", false);
             var pokemon = CreateTestPokemon(pokemonName, 45000);
 
             var actual = PokeOwnedRepo.CreatePokeOwned(userName, pokemonName, nickName, gender, level);
@@ -52,15 +52,11 @@ namespace PokemonBox.Test
         [Test]
         public void SelectAllPokemonOwnedWork()
         {
-            var userName = "TestUserAHHHH";
-            var userName2 = "TestUser";
+            var userName = "nulla.interdum.curabitur@yahoo.ca";
+            var userName2 = "fringilla.donec.feugiat@yahoo.couk";
             var pokemonName1 = "Bulbasaur";
             var pokemonName2 = "Bulbasaur";
             var pokemonName3 = "Bulbasaur";
-
-
-            var user = CreateTestUser(userName, "pass1234", "fName", "LName", false);
-            var user2 = CreateTestUser(userName2, "pass1234", "fName", "LName", false);
 
             var p1 = CreateTestPokeOwned(userName, pokemonName1, "Bob1", pokeGender.unknown, 10);
             var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab2", pokeGender.unknown, 10);
@@ -107,13 +103,10 @@ namespace PokemonBox.Test
         [Test]
         public void SelectAllPokemonOwnedByUserWork()
         {
-            var userName = "UGH";
+            var userName = "etiam.vestibulum@outlook.com";
             var pokemonName1 = "Bulbasaur";
             var pokemonName2 = "Bulbasaur";
             var pokemonName3 = "Bulbasaur";
-
-
-            var user = CreateTestUser(userName, "pass1234", "fName", "LName", false);
 
             var p1 = CreateTestPokeOwned(userName, pokemonName1, "Bob", pokeGender.unknown, 10);
             var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 10);
@@ -153,13 +146,10 @@ namespace PokemonBox.Test
         [Test]
         public void SelectSinglePokeOwnedWork()
         {
-            var userName = "TestUser3";
+            var userName = "augue.ut@yahoo.couk";
             var pokemonName1 = "Bulbasaur";
             var pokemonName2 = "Bulbasaur";
             var pokemonName3 = "Bulbasaur";
-
-
-            var user = CreateTestUser(userName, "pass1234", "fName", "LName", false);
 
             var p1 = CreateTestPokeOwned(userName, pokemonName1, "Bob", pokeGender.unknown, 10);
             var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 10);
@@ -196,11 +186,6 @@ namespace PokemonBox.Test
         private PokeOwned CreateTestPokeOwned(string userName, string pokemonName, string name, pokeGender gender, uint level)
         {
             return PokeOwnedRepo.CreatePokeOwned(userName, pokemonName, name, gender, level);
-        }
-
-        private User CreateTestUser(string userName, string password, string firstName, string lastName, bool admin)
-        {
-            return UserRepo.AddUser(userName, password, firstName, lastName, admin);
         }
 
         private Pokemon CreateTestPokemon(string pokemonName, uint dexNum)

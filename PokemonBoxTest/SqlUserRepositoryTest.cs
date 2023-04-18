@@ -44,7 +44,7 @@ namespace PokemonBox.Test
         }
 
         [Test]
-        public void SelectAllPokemonOwnedByUserWork()
+        public void SelectUserWork()
         {
             var userName = "ThisTestBud";
         
@@ -73,7 +73,7 @@ namespace PokemonBox.Test
         
                 User test;
                 expected.TryGetValue(a.UserName, out test);
-                AssertPokemonTypeAreEqual(test, a);
+                AssertUserAreEqual(test, a);
         
                 matchCount++;
             }
@@ -83,7 +83,7 @@ namespace PokemonBox.Test
         
         }
         
-        private static void AssertPokemonTypeAreEqual(User expected, User actual)
+        private static void AssertUserAreEqual(User expected, User actual)
         {
             Assert.IsNotNull(actual);
             Assert.That(actual.IsAdmin, Is.EqualTo(expected.IsAdmin));

@@ -133,13 +133,6 @@ namespace PokemonBox.Test
             Assert.That(actual.UserID, Is.EqualTo(expected.UserID));
             Assert.That(actual.ItemOwnedID, Is.EqualTo(expected.ItemOwnedID));
 
-            //Assert.That(actual.DateAdded.ToString("MM / dd / yyyy hh: mm:ss"), Is.EqualTo(expected.DateAdded.ToString("MM / dd / yyyy hh: mm:ss")));
-
-        }
-
-        private Item CreateTestItem(int a, uint b, string typeName)
-        {
-            return ItemRepo.AddItem("Test " + a, "a" + b, typeName);
         }
     }
 }
