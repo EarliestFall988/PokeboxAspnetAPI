@@ -17,5 +17,7 @@ namespace PokemonBox.Interfaces
         void RemoveItemsOwned(string userName, string itemName);
 
         IReadOnlyList<ItemsOwned> SelectAllItemsOwnedByUser(string userName);
+
+        IReadOnlyList<ItemsOwned> SelectAllItemsOwned();
     }
 }
