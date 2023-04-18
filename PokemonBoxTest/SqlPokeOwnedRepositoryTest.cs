@@ -173,6 +173,79 @@ namespace PokemonBox.Test
 
         }
 
+        [Test]
+        public void RemovePokeOwnedWork()
+        {
+            var userName = "magna.cras@hotmail.net";
+            var pokemonName1 = "Bulbasaur";
+            var pokemonName2 = "Bulbasaur";
+            var pokemonName3 = "Bulbasaur";
+            var pokeName = "Bob";
+
+            var p1 = CreateTestPokeOwned(userName, pokemonName1, pokeName, pokeGender.unknown, 10);
+            var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 10);
+            var p3 = CreateTestPokeOwned(userName, pokemonName3, "Sog", pokeGender.unknown, 10);
+
+            var expected = new Dictionary<string, PokeOwned>
+            {
+                {p2.NickName, p2 },
+                {p3.NickName, p3 }
+            };
+
+            var firstOwned = PokeOwnedRepo.SelectAllPokemonOwnedByUser(userName);
+
+            Assert.IsNotNull(firstOwned);
+
+            PokeOwnedRepo.RemovePokeOwned(userName, pokemonName1, pokeName);
+
+            var secondOwned = PokeOwnedRepo.SelectAllPokemonOwnedByUser(userName);
+            Assert.IsNotNull(secondOwned);
+
+            Assert.That(firstOwned.Count-1, Is.EqualTo(secondOwned.Count));
+
+            var matchCount = 0;
+            foreach (var a in secondOwned)
+            {
+                if (!expected.ContainsKey(a.NickName))
+                    continue;
+
+                PokeOwned test;
+                expected.TryGetValue(a.NickName, out test);
+                AssertPokeOwnedAreEqual(test, a);
+
+                matchCount++;
+            }
+            Assert.That(matchCount, Is.EqualTo(expected.Count));
+        }
+
+        [Test]
+        public void AverageLevelWork()
+        {
+            var userName = "magna.cras@hotmail.net";
+            var user2 = "pharetra.sed.hendrerit@icloud.couk";
+            var pokemonName1 = "Bulbasaur";
+            var pokemonName2 = "Bulbasaur";
+            var pokemonName3 = "Bulbasaur";
+            var pokeName = "Bob";
+
+            double firstAverage = PokeOwnedRepo.AverageLevel();
+            var firstCount = PokeOwnedRepo.SelectAllPokemonOwned().Count;
+
+            var p1 = CreateTestPokeOwned(userName, pokemonName1, pokeName, pokeGender.unknown, 100);
+            var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 100);
+            var p3 = CreateTestPokeOwned(userName, pokemonName3, "Sog", pokeGender.unknown, 100);
+
+            var p4 = CreateTestPokeOwned(user2, pokemonName1, pokeName, pokeGender.unknown, 100);
+            var p5 = CreateTestPokeOwned(user2, pokemonName2, "Gab", pokeGender.unknown, 100);
+            var p6 = CreateTestPokeOwned(user2, pokemonName3, "Sog", pokeGender.unknown, 100);
+
+
+            double average = PokeOwnedRepo.AverageLevel();
+            var secondCount = PokeOwnedRepo.SelectAllPokemonOwned().Count;
+            Assert.That(firstCount, !Is.EqualTo(secondCount));
+            Assert.That(average, !Is.EqualTo(firstAverage));
+        }
+
         private static void AssertPokeOwnedAreEqual(PokeOwned expected, PokeOwned actual)
         {
             Assert.IsNotNull(actual);

@@ -15,5 +15,7 @@ namespace PokemonBox
 
         PokeOwned SelectSinglePokeOwned(string userName, string pokemonName, string nickName);
 
+        double AverageLevel();
+
     }
 }

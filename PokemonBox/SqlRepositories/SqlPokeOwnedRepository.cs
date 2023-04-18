@@ -80,11 +80,6 @@ namespace PokemonBox
 
                     connection.Open();
 
-                    using (var reader = command.ExecuteReader())
-                    {
-                        RemovePokeOwned(reader);
-                    }
-
                 }
             }
         }
@@ -238,6 +233,18 @@ namespace PokemonBox
                 return true;
             }
             return false;
+        }
+
+        public double AverageLevel()
+        {
+            IReadOnlyList<PokeOwned> owned = SelectAllPokemonOwned();
+            double average = 0;
+
+            foreach (var pokemon in owned)
+            {
+                average = average + pokemon.Level;
+            }
+            return average/owned.Count;
         }
     }
 }
