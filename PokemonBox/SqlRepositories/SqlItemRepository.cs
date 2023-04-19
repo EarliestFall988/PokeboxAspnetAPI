@@ -91,7 +91,7 @@ namespace PokemonBox.SqlRepositories
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("User.FetchItem", connection))
+                using (var command = new SqlCommand("User.GetItem", connection))
                 {
                     command.Parameters.Add(itemName);
 

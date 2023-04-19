@@ -65,7 +65,6 @@ namespace PokemonBox.SqlRepositories
                     }
                 }
             }
-            throw new NotImplementedException();
         }
 
         private IReadOnlyList<ItemType> TranslateItemTypes(SqlDataReader reader)
