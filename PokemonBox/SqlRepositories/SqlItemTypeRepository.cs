@@ -49,15 +49,13 @@ namespace PokemonBox.SqlRepositories
             }
         }
 
-        public IReadOnlyList<ItemType> SelectItemType(string itemTypeName)
+        public IReadOnlyList<ItemType> SelectItemType()
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 using (var command = new SqlCommand("Pokebox.SelectItemType", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.Add(itemTypeName);
 
                     connection.Open();
 

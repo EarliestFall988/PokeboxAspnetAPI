@@ -13,7 +13,7 @@ namespace PokemonBox.Interfaces
 {
     public interface IItemRepository
     {
-        IReadOnlyList<Item> SelectItem(string itemName);
+        IReadOnlyList<Item> SelectItem();
         Item GetItem(string itemName);
         Item FetchItem(uint itemID);
         Item AddItem(string itemName, string description, string itemTypeName);

@@ -109,13 +109,13 @@ namespace PokemonBox.SqlRepositories
             }
         }
 
-        public IReadOnlyList<Item> SelectItem(string itemName)
+        public IReadOnlyList<Item> SelectItem()
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("User.SelectItem"))
+                using (var command = new SqlCommand("Pokebox.SelectItem", connection))
                 {
-                    command.Parameters.Add(itemName);
+                    command.CommandType = CommandType.StoredProcedure;
 
                     connection.Open();
 
@@ -129,6 +129,7 @@ namespace PokemonBox.SqlRepositories
                     }
                 }
             }
+
         }
 
         private Item TranslateItem(SqlDataReader reader)
