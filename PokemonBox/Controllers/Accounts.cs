@@ -116,8 +116,12 @@ namespace PokemonBox.Controllers
 
                 //do something with the email and password here
 
+
+
                 string uid = Guid.NewGuid().ToString(); //creating a session key
-                SessionStorage.Sessions.Add(uid, email); // adding users to the list of loggedin users, this should probably be time stamped, and stored the database
+                DatabaseConnection.Sessions.Add(uid, email); // adding users to the list of loggedin users, this should probably be time stamped, and stored the database
+
+
 
                 return APIUtilities.CreateSession(email, uid); // I need to return more data than just the email...
             }
@@ -130,7 +134,7 @@ namespace PokemonBox.Controllers
         [HttpGet("/api/v1/sessions")]
         public IEnumerable<string> GetSessions()
         {
-            return SessionStorage.Sessions.Keys;
+            return DatabaseConnection.Sessions.Keys;
         }
 
 
@@ -148,9 +152,9 @@ namespace PokemonBox.Controllers
             //    return APIUtilities.BadRequest(); // enumeration attack could happen here, should be replaced probably with an ok, even if it fails
             //}
 
-            if (SessionStorage.Sessions.ContainsKey(sessionId))
+            if (DatabaseConnection.Sessions.ContainsKey(sessionId))
             {
-                SessionStorage.Sessions.Remove(sessionId);
+                DatabaseConnection.Sessions.Remove(sessionId);
             }
 
 

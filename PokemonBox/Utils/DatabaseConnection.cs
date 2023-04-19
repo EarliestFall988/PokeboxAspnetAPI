@@ -6,6 +6,8 @@ namespace PokemonBox.Utils
 {
     public static class DatabaseConnection
     {
+        public static Dictionary<string, string> Sessions = new Dictionary<string, string>();
+
         const string connectionString = @"Server=(localdb)\MSSQLLocalDb;Database=PokemonBoxDatabase;Integrated Security=SSPI;";
 
         private static SqlItemTypeRepository ItemTypeRepo;
