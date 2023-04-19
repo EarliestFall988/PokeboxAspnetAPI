@@ -148,8 +148,13 @@ namespace PokemonBox.Test
         {
             var userName = "augue.ut@yahoo.couk";
             var pokemonName1 = "Bulbasaur";
-            var pokemonName2 = "Bulbasaur";
-            var pokemonName3 = "Bulbasaur";
+            //var pokemonName2 = "Bulbasaur";
+            //var pokemonName3 = "Bulbasaur";
+
+            var pokemonName2 = "Ivysaur";
+            var pokemonName3 = "Venusaur";
+
+
 
             var p1 = CreateTestPokeOwned(userName, pokemonName1, "Bob", pokeGender.unknown, 10);
             var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 10);
@@ -222,28 +227,32 @@ namespace PokemonBox.Test
         public void AverageLevelWork()
         {
             var userName = "magna.cras@hotmail.net";
-            var user2 = "pharetra.sed.hendrerit@icloud.couk";
             var pokemonName1 = "Bulbasaur";
             var pokemonName2 = "Bulbasaur";
             var pokemonName3 = "Bulbasaur";
             var pokeName = "Bob";
 
-            double firstAverage = PokeOwnedRepo.AverageLevel();
-            var firstCount = PokeOwnedRepo.SelectAllPokemonOwned().Count;
 
             var p1 = CreateTestPokeOwned(userName, pokemonName1, pokeName, pokeGender.unknown, 100);
             var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 100);
             var p3 = CreateTestPokeOwned(userName, pokemonName3, "Sog", pokeGender.unknown, 100);
 
-            var p4 = CreateTestPokeOwned(user2, pokemonName1, pokeName, pokeGender.unknown, 100);
-            var p5 = CreateTestPokeOwned(user2, pokemonName2, "Gab", pokeGender.unknown, 100);
-            var p6 = CreateTestPokeOwned(user2, pokemonName3, "Sog", pokeGender.unknown, 100);
+            IReadOnlyDictionary<uint,decimal> firstDic = PokeOwnedRepo.AverageLevel();
+
+            var p4 = CreateTestPokeOwned(userName, pokemonName1, "cool", pokeGender.unknown, 20);
+            var p5 = CreateTestPokeOwned(userName, pokemonName2, "Gab2", pokeGender.unknown, 20);
+            var p6 = CreateTestPokeOwned(userName, pokemonName3, "Sog3", pokeGender.unknown, 20);
 
 
-            double average = PokeOwnedRepo.AverageLevel();
-            var secondCount = PokeOwnedRepo.SelectAllPokemonOwned().Count;
-            Assert.That(firstCount, !Is.EqualTo(secondCount));
-            Assert.That(average, !Is.EqualTo(firstAverage));
+            IReadOnlyDictionary<uint, decimal> newDic = PokeOwnedRepo.AverageLevel();
+            User user = UserRepo.SelectSingleUser(userName);
+            
+            decimal firstAverage;
+            firstDic.TryGetValue(user.UserID, out firstAverage);
+            decimal secondAverage;
+            newDic.TryGetValue(user.UserID, out secondAverage);
+
+            Assert.That(secondAverage, !Is.EqualTo(firstAverage));
         }
 
         private static void AssertPokeOwnedAreEqual(PokeOwned expected, PokeOwned actual)
