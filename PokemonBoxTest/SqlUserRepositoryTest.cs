@@ -82,7 +82,20 @@ namespace PokemonBox.Test
         
         
         }
-        
+
+        [Test]
+        public void SelectSingleUserWork()
+        {
+            var userName = "et.rutrum@google.net";
+            var actual = UserRepo.SelectSingleUser(userName);
+
+            Assert.IsNotNull(actual);
+
+            Assert.That(actual.FirstName, Is.EqualTo("Archen"));
+
+
+        }
+
         private static void AssertUserAreEqual(User expected, User actual)
         {
             Assert.IsNotNull(actual);

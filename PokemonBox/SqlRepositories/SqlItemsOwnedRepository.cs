@@ -188,5 +188,10 @@ namespace PokemonBox.SqlRepositories
                 }
             }
         }
+
+        public IReadOnlyDictionary<Item, uint> TopItem(DateTime year, DateTime month)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

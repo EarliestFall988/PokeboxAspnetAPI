@@ -21,5 +21,7 @@ namespace PokemonBox.Interfaces
         IReadOnlyList<ItemsOwned> SelectAllItemsOwned();
 
         ItemsOwned SelectSingleItemOwned(string userName, string itemName);
+
+        IReadOnlyDictionary<Item, uint> TopItem(DateTime year, DateTime month);
     }
 }

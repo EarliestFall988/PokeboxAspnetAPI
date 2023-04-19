@@ -6,11 +6,8 @@ namespace PokemonBox
     public interface IPokemonRepository
     {
         IReadOnlyList<Pokemon> SelectPokemon();
-        
-        //TODO: No procedure made for 
-        //Pokemon GetPokemon(string pokemonName); //using unique key
-        //TODO: No procedure made for 
-        //Pokemon FetchPokemon(uint pokemonID); //prim key
+
+        IReadOnlyDictionary<Pokemon, PokeType> PokeTypeCount();
 
         Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string description, bool isLegendary);
     }

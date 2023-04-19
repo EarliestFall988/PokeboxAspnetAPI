@@ -15,5 +15,7 @@ namespace PokemonBox
         IReadOnlyList<User> SelectUser();
 
         User AddUser(string userName, string password, string firstName, string lastName, bool isAdmin);
+
+        User SelectSingleUser(string userName);
     }
 }
