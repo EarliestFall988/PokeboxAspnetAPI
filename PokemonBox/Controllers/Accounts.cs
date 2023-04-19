@@ -22,6 +22,11 @@ namespace PokemonBox.Controllers
         private const string connectionString = @"Server=(localdb)\MSSQLLocalDb;Database=PokemonBoxDatabase;Integrated Security=SSPI;";
 
         private SqlUserRepository _userRepository = new SqlUserRepository(connectionString);
+
+        private Dictionary<string, string> LoggedInUsersTempDict = new Dictionary<string, string>(); //replace with an actual db
+
+        #region ADMIN stuff
+
         // GET: api/<Accounts>
         [HttpGet]
         public IEnumerable<string> GetUsers()
@@ -63,6 +68,8 @@ namespace PokemonBox.Controllers
 
         }
 
+        #endregion
+
         [HttpPost("/api/v1/register")]
         public string Register()
         {
@@ -72,20 +79,21 @@ namespace PokemonBox.Controllers
             if (userProxy.result)
             {
                 string email = userProxy.email;
-                string password = userProxy.password;
+                string unhashedPassword = userProxy.password;
 
-                if (password.Length < 8)
+                if (unhashedPassword.Length < 8)
                     return APIUtilities.InputError("password too short");
 
-                if (password != userProxy.password2)
+                if (unhashedPassword != userProxy.password2)
                     return APIUtilities.InputError("passwords do not match");
 
                 if (!email.Contains('@'))
                     return APIUtilities.InputError("invalid email");
 
+                var password = Cryptography.QuickSHA256Hash(unhashedPassword); //i know this is not secure, just for obfuscation
+
                 //do something with the email and password
 
-                //return APIUtilities.Log("e" + email + " p1 " + password + " p2 " + userProxy.password2 + " uname " + userProxy.Username + " admin? " + userProxy.admin + " fname " + userProxy.fName + " lname " + userProxy.lName);
                 return APIUtilities.res(200);
             }
             else
@@ -97,14 +105,42 @@ namespace PokemonBox.Controllers
         [HttpPost("/api/v1/login")]
         public string CreateSession([FromBody] string value)
         {
-            return ""; //return the guid here
+            var userProxy = GetCredentials(false); // C# static typing in the way, had to do some real world 'magic'
+
+            if (userProxy.result)
+            {
+                string email = userProxy.email;
+                string unhashedPassword = userProxy.password;
+
+                var password = Cryptography.QuickSHA256Hash(unhashedPassword); //i know this is not secure, just for obfuscation
+
+                //do something with the email and password
+
+
+                string uid = Guid.NewGuid().ToString(); //creating a session key
+                LoggedInUsersTempDict.Add(uid, email); // adding users to the list of loggedin users, this should probably be time stamped, and stored the database
+
+                return APIUtilities.CreateSession(uid);
+            }
+            else
+            {
+                return APIUtilities.ServerError(userProxy.message); //you can add a message in the params or not, up to you
+            }
         }
 
         [HttpDelete("/logout/{sessionId}")]
-        public void DeleteSession(string sessionId)
+        public string DeleteSession(string sessionId)
         {
-            //may or may not need to implement this...
-            // if the session key is stored (from the login) you can delete it here as the user has logged out
+            if (LoggedInUsersTempDict.ContainsKey(sessionId))
+            {
+                LoggedInUsersTempDict.Remove(sessionId);
+
+                return APIUtilities.OK();
+            }
+            else
+            {
+                return APIUtilities.BadRequest(); // enumeration attack could happen here, should be replaced probably with an ok, even if it fails
+            }
         }
 
         /// <summary>

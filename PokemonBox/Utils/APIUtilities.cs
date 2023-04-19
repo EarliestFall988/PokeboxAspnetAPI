@@ -86,6 +86,20 @@ namespace PokemonBox.Utils
             return toJson(dict);
         }
 
+        /// <summary>
+        /// Create a session after a user has logged in
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
+        public static string CreateSession(string uid)
+        {
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            dict.Add("session", uid);
+            dict.Add("status", "200");
+
+            return toJson(dict);
+        }
+
         public static string Custom(string message, int status)
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
