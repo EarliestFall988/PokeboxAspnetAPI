@@ -73,6 +73,8 @@ namespace PokemonBox.SqlRepositories
                 {
                     command.Parameters.Add(itemID);
 
+                    connection.Open();
+
                     using (var reader = command.ExecuteReader()) 
                     {
                         var user = TranslateItem(reader);
@@ -93,6 +95,8 @@ namespace PokemonBox.SqlRepositories
                 {
                     command.Parameters.Add(itemName);
 
+                    connection.Open();
+
                     using (var reader = command.ExecuteReader())
                     {
                         var user = TranslateItem(reader);
@@ -105,9 +109,26 @@ namespace PokemonBox.SqlRepositories
             }
         }
 
-        public IReadOnlyList<Item> SelectItem()
+        public IReadOnlyList<Item> SelectItem(string itemName)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("User.SelectItem"))
+                {
+                    command.Parameters.Add(itemName);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        var items = TranslateItems(reader);
+
+                        if (items == null) throw new RecordNotFoundException("No items found");
+
+                        return items;
+                    }
+                }
+            }
         }
 
         private Item TranslateItem(SqlDataReader reader)
