@@ -6,6 +6,8 @@ namespace PokemonBox.Utils
     public class BodyParser
     {
 
+
+        [Obsolete("do not use for the CIS 560 project")]
         public static string Parse(HttpContext ctx)
         {
             string body = "";
@@ -21,11 +23,12 @@ namespace PokemonBox.Utils
             return body;
         }
 
+        [Obsolete("do not use for the CIS 560 project")]
         public static bool GetValues(string body, List<(JsonProperty prop, string name, DataTypes types)> input, out Dictionary<string, object> res, string? rootname = null)
         {
             //ope trying to abstract too much, probably would be okay if this was a 6 month proj
 
-            res = null;
+            res = new Dictionary<string, object>();
             return false;
 
             //    int success = 0;

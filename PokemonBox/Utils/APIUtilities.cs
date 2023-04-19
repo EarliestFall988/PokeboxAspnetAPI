@@ -91,10 +91,11 @@ namespace PokemonBox.Utils
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public static string CreateSession(string uid)
+        public static string CreateSession(string email, string uid)
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
             dict.Add("session", uid);
+            dict.Add("email", email);
             dict.Add("status", "200");
 
             return toJson(dict);

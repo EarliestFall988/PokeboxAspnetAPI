@@ -23,7 +23,6 @@ namespace PokemonBox.Controllers
 
         private SqlUserRepository _userRepository = new SqlUserRepository(connectionString);
 
-        private Dictionary<string, string> LoggedInUsersTempDict = new Dictionary<string, string>(); //replace with an actual db
 
         #region ADMIN stuff
 
@@ -90,7 +89,7 @@ namespace PokemonBox.Controllers
                 if (!email.Contains('@'))
                     return APIUtilities.InputError("invalid email");
 
-                var password = Cryptography.QuickSHA256Hash(unhashedPassword); //i know this is not secure, just for obfuscation
+                var password = Cryptography.QuickSHA256Hash(unhashedPassword); //i know this is not secure, just for obfuscation (maybe brownie points) ... 
 
                 //do something with the email and password
 
@@ -103,8 +102,9 @@ namespace PokemonBox.Controllers
         }
 
         [HttpPost("/api/v1/login")]
-        public string CreateSession([FromBody] string value)
+        public string CreateSession()
         {
+
             var userProxy = GetCredentials(false); // C# static typing in the way, had to do some real world 'magic'
 
             if (userProxy.result)
@@ -116,31 +116,45 @@ namespace PokemonBox.Controllers
 
                 //do something with the email and password
 
-
                 string uid = Guid.NewGuid().ToString(); //creating a session key
-                LoggedInUsersTempDict.Add(uid, email); // adding users to the list of loggedin users, this should probably be time stamped, and stored the database
+                SessionStorage.Sessions.Add(uid, email); // adding users to the list of loggedin users, this should probably be time stamped, and stored the database
 
-                return APIUtilities.CreateSession(uid);
+                return APIUtilities.CreateSession(email, uid); // I need to return more data than just the email...
             }
             else
             {
-                return APIUtilities.ServerError(userProxy.message); //you can add a message in the params or not, up to you
+                return APIUtilities.ServerError("proxy error message: " + userProxy.message); //you can add a message in the params or not, up to you
             }
         }
 
-        [HttpDelete("/logout/{sessionId}")]
-        public string DeleteSession(string sessionId)
+        [HttpGet("/api/v1/sessions")]
+        public IEnumerable<string> GetSessions()
         {
-            if (LoggedInUsersTempDict.ContainsKey(sessionId))
-            {
-                LoggedInUsersTempDict.Remove(sessionId);
+            return SessionStorage.Sessions.Keys;
+        }
 
-                return APIUtilities.OK();
-            }
-            else
+
+        [HttpDelete("/api/v1/logout")]
+        public string DeleteSession([FromQuery] string sessionId)
+        {
+            //if (LoggedInUsersTempDict.ContainsKey(sessionId))
+            //{
+            //    LoggedInUsersTempDict.Remove(sessionId);
+
+            //    return APIUtilities.OK();
+            //}
+            //else
+            //{
+            //    return APIUtilities.BadRequest(); // enumeration attack could happen here, should be replaced probably with an ok, even if it fails
+            //}
+
+            if (SessionStorage.Sessions.ContainsKey(sessionId))
             {
-                return APIUtilities.BadRequest(); // enumeration attack could happen here, should be replaced probably with an ok, even if it fails
+                SessionStorage.Sessions.Remove(sessionId);
             }
+
+
+            return APIUtilities.OK();
         }
 
         /// <summary>
@@ -149,6 +163,7 @@ namespace PokemonBox.Controllers
         /// <returns>results</returns>
         private UserProxyResult GetCredentials(bool register)
         {
+
             try
             {
                 string body = "";
@@ -178,6 +193,8 @@ namespace PokemonBox.Controllers
 
                     success += APIUtilities.TryGetFromProperty(root, "email", out email) == true ? 1 : 0;
                     success += APIUtilities.TryGetFromProperty(root, "password", out password) == true ? 1 : 0;
+
+                    //Debug.WriteLine("/n/n/ntest/n/n/n");
 
                     if (register)
                     {
