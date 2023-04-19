@@ -28,5 +28,11 @@ namespace PokemonBox
         /// <returns>dictionary where the key is UserID and value is how many of the pokemon they have</returns>
         IReadOnlyDictionary<uint, uint> PokeRank(string pokemonName);
 
+        /// <summary>
+        /// Gets the amount of pokemon types that are owned
+        /// </summary>
+        /// <returns>dictionary key is PokeTypeID and value is how many exist</returns>
+        IReadOnlyDictionary<uint, uint> PokeTypeCount(DateTimeOffset start, DateTimeOffset end);
+
     }
 }

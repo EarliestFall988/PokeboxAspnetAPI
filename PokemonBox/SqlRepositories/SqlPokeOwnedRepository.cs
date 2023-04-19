@@ -127,11 +127,11 @@ namespace PokemonBox
                 var date = reader.GetDateTimeOffset(datePutInBox);
                 pokeGender g;
 
-                if(gCheck.Equals("female"))
+                if (gCheck.Equals("female"))
                 {
                     g = pokeGender.female;
                 }
-                else if(gCheck.Equals("male"))
+                else if (gCheck.Equals("male"))
                 {
                     g = pokeGender.male;
                 }
@@ -146,11 +146,11 @@ namespace PokemonBox
                 {
                     same = arePokeOwnedSame(p, newPoke);
                 }
-                if(!same)
+                if (!same)
                 {
                     pokeOwned.Add(new PokeOwned((uint)oID, (uint)uID, (uint)pID, nickName, date, g, l));
                 }
-                
+
             }
 
             return pokeOwned;
@@ -224,11 +224,11 @@ namespace PokemonBox
 
         private bool arePokeOwnedSame(PokeOwned a, PokeOwned b)
         {
-            if(a.PokeOwnedID ==  b.PokeOwnedID)
+            if (a.PokeOwnedID == b.PokeOwnedID)
             {
                 return true;
             }
-            else if(a.NickName == b.NickName && a.PokemonID == b.PokemonID) 
+            else if (a.NickName == b.NickName && a.PokemonID == b.PokemonID)
             {
                 return true;
             }
@@ -242,7 +242,7 @@ namespace PokemonBox
                 using (var command = new SqlCommand("Pokebox.AverageLevel", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    
+
                     connection.Open();
 
                     using (var reader = command.ExecuteReader())
@@ -257,10 +257,10 @@ namespace PokemonBox
         private IReadOnlyDictionary<uint, decimal> translateAverageLevel(SqlDataReader reader)
         {
             var dic = new Dictionary<uint, decimal>();
-        
+
             var u = reader.GetOrdinal("UserID");
             var av = reader.GetOrdinal("AveragePokeLevel");
-        
+
             while (reader.Read())
             {
                 var userID = reader.GetInt32(u);
@@ -268,7 +268,7 @@ namespace PokemonBox
 
                 dic.Add((uint)userID, average);
             }
-        
+
             return dic;
         }
 
@@ -306,6 +306,46 @@ namespace PokemonBox
                 var pokemonCount = reader.GetInt32(p);
 
                 dic.Add((uint)userID, (uint)pokemonCount);
+            }
+
+            return dic;
+        }
+
+        public IReadOnlyDictionary<uint, uint> PokeTypeCount(DateTimeOffset start, DateTimeOffset end)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.PokeTypeCount", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("StartDate", start);
+                    command.Parameters.AddWithValue("FinalDate", end);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return translatePokeTypeCount(reader);
+                    }
+
+                }
+            }
+        }
+
+        private IReadOnlyDictionary<uint, uint> translatePokeTypeCount(SqlDataReader reader)
+        {
+            var dic = new Dictionary<uint, uint>();
+
+            var pID = reader.GetOrdinal("PokemonTypeID");
+            var p = reader.GetOrdinal("PokeTypeCount");
+
+            while (reader.Read())
+            {
+                var pokeTypeID = reader.GetInt32(pID);
+                var pokemonTypeCount = reader.GetInt32(p);
+
+                dic.Add((uint)pokeTypeID, (uint)pokemonTypeCount);
             }
 
             return dic;
