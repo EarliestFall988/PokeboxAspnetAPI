@@ -188,10 +188,45 @@ namespace PokemonBox.SqlRepositories
                 }
             }
         }
-
-        public IReadOnlyDictionary<Item, uint> TopItem(DateTime year, DateTime month)
+        
+        public IReadOnlyDictionary<uint, uint> TopItem(uint year, uint month)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.TopItem", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Month", (int)month);
+                    command.Parameters.AddWithValue("Year", (int)year);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return TranslateTopItem(reader);
+                    }
+                }
+            }
         }
+
+        private IReadOnlyDictionary<uint, uint> TranslateTopItem(SqlDataReader reader) 
+        { 
+            var dict = new Dictionary<uint, uint>();
+
+            var itemID = reader.GetOrdinal("ItemID");
+            var itemCount = reader.GetOrdinal("ItemCount");
+
+            while(reader.Read())
+            {
+                var iID = (uint)reader.GetInt32(itemID);
+                var iC = (uint)reader.GetInt32(itemCount);
+
+                dict.Add(iID, iC);
+            }
+
+            return dict;
+        }
+
     }
 }
