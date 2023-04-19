@@ -114,7 +114,7 @@ namespace PokemonBox.Controllers
 
                 var password = Cryptography.QuickSHA256Hash(unhashedPassword); //i know this is not secure, just for obfuscation
 
-                //do something with the email and password
+                //do something with the email and password here
 
                 string uid = Guid.NewGuid().ToString(); //creating a session key
                 SessionStorage.Sessions.Add(uid, email); // adding users to the list of loggedin users, this should probably be time stamped, and stored the database
