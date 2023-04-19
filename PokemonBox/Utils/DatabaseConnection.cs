@@ -4,12 +4,7 @@ using System.Transactions;
 
 namespace PokemonBox.Utils
 {
-    public static class SessionStorage // this is technically a singleton, I know it's not good architecture....
-    {
-        public static Dictionary<string, string> Sessions = new Dictionary<string, string>();
-    }
-
-    public static class Database
+    public static class DatabaseConnection
     {
         const string connectionString = @"Server=(localdb)\MSSQLLocalDb;Database=PokemonBoxDatabase;Integrated Security=SSPI;";
 

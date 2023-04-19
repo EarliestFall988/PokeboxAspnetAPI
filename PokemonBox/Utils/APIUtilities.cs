@@ -86,6 +86,8 @@ namespace PokemonBox.Utils
             return toJson(dict);
         }
 
+        #region special cases
+
         /// <summary>
         /// Create a session after a user has logged in
         /// </summary>
@@ -124,6 +126,11 @@ namespace PokemonBox.Utils
             return toJson(dict);
         }
 
+        /// <summary>
+        /// response code
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static string res(int type)
         {
             switch (type)
@@ -142,6 +149,7 @@ namespace PokemonBox.Utils
                     return ServerError("the type of server response " + type + "was not found");
             }
         }
+
 
         public static bool TryGetFromProperty(JsonElement e, string propertyName, out string result)
         {
@@ -174,4 +182,5 @@ namespace PokemonBox.Utils
             return false;
         }
     }
+    #endregion
 }
