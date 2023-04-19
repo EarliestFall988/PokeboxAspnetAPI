@@ -271,5 +271,44 @@ namespace PokemonBox
         
             return dic;
         }
+
+        public IReadOnlyDictionary<uint, uint> PokeRank(string pokemonName)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.PokeRank", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("PokemonName", pokemonName);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return translatePokeRank(reader);
+                    }
+
+                }
+            }
+        }
+
+        private IReadOnlyDictionary<uint, uint> translatePokeRank(SqlDataReader reader)
+        {
+            var dic = new Dictionary<uint, uint>();
+
+            var u = reader.GetOrdinal("UserID");
+            var p = reader.GetOrdinal("PokemonCount");
+
+            while (reader.Read())
+            {
+                var userID = reader.GetInt32(u);
+                var pokemonCount = reader.GetInt32(p);
+
+                dic.Add((uint)userID, (uint)pokemonCount);
+            }
+
+            return dic;
+        }
     }
 }

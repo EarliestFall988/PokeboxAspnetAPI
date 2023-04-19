@@ -255,6 +255,38 @@ namespace PokemonBox.Test
             Assert.That(secondAverage, !Is.EqualTo(firstAverage));
         }
 
+        [Test]
+        public void PokeRankWork()
+        {
+            var userName = "magna.cras@hotmail.net";
+            var pokemonName1 = "Bulbasaur";
+            var pokemonName2 = "Bulbasaur";
+            var pokemonName3 = "Bulbasaur";
+            var pokeName = "Bob";
+
+
+            var p1 = CreateTestPokeOwned(userName, pokemonName1, pokeName, pokeGender.unknown, 100);
+            var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 100);
+            var p3 = CreateTestPokeOwned(userName, pokemonName3, "Sog", pokeGender.unknown, 100);
+
+            IReadOnlyDictionary<uint, uint> firstDic = PokeOwnedRepo.PokeRank(pokemonName1);
+
+            var p4 = CreateTestPokeOwned(userName, pokemonName1, "cool", pokeGender.unknown, 20);
+            var p5 = CreateTestPokeOwned(userName, pokemonName2, "Gab2", pokeGender.unknown, 20);
+            var p6 = CreateTestPokeOwned(userName, pokemonName3, "Sog3", pokeGender.unknown, 20);
+
+
+            IReadOnlyDictionary<uint, uint> newDic = PokeOwnedRepo.PokeRank(pokemonName1);
+            User user = UserRepo.SelectSingleUser(userName);
+
+            uint first;
+            firstDic.TryGetValue(user.UserID, out first);
+            uint second;
+            newDic.TryGetValue(user.UserID, out second);
+
+            Assert.That(second, !Is.EqualTo(first));
+        }
+
         private static void AssertPokeOwnedAreEqual(PokeOwned expected, PokeOwned actual)
         {
             Assert.IsNotNull(actual);
