@@ -80,11 +80,6 @@ namespace PokemonBox
 
                     connection.Open();
 
-                    using (var reader = command.ExecuteReader())
-                    {
-                        RemovePokeOwned(reader);
-                    }
-
                 }
             }
         }
@@ -145,8 +140,17 @@ namespace PokemonBox
                     g = pokeGender.unknown;
                 }
 
-
-                pokeOwned.Add(new PokeOwned((uint)oID, (uint)uID, (uint)pID, nickName, date, g, l));
+                bool same = false;
+                var newPoke = new PokeOwned((uint)oID, (uint)uID, (uint)pID, nickName, date, g, l);
+                foreach (var p in pokeOwned)
+                {
+                    same = arePokeOwnedSame(p, newPoke);
+                }
+                if(!same)
+                {
+                    pokeOwned.Add(new PokeOwned((uint)oID, (uint)uID, (uint)pID, nickName, date, g, l));
+                }
+                
             }
 
             return pokeOwned;
@@ -217,5 +221,97 @@ namespace PokemonBox
                 }
             }
         }
+
+        private bool arePokeOwnedSame(PokeOwned a, PokeOwned b)
+        {
+            if(a.PokeOwnedID ==  b.PokeOwnedID)
+            {
+                return true;
+            }
+            else if(a.NickName == b.NickName && a.PokemonID == b.PokemonID) 
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public double AverageLevel()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.AverageLevel", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    double average = 0;
+
+                    command.Parameters.AddWithValue("OutAverage", average);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        //return TranslatePokeOwned(reader);
+                    }
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        var avg = reader.GetOrdinal("OutAverage");
+                        return reader.GetDouble(avg);
+                    }
+                }
+            }
+        }
+
+        //private IReadOnlyDictionary<User, uint> translateAverageLevel(SqlDataReader reader)
+        //{
+        //    var dic = new Dictionary<User, uint>();
+        //
+        //    var pokeOwnedID = reader.GetOrdinal("PokeOwnedID");
+        //    var userID = reader.GetOrdinal("UserID");
+        //    var pokemonID = reader.GetOrdinal("PokemonID");
+        //    var name = reader.GetOrdinal("Name");
+        //    var datePutInBox = reader.GetOrdinal("DatePutInBox");
+        //    var gender = reader.GetOrdinal("Gender");
+        //    var level = reader.GetOrdinal("Level");
+        //
+        //    while (reader.Read())
+        //    {
+        //        var oID = reader.GetInt32(pokeOwnedID);
+        //        var uID = reader.GetInt32(userID);
+        //        var pID = reader.GetInt32(pokemonID);
+        //        var gCheck = reader.GetString(gender);
+        //        var l = (uint)reader.GetInt32(level);
+        //        var nickName = reader.GetString(name);
+        //        var date = reader.GetDateTimeOffset(datePutInBox);
+        //        pokeGender g;
+        //
+        //        if (gCheck.Equals("female"))
+        //        {
+        //            g = pokeGender.female;
+        //        }
+        //        else if (gCheck.Equals("male"))
+        //        {
+        //            g = pokeGender.male;
+        //        }
+        //        else
+        //        {
+        //            g = pokeGender.unknown;
+        //        }
+        //
+        //        bool same = false;
+        //        var newPoke = new PokeOwned((uint)oID, (uint)uID, (uint)pID, nickName, date, g, l);
+        //        foreach (var p in pokeOwned)
+        //        {
+        //            same = arePokeOwnedSame(p, newPoke);
+        //        }
+        //        if (!same)
+        //        {
+        //            pokeOwned.Add(new PokeOwned((uint)oID, (uint)uID, (uint)pID, nickName, date, g, l));
+        //        }
+        //
+        //    }
+        //
+        //    return pokeOwned;
+        //}
     }
 }

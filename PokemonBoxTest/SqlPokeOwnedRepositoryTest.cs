@@ -38,7 +38,7 @@ namespace PokemonBox.Test
             var gender = pokeGender.unknown;
             var level = (uint)15;
 
-            var user = CreateTestUser(userName, "pass1234", "fName", "LName", false);
+            var user = UserRepo.AddUser(userName, "pass1234", "fName", "LName", false);
             var pokemon = CreateTestPokemon(pokemonName, 45000);
 
             var actual = PokeOwnedRepo.CreatePokeOwned(userName, pokemonName, nickName, gender, level);
@@ -52,32 +52,34 @@ namespace PokemonBox.Test
         [Test]
         public void SelectAllPokemonOwnedWork()
         {
-            var userName = "TestUserAHHHH";
-            var pokemonName1 = "Poke1AHHH";
-            var pokemonName2 = "Poke2AHHH";
-            var pokemonName3 = "Poke3AHHH";
-
-
-            var user = CreateTestUser(userName, "pass1234", "fName", "LName", false);
-            var pokemon1 = CreateTestPokemon(pokemonName1, 45010);
-            var pokemon2 = CreateTestPokemon(pokemonName2, 45020);
-            var pokemon3 = CreateTestPokemon(pokemonName3, 45030);
+            var userName = "nulla.interdum.curabitur@yahoo.ca";
+            var userName2 = "fringilla.donec.feugiat@yahoo.couk";
+            var pokemonName1 = "Bulbasaur";
+            var pokemonName2 = "Bulbasaur";
+            var pokemonName3 = "Bulbasaur";
 
             var p1 = CreateTestPokeOwned(userName, pokemonName1, "Bob1", pokeGender.unknown, 10);
             var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab2", pokeGender.unknown, 10);
             var p3 = CreateTestPokeOwned(userName, pokemonName3, "Sog3", pokeGender.unknown, 10);
 
+            var p4 = CreateTestPokeOwned(userName2, pokemonName1, "Bob12", pokeGender.unknown, 10);
+            var p5 = CreateTestPokeOwned(userName2, pokemonName2, "Gab22", pokeGender.unknown, 10);
+            var p6 = CreateTestPokeOwned(userName2, pokemonName3, "Sog32", pokeGender.unknown, 10);
+
             var expected = new Dictionary<string, PokeOwned>
             {
                 {p1.NickName, p1 },
                 {p2.NickName, p2 },
-                {p3.NickName, p3 }
+                {p3.NickName, p3 },
+                {p4.NickName, p4 },
+                {p5.NickName, p5 },
+                {p6.NickName, p6 }
             };
 
             var actual = PokeOwnedRepo.SelectAllPokemonOwned();
 
             Assert.IsNotNull(actual);
-            Assert.IsTrue(actual.Count >= 3, "At least three are expected.");
+            Assert.IsTrue(actual.Count >= 6, "At least three are expected.");
 
             var matchCount = 0;
 
@@ -101,16 +103,10 @@ namespace PokemonBox.Test
         [Test]
         public void SelectAllPokemonOwnedByUserWork()
         {
-            var userName = "TestUser2";
-            var pokemonName1 = "Poke1";
-            var pokemonName2 = "Poke2";
-            var pokemonName3 = "Poke3";
-
-
-            var user = CreateTestUser(userName, "pass1234", "fName", "LName", false);
-            var pokemon1 = CreateTestPokemon(pokemonName1, 45010);
-            var pokemon2 = CreateTestPokemon(pokemonName2, 45020);
-            var pokemon3 = CreateTestPokemon(pokemonName3, 45030);
+            var userName = "etiam.vestibulum@outlook.com";
+            var pokemonName1 = "Bulbasaur";
+            var pokemonName2 = "Bulbasaur";
+            var pokemonName3 = "Bulbasaur";
 
             var p1 = CreateTestPokeOwned(userName, pokemonName1, "Bob", pokeGender.unknown, 10);
             var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 10);
@@ -150,16 +146,10 @@ namespace PokemonBox.Test
         [Test]
         public void SelectSinglePokeOwnedWork()
         {
-            var userName = "TestUser3";
-            var pokemonName1 = "PokeA1";
-            var pokemonName2 = "PokeA2";
-            var pokemonName3 = "PokeA3";
-
-
-            var user = CreateTestUser(userName, "pass1234", "fName", "LName", false);
-            var pokemon1 = CreateTestPokemon(pokemonName1, 45011);
-            var pokemon2 = CreateTestPokemon(pokemonName2, 45021);
-            var pokemon3 = CreateTestPokemon(pokemonName3, 45031);
+            var userName = "augue.ut@yahoo.couk";
+            var pokemonName1 = "Bulbasaur";
+            var pokemonName2 = "Bulbasaur";
+            var pokemonName3 = "Bulbasaur";
 
             var p1 = CreateTestPokeOwned(userName, pokemonName1, "Bob", pokeGender.unknown, 10);
             var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 10);
@@ -183,6 +173,79 @@ namespace PokemonBox.Test
 
         }
 
+        [Test]
+        public void RemovePokeOwnedWork()
+        {
+            var userName = "magna.cras@hotmail.net";
+            var pokemonName1 = "Bulbasaur";
+            var pokemonName2 = "Bulbasaur";
+            var pokemonName3 = "Bulbasaur";
+            var pokeName = "Bob";
+
+            var p1 = CreateTestPokeOwned(userName, pokemonName1, pokeName, pokeGender.unknown, 10);
+            var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 10);
+            var p3 = CreateTestPokeOwned(userName, pokemonName3, "Sog", pokeGender.unknown, 10);
+
+            var expected = new Dictionary<string, PokeOwned>
+            {
+                {p2.NickName, p2 },
+                {p3.NickName, p3 }
+            };
+
+            var firstOwned = PokeOwnedRepo.SelectAllPokemonOwnedByUser(userName);
+
+            Assert.IsNotNull(firstOwned);
+
+            PokeOwnedRepo.RemovePokeOwned(userName, pokemonName1, pokeName);
+
+            var secondOwned = PokeOwnedRepo.SelectAllPokemonOwnedByUser(userName);
+            Assert.IsNotNull(secondOwned);
+
+            Assert.That(firstOwned.Count-1, Is.EqualTo(secondOwned.Count));
+
+            var matchCount = 0;
+            foreach (var a in secondOwned)
+            {
+                if (!expected.ContainsKey(a.NickName))
+                    continue;
+
+                PokeOwned test;
+                expected.TryGetValue(a.NickName, out test);
+                AssertPokeOwnedAreEqual(test, a);
+
+                matchCount++;
+            }
+            Assert.That(matchCount, Is.EqualTo(expected.Count));
+        }
+
+        [Test]
+        public void AverageLevelWork()
+        {
+            var userName = "magna.cras@hotmail.net";
+            var user2 = "pharetra.sed.hendrerit@icloud.couk";
+            var pokemonName1 = "Bulbasaur";
+            var pokemonName2 = "Bulbasaur";
+            var pokemonName3 = "Bulbasaur";
+            var pokeName = "Bob";
+
+            double firstAverage = PokeOwnedRepo.AverageLevel();
+            var firstCount = PokeOwnedRepo.SelectAllPokemonOwned().Count;
+
+            var p1 = CreateTestPokeOwned(userName, pokemonName1, pokeName, pokeGender.unknown, 100);
+            var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 100);
+            var p3 = CreateTestPokeOwned(userName, pokemonName3, "Sog", pokeGender.unknown, 100);
+
+            var p4 = CreateTestPokeOwned(user2, pokemonName1, pokeName, pokeGender.unknown, 100);
+            var p5 = CreateTestPokeOwned(user2, pokemonName2, "Gab", pokeGender.unknown, 100);
+            var p6 = CreateTestPokeOwned(user2, pokemonName3, "Sog", pokeGender.unknown, 100);
+
+
+            double average = PokeOwnedRepo.AverageLevel();
+            var secondCount = PokeOwnedRepo.SelectAllPokemonOwned().Count;
+            Assert.That(firstCount, !Is.EqualTo(secondCount));
+            Assert.That(average, !Is.EqualTo(firstAverage));
+        }
+
         private static void AssertPokeOwnedAreEqual(PokeOwned expected, PokeOwned actual)
         {
             Assert.IsNotNull(actual);
@@ -196,11 +259,6 @@ namespace PokemonBox.Test
         private PokeOwned CreateTestPokeOwned(string userName, string pokemonName, string name, pokeGender gender, uint level)
         {
             return PokeOwnedRepo.CreatePokeOwned(userName, pokemonName, name, gender, level);
-        }
-
-        private User CreateTestUser(string userName, string password, string firstName, string lastName, bool admin)
-        {
-            return UserRepo.AddUser(userName, password, firstName, lastName, admin);
         }
 
         private Pokemon CreateTestPokemon(string pokemonName, uint dexNum)

@@ -1,5 +1,5 @@
 CREATE OR ALTER PROCEDURE Pokebox.SelectAllPokemonOwnedByUser
-    @Username NVARCHAR(32)
+    @Username NVARCHAR(64)
 AS
 
 SELECT PO.[Name], PO.[Level], PO.Gender, P.PokemonName, POT.PokemonTypeName, P.IsLegendary, PO.DatePutInBox,

@@ -142,5 +142,36 @@ namespace PokemonBox
                 }
             }
         }
+
+        public User SelectSingleUser(string userName)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.SelectSingleUser", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("UserName", userName);
+
+                    var id = command.Parameters.Add("UserId", SqlDbType.Int);
+                    id.Direction = ParameterDirection.Output;
+                    var fn = command.Parameters.Add("FirstName", SqlDbType.NVarChar);
+                    fn.Direction = ParameterDirection.Output;
+                    var ln = command.Parameters.AddWithValue("LastName", SqlDbType.NVarChar);
+                    ln.Direction = ParameterDirection.Output;
+                    var p = command.Parameters.AddWithValue("Password", SqlDbType.NVarChar);
+                    p.Direction = ParameterDirection.Output;
+                    var a = command.Parameters.AddWithValue("IsAdmin", SqlDbType.Int);
+                    a.Direction = ParameterDirection.Output;
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return TranslateUser(reader);
+                    }
+                }
+            }
+        }
     }
 }

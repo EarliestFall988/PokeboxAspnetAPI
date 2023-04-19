@@ -179,5 +179,10 @@ namespace PokemonBox
 
             return pokeman;
         }
+
+        public IReadOnlyDictionary<Pokemon, PokeType> PokeTypeCount()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
