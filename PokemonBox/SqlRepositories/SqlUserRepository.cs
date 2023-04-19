@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
 using System.Transactions;
+using System.Data.Common;
 
 /*
  * Last updated: 4/17/2023
@@ -115,14 +116,24 @@ namespace PokemonBox
             {
                 return null;
             }
-
+            var a = reader.GetInt32(isAdmin);
+            bool admin;
+            if(a == 1)
+            {
+                admin = true;
+            }
+            else
+            {
+                admin = false;
+            }
             return new User(
                     (uint)reader.GetInt32(userID),
                     reader.GetString(userName),
                     reader.GetString(password),
                     reader.GetString(firstName),
                     reader.GetString(lastName),
-                    reader.GetBoolean(isAdmin));
+                    admin
+                    );
         }
 
         public IReadOnlyList<User> SelectUser()
@@ -152,17 +163,6 @@ namespace PokemonBox
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.AddWithValue("UserName", userName);
-
-                    var id = command.Parameters.Add("UserId", SqlDbType.Int);
-                    id.Direction = ParameterDirection.Output;
-                    var fn = command.Parameters.Add("FirstName", SqlDbType.NVarChar);
-                    fn.Direction = ParameterDirection.Output;
-                    var ln = command.Parameters.AddWithValue("LastName", SqlDbType.NVarChar);
-                    ln.Direction = ParameterDirection.Output;
-                    var p = command.Parameters.AddWithValue("Password", SqlDbType.NVarChar);
-                    p.Direction = ParameterDirection.Output;
-                    var a = command.Parameters.AddWithValue("IsAdmin", SqlDbType.Int);
-                    a.Direction = ParameterDirection.Output;
 
                     connection.Open();
 
