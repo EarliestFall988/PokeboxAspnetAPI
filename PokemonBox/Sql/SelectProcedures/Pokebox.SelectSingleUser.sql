@@ -1,11 +1,11 @@
-CREATE OR ALTER PROCEDURE Pokebox.SelectSinglePokeOwned
+CREATE OR ALTER PROCEDURE Pokebox.SelectSingleUser
     @Username NVARCHAR(64),
-	@OutUserID NVARCHAR(64),
-	@OutPassword NVARCHAR(64),
-	@OutFirstName NVARCHAR(64),
-	@OutLastName NVARCHAR(64),
-	@OutIsAdmin INT,
-	@OutDateCreated DATETIMEOFFSET
+	@OutUserID NVARCHAR(64) OUTPUT,
+	@OutPassword NVARCHAR(64) OUTPUT,
+	@OutFirstName NVARCHAR(64) OUTPUT,
+	@OutLastName NVARCHAR(64) OUTPUT,
+	@OutIsAdmin INT OUTPUT,
+	@OutDateCreated DATETIMEOFFSET OUTPUT
 AS
 
 DECLARE @UserID INT =
