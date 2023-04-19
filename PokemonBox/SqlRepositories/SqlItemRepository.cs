@@ -61,19 +61,93 @@ namespace PokemonBox.SqlRepositories
             }
         }
 
+        // TODO: triple-check / completely rework this
         public Item FetchItem(uint itemID)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("User.FetchItem", connection))
+                {
+                    command.Parameters.Add(itemID);
+
+                    using (var reader = command.ExecuteReader()) 
+                    {
+                        var user = TranslateItem(reader);
+
+                        if (user == null) throw new RecordNotFoundException(itemID.ToString());
+
+                        return user;
+                    }
+                }
+            }
         }
 
         public Item GetItem(string itemName)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("User.FetchItem", connection))
+                {
+                    command.Parameters.Add(itemName);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        var user = TranslateItem(reader);
+
+                        if (user == null) throw new RecordNotFoundException(itemName.ToString());
+
+                        return user;
+                    }
+                }
+            }
         }
 
         public IReadOnlyList<Item> SelectItem()
         {
             throw new NotImplementedException();
+        }
+
+        private Item TranslateItem(SqlDataReader reader)
+        {
+            var itemID = reader.GetOrdinal("ItemID");
+            var itemTypeID = reader.GetOrdinal("ItemTypeID");
+            var itemName = reader.GetOrdinal("ItemName");
+            var dateAdded = reader.GetOrdinal("DateAdded");
+            var description = reader.GetOrdinal("Description");
+
+            return new Item(
+                (uint)reader.GetInt32(itemID),
+                (uint)reader.GetInt32(itemTypeID),
+                reader.GetString(itemName),
+                reader.GetDateTimeOffset(dateAdded),
+                reader.GetString(description)
+            );
+        }
+
+        private IReadOnlyList<Item> TranslateItems(SqlDataReader reader)
+        {
+            var items = new List<Item>();
+
+            var itemID = reader.GetOrdinal("ItemID");
+            var itemTypeID = reader.GetOrdinal("ItemTypeID");
+            var itemName = reader.GetOrdinal("ItemName");
+            var dateAdded = reader.GetOrdinal("DateAdded");
+            var description = reader.GetOrdinal("Description");
+
+            while(reader.Read())
+            {
+                var item = new Item(
+                    (uint)reader.GetInt32(itemID),
+                    (uint)reader.GetInt32(itemTypeID),
+                    reader.GetString(itemName),
+                    reader.GetDateTimeOffset(dateAdded),
+                    reader.GetString(description)
+                );
+
+                items.Add(item);
+            }
+
+            return items;
         }
     }
 }
