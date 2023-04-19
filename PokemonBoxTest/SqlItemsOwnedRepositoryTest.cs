@@ -16,12 +16,14 @@ namespace PokemonBox.Test
         private SqlItemsOwnedRepository ItemOwnedRepo;
         private SqlItemRepository ItemRepo;
         private TransactionScope transaction;
+        private SqlUserRepository UserRepo;
 
         [SetUp]
         public void Setup()
         {
             ItemOwnedRepo = new SqlItemsOwnedRepository(connectionString);
             ItemRepo = new SqlItemRepository(connectionString);
+            UserRepo = new SqlUserRepository(connectionString);
             transaction = new TransactionScope();
         }
 
@@ -150,6 +152,48 @@ namespace PokemonBox.Test
             Assert.IsNotNull(actual);
             AssertItemsOwnedAreEqual(actual, i1);
 
+        }
+
+        [Test]
+        public void TopItemWork()
+        {
+            var user = "Tesssst1";
+            var itemName = "master-ball";
+            var itemName4 = "master-ball";
+            var itemName2 = "ultra-ball";
+            var itemName3 = "great-ball";
+
+            uint month = 4;
+            uint year = 2023;
+            var ug = UserRepo.AddUser(user, "pass", "fist", "last", false);
+            var expected = new Dictionary<uint, ItemsOwned>();
+
+            for (int i = 2; i < 20; i++)
+            {
+                var userName = "Tesssst" + i;
+                var u = UserRepo.AddUser(userName, "pass" + i, "fist" + i, "last" + i, false);
+                var i1 = ItemOwnedRepo.CreateItemsOwned(userName, itemName);
+                expected.Add(i1.ItemOwnedID, i1);
+            }
+            var i4 = ItemOwnedRepo.CreateItemsOwned(user, itemName4);
+            expected.Add(i4.ItemID, i4);
+            var i2 = ItemOwnedRepo.CreateItemsOwned(user, itemName2);
+            expected.Add(i2.ItemID, i2);
+            var i3 = ItemOwnedRepo.CreateItemsOwned(user, itemName3);
+            expected.Add(i3.ItemID, i3);
+
+            var actual = ItemOwnedRepo.TopItem(month, year);
+
+            Assert.IsNotNull(actual);
+            uint outNum = 0;
+            uint count = 0;
+            actual.TryGetValue(i4.ItemID, out count);
+            actual.TryGetValue(i4.ItemID, out outNum);
+            foreach(var item in actual)
+            {
+                Assert.That(item.Value, Is.LessThan(count));
+
+            }
 
         }
 

@@ -197,8 +197,8 @@ namespace PokemonBox.SqlRepositories
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("Month", month);
-                    command.Parameters.AddWithValue("Year", year);
+                    command.Parameters.AddWithValue("Month", (int)month);
+                    command.Parameters.AddWithValue("Year", (int)year);
 
                     connection.Open();
 
