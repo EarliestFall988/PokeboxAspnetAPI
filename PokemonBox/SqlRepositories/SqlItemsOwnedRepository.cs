@@ -142,6 +142,8 @@ namespace PokemonBox.SqlRepositories
             var itemID = reader.GetOrdinal("ItemID");
             var datePutInBox = reader.GetOrdinal("DatePutInBox");
 
+            reader.Read();
+
             var oID = (uint)reader.GetInt32(itemOwnedID);
             var uID = (uint)reader.GetInt32(userID);
             var iID = (uint)reader.GetInt32(itemID);

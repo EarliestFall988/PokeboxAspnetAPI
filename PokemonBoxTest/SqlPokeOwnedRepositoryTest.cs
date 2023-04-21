@@ -148,8 +148,6 @@ namespace PokemonBox.Test
         {
             var userName = "augue.ut@yahoo.couk";
             var pokemonName1 = "Bulbasaur";
-            //var pokemonName2 = "Bulbasaur";
-            //var pokemonName3 = "Bulbasaur";
 
             var pokemonName2 = "Ivysaur";
             var pokemonName3 = "Venusaur";
@@ -295,28 +293,24 @@ namespace PokemonBox.Test
             var pokemonName2 = "Bulbasaur";
             var pokemonName3 = "Bulbasaur";
             var pokeName = "Bob";
-            DateTimeOffset start = new DateTimeOffset(2023, 5, 1, 1, 1, 1, new TimeSpan(1, 0, 0));
+            DateTimeOffset start = new DateTimeOffset(2023, 4, 1, 1, 1, 1, new TimeSpan(1, 0, 0));
             DateTimeOffset end = new DateTimeOffset(2024, 5, 1, 1, 1, 1, new TimeSpan(1, 0, 0));
+
+            IReadOnlyDictionary<string, uint> firstDic = PokeOwnedRepo.PokeTypeCount(start, end);
 
             var p1 = CreateTestPokeOwned(userName, pokemonName1, pokeName, pokeGender.unknown, 100);
             var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 100);
             var p3 = CreateTestPokeOwned(userName, pokemonName3, "Sog", pokeGender.unknown, 100);
-            
-
-            IReadOnlyDictionary<uint, uint> firstDic = PokeOwnedRepo.PokeTypeCount(start, end);
-
-            var p4 = CreateTestPokeOwned(userName, pokemonName1, "cool", pokeGender.unknown, 20);
-            var p5 = CreateTestPokeOwned(userName, pokemonName2, "Gab2", pokeGender.unknown, 20);
-            var p6 = CreateTestPokeOwned(userName, pokemonName3, "Sog3", pokeGender.unknown, 20);
+         
 
 
-            IReadOnlyDictionary<uint, uint> newDic = PokeOwnedRepo.PokeTypeCount(start, end);
+            IReadOnlyDictionary<string, uint> newDic = PokeOwnedRepo.PokeTypeCount(start, end);
             User user = UserRepo.SelectSingleUser(userName);
 
             uint first;
-            firstDic.TryGetValue(user.UserID, out first);
+            firstDic.TryGetValue("grass", out first);
             uint second;
-            newDic.TryGetValue(user.UserID, out second);
+            newDic.TryGetValue("grass", out second);
 
             Assert.That(second, !Is.EqualTo(first));
         }

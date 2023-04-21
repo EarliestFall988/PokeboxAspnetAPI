@@ -80,6 +80,7 @@ namespace PokemonBox
 
                     connection.Open();
 
+                    var reader = command.ExecuteReader();
                 }
             }
         }
@@ -127,11 +128,11 @@ namespace PokemonBox
                 var date = reader.GetDateTimeOffset(datePutInBox);
                 pokeGender g;
 
-                if (gCheck.Equals("female"))
+                if (gCheck.Equals("F"))
                 {
                     g = pokeGender.female;
                 }
-                else if (gCheck.Equals("male"))
+                else if (gCheck.Equals("M"))
                 {
                     g = pokeGender.male;
                 }
@@ -194,10 +195,27 @@ namespace PokemonBox
             var gender = reader.GetOrdinal("Gender");
             var level = reader.GetOrdinal("Level");
 
+            reader.Read();
             var oID = reader.GetInt32(pokeOwnedID);
             var uID = reader.GetInt32(userID);
             var pID = reader.GetInt32(pokemonID);
-            var g = (pokeGender)reader.GetInt32(gender);
+            var gCheck = reader.GetString(gender);
+
+            pokeGender g;
+
+            if (gCheck.Equals("F"))
+            {
+                g = pokeGender.female;
+            }
+            else if (gCheck.Equals("M"))
+            {
+                g = pokeGender.male;
+            }
+            else
+            {
+                g = pokeGender.unknown;
+            }
+
             var l = (uint)reader.GetInt32(level);
             var nickName = reader.GetString(name);
             var date = reader.GetDateTimeOffset(datePutInBox);
@@ -311,7 +329,7 @@ namespace PokemonBox
             return dic;
         }
 
-        public IReadOnlyDictionary<uint, uint> PokeTypeCount(DateTimeOffset start, DateTimeOffset end)
+        public IReadOnlyDictionary<string, uint> PokeTypeCount(DateTimeOffset start, DateTimeOffset end)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -333,19 +351,19 @@ namespace PokemonBox
             }
         }
 
-        private IReadOnlyDictionary<uint, uint> translatePokeTypeCount(SqlDataReader reader)
+        private IReadOnlyDictionary<string, uint> translatePokeTypeCount(SqlDataReader reader)
         {
-            var dic = new Dictionary<uint, uint>();
+            var dic = new Dictionary<string, uint>();
 
-            var pID = reader.GetOrdinal("PokemonTypeID");
+            var pID = reader.GetOrdinal("PokemonTypeName");
             var p = reader.GetOrdinal("PokeTypeCount");
 
             while (reader.Read())
             {
-                var pokeTypeID = reader.GetInt32(pID);
+                var pokeTypeID = reader.GetString(pID);
                 var pokemonTypeCount = reader.GetInt32(p);
 
-                dic.Add((uint)pokeTypeID, (uint)pokemonTypeCount);
+                dic.Add((string)pokeTypeID, (uint)pokemonTypeCount);
             }
 
             return dic;
