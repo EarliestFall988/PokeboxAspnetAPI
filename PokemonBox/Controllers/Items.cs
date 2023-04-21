@@ -40,14 +40,12 @@ namespace PokemonBox.Controllers
         public void CreateItemsOwned([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] string itemName)
         {
             ItemsOwned item = DatabaseConnection.ItemsOwnedRepo.CreateItemsOwned(username, itemName);
-            //return JsonSerializer.Serialize(item);
         }
 
         [HttpPost("RemoveItemsOwned")]
         public void RemoveItemsOwned([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] string itemName)
         {
             DatabaseConnection.ItemsOwnedRepo.RemoveItemsOwned(username, itemName);
-            //return JsonSerializer.Serialize(item);
         }
 
         [HttpGet("SelectSingleItemOwned")]
@@ -72,10 +70,37 @@ namespace PokemonBox.Controllers
          * 
          * ******************************/
 
-        //[HttpGet("api/GetAllItemTypes")]
-        //public string GetAllItemTypes()
-        //{
-        //    
-        //}
+        [HttpGet("api/SelectItemType")]
+        public string SelectItemType()
+        {
+            IReadOnlyList<ItemType> itemTypes = DatabaseConnection.ItemTypeRepo.SelectItemType();
+            return JsonSerializer.Serialize(itemTypes);
+        }
+
+        [HttpGet("api/AddItemType")]
+        public void AddItemType([FromHeader] string SessionId, [FromQuery] string itemTypeName)
+        {
+            ItemType itemTypes = DatabaseConnection.ItemTypeRepo.AddItemType(itemTypeName);
+        }
+
+        /*********************************
+         * 
+         * Item Methods
+         * 
+         * ******************************/
+        [HttpGet("api/SelectItem")]
+        public string SelectItem()
+        {
+            IReadOnlyList<Item> item = DatabaseConnection.ItemRepo.SelectItem();
+            return JsonSerializer.Serialize(item);
+        }
+
+        [HttpGet("api/AddItem")]
+        public void AddItem([FromHeader] string SessionId, [FromQuery] string itemName, [FromQuery] string description, [FromQuery] string itemTypeName)
+        {
+            Item item = DatabaseConnection.ItemRepo.AddItem(itemName, description, itemTypeName);
+            
+        }
+
     }
 }
