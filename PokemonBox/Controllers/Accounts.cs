@@ -19,25 +19,20 @@ namespace PokemonBox.Controllers
     [ApiController]
     public class Accounts : ControllerBase
     {
-        private const string connectionString = @"Server=(localdb)\MSSQLLocalDb;Database=PokemonBoxDatabase;Integrated Security=SSPI;";
-
-        private SqlUserRepository _userRepository = new SqlUserRepository(connectionString);
-
-
         #region ADMIN stuff
 
         // GET: api/<Accounts>
         [HttpGet]
-        public IEnumerable<string> GetUsers()
+        public string GetUsers()
         {
-            List<string> s = new List<string>();
-            IReadOnlyList<Models.User> users = _userRepository.SelectUser();
-            foreach (var u in users)
-            {
-                var str = JsonSerializer.Serialize(u);
-                s.Add(str);
-            }
-            return s;
+            //List<string> s = new List<string>();
+            IReadOnlyList<Models.User> users = DatabaseConnection.UserRepo.SelectUser();
+            //foreach (var u in users)
+            //{
+            //    var str = ;
+            //    s.Add(str);
+            //}
+            return JsonSerializer.Serialize(users);
         }
 
         // GET api/<Accounts>/5

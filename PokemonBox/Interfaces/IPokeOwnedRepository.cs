@@ -32,7 +32,7 @@ namespace PokemonBox
         /// Gets the amount of pokemon types that are owned
         /// </summary>
         /// <returns>dictionary key is PokeTypeID and value is how many exist</returns>
-        IReadOnlyDictionary<uint, uint> PokeTypeCount(DateTimeOffset start, DateTimeOffset end);
+        IReadOnlyDictionary<string, uint> PokeTypeCount(DateTimeOffset start, DateTimeOffset end);
 
     }
 }

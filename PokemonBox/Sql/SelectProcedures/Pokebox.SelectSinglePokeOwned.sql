@@ -4,20 +4,8 @@ CREATE OR ALTER PROCEDURE Pokebox.SelectSinglePokeOwned
     @Name NVARCHAR(64)
 AS
 
-DECLARE @UserID INT =
-    (
-        SELECT U.UserID
-        FROM Pokebox.[User] U
-        WHERE U.Username = @Username
-    )
-
-DECLARE @PokemonID INT = 
-    (
-        SELECT P.PokemonID
-        FROM Pokebox.Pokemon P
-        WHERE P.PokemonName = @PokemonName
-    )
-
-SELECT *
-FROM PokeOwned PO
-WHERE PO.UserID = @UserID AND PO.PokemonID = @PokemonID AND PO.[Name] = @Name
+SELECT PO.PokeOwnedID, PO.UserID, PO.PokemonID, PO.[Name], PO.DatePutInBox, PO.Gender, PO.[Level]
+FROM Pokebox.[User] U
+    INNER JOIN Pokebox.PokeOwned PO ON PO.UserID = U.UserID
+    INNER JOIN Pokebox.Pokemon P ON P.PokemonID = PO.PokemonID
+WHERE U.Username = @Username AND P.PokemonName = @PokemonName AND PO.[Name] = @Name
