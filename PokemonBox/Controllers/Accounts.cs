@@ -92,6 +92,8 @@ namespace PokemonBox.Controllers
                 var password = Cryptography.QuickSHA256Hash(unhashedPassword); //i know this is not secure, just for obfuscation (maybe brownie points) ... 
 
                 //do something with the email and password
+                //DatabaseConnection.UserRepo.AddUser(email, password);
+
 
                 return APIUtilities.res(200);
             }
@@ -104,7 +106,6 @@ namespace PokemonBox.Controllers
         [HttpPost("/api/v1/login")]
         public string CreateSession()
         {
-
             var userProxy = GetCredentials(false); // C# static typing in the way, had to do some real world 'magic'
 
             if (userProxy.result)
@@ -114,14 +115,17 @@ namespace PokemonBox.Controllers
 
                 var password = Cryptography.QuickSHA256Hash(unhashedPassword); //i know this is not secure, just for obfuscation
 
-                //do something with the email and password here
+                // do something with the email and password here
+                // get real user info from the database instead of what the user entered w/ GetCredentials
 
-
+                var user = DatabaseConnection.UserRepo.SelectSingleUser(email);
+                if (Cryptography.QuickSHA256Hash(user.Password) != password) // this feels wrong, should double-check later
+                {
+                    return APIUtilities.ServerError("INVALID PASSWORD");
+                }
 
                 string uid = Guid.NewGuid().ToString(); //creating a session key
                 DatabaseConnection.Sessions.Add(uid, email); // adding users to the list of loggedin users, this should probably be time stamped, and stored the database
-
-
 
                 return APIUtilities.CreateSession(email, uid); // I need to return more data than just the email...
             }
