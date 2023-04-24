@@ -86,10 +86,11 @@ namespace PokemonBox.Controllers
 
                 var password = Cryptography.QuickSHA256Hash(unhashedPassword); //i know this is not secure, just for obfuscation (maybe brownie points) ... 
 
+                //public User AddUser(string userName, string password, string firstName, string lastName, bool isAdmin)
                 //do something with the email and password
-                //DatabaseConnection.UserRepo.AddUser(email, password);
+                DatabaseConnection.UserRepo.AddUser(email, password, userProxy.fName, userProxy.lName, false);
 
-
+                // TODO: Double-check if the user needs to be logged in after registering
                 return APIUtilities.res(200);
             }
             else
@@ -116,7 +117,7 @@ namespace PokemonBox.Controllers
                 var user = DatabaseConnection.UserRepo.SelectSingleUser(email);
                 if (Cryptography.QuickSHA256Hash(user.Password) != password) // this feels wrong, should double-check later
                 {
-                    return APIUtilities.ServerError("INVALID PASSWORD");
+                    return APIUtilities.InputError("INVALID PASSWORD");
                 }
 
                 string uid = Guid.NewGuid().ToString(); //creating a session key
