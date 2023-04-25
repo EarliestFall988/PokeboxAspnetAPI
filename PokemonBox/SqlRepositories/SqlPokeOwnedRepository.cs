@@ -389,5 +389,29 @@ namespace PokemonBox
                 }
             }
         }
+
+        public uint SelectAllPokemonOwnedByUserNumberPages(string userName)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.SelectAllPokemonOwnedByUser", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Username", userName);
+
+                    connection.Open();
+                    IReadOnlyList<PokeOwned> pokemon;
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        pokemon = TranslatePokeOwned(reader);
+                    }
+                    double num = pokemon.Count / 30.0;
+
+                    return (uint)Math.Ceiling(num);
+                }
+            }
+        }
     }
 }
