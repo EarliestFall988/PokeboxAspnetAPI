@@ -31,15 +31,15 @@ namespace PokemonBox.Test
         {
             var pokemonName = "Jacob";
             int pokedexNum = 5000;
-            var description = "Big poo poo head";
+            var imageLink = "Big poo poo head";
             var isLegendary = false;
 
-            var actual = PokemonRepo.AddPokemon(pokemonName, (uint)pokedexNum, description, isLegendary);
+            var actual = PokemonRepo.AddPokemon(pokemonName, (uint)pokedexNum, imageLink, isLegendary);
 
             Assert.IsNotNull(actual);
             Assert.That(actual.PokemonName, Is.EqualTo(pokemonName));
             Assert.That(actual.PokedexNumber, Is.EqualTo(pokedexNum));
-            Assert.That(actual.Description, Is.EqualTo(description));
+            Assert.That(actual.ImageLink, Is.EqualTo(imageLink));
             Assert.That(actual.IsLegendary, Is.EqualTo(isLegendary));
         }
 
@@ -89,7 +89,7 @@ namespace PokemonBox.Test
             Assert.That(actual.IsLegendary, Is.EqualTo(expected.IsLegendary));
             //Assert.That(actual.DateAdded.ToString("MM / dd / yyyy hh: mm:ss"), Is.EqualTo(expected.DateAdded.ToString("MM / dd / yyyy hh: mm:ss")));
             Assert.That(actual.PokemonName, Is.EqualTo(expected.PokemonName));
-            Assert.That(actual.Description, Is.EqualTo(expected.Description));
+            Assert.That(actual.ImageLink, Is.EqualTo(expected.ImageLink));
         }
         
         private Pokemon CreateTestPokemon(int a, uint b)

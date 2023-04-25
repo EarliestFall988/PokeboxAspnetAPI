@@ -16,7 +16,7 @@ namespace PokemonBox
             _connectionString = connectionString;
         }
 
-        public Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string description, bool isLegendary)
+        public Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string imageLink, bool isLegendary)
         {
             if (pokemonName == null)
                 throw new ArgumentNullException(nameof(pokemonName));
@@ -24,8 +24,8 @@ namespace PokemonBox
             if(pokedexNumber == 0)
                 throw new ArgumentNullException(nameof(pokedexNumber));
 
-            if(description == null) 
-                throw new ArgumentNullException(nameof(description));
+            if(imageLink == null) 
+                throw new ArgumentNullException(nameof(imageLink));
 
             using (var transaction = new TransactionScope())
             {
@@ -37,7 +37,7 @@ namespace PokemonBox
 
                         command.Parameters.AddWithValue("PokemonName", pokemonName);
                         command.Parameters.AddWithValue("PokedexNumber", (int)pokedexNumber);
-                        command.Parameters.AddWithValue("Description", description);
+                        command.Parameters.AddWithValue("ImageLink", imageLink);
                         command.Parameters.AddWithValue("IsLegendary", isLegendary);
 
                         var p = command.Parameters.Add("PokemonID", SqlDbType.Int);
@@ -54,7 +54,7 @@ namespace PokemonBox
                         var pokemonID = (int)command.Parameters["PokemonID"].Value;
                         var dateAdded = (DateTimeOffset)command.Parameters["DateAdded"].Value;
 
-                        return new Pokemon((uint)pokemonID, pokemonName, pokedexNumber, description, dateAdded, isLegendary);
+                        return new Pokemon((uint)pokemonID, pokemonName, pokedexNumber, imageLink, dateAdded, isLegendary);
                     }
                 }
             }
@@ -153,7 +153,7 @@ namespace PokemonBox
             var pokemonID = reader.GetOrdinal("PokemonID");
             var pokemonName = reader.GetOrdinal("PokemonName");
             var pokedexNumber = reader.GetOrdinal("PokedexNumber");
-            var decription = reader.GetOrdinal("Description");
+            var decription = reader.GetOrdinal("ImageLink");
             var dateAdded = reader.GetOrdinal("DateAdded");
             var isLegendary = reader.GetOrdinal("IsLegendary");
 

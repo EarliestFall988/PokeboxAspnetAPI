@@ -122,8 +122,8 @@ namespace PokemonBox.Controllers
 
                 string uid = Guid.NewGuid().ToString(); //creating a session key
                 DatabaseConnection.Sessions.Add(uid, email); // adding users to the list of loggedin users, this should probably be time stamped, and stored the database
-
-                return APIUtilities.CreateSession(email, uid); // I need to return more data than just the email...
+                return DatabaseConnection.Sessions[uid];
+                //return APIUtilities.CreateSession(email, uid); // I need to return more data than just the email...
             }
             else
             {

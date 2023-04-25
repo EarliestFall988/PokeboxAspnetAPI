@@ -8,19 +8,19 @@
 
         public uint PokedexNumber { get; }
 
-        public string Description { get; }
+        public string ImageLink { get; }
 
         public DateTimeOffset DateAdded { get; }
 
         public bool IsLegendary { get; }
 
 
-        public Pokemon(uint pokemonID, string pokemonName, uint pokedexNumber, string description,
+        public Pokemon(uint pokemonID, string pokemonName, uint pokedexNumber, string imageLink,
             DateTimeOffset dateAdded, bool isLegendary) {
             PokemonID = pokemonID;
             PokemonName = pokemonName;
             PokedexNumber = pokedexNumber;
-            Description = description;
+            ImageLink = imageLink;
             DateAdded = dateAdded;
             IsLegendary = isLegendary;
         }

@@ -9,6 +9,6 @@ namespace PokemonBox
 
         IReadOnlyDictionary<Pokemon, PokeType> PokeTypeCount();
 
-        Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string description, bool isLegendary);
+        Pokemon AddPokemon(string pokemonName, uint pokedexNumber, string imageLink, bool isLegendary);
     }
 }
