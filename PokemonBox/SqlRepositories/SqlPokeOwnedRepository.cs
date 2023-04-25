@@ -368,5 +368,26 @@ namespace PokemonBox
 
             return dic;
         }
+
+        public IReadOnlyList<PokeOwned> SelectAllPokemonOwnedByUserPages(string userName, uint pageNum)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.SelectAllPokeOwnedOffset", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Username", userName);
+                    command.Parameters.AddWithValue("Page", pageNum);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return TranslatePokeOwned(reader);
+                    }
+                }
+            }
+        }
     }
 }

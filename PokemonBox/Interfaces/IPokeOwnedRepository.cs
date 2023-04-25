@@ -34,5 +34,7 @@ namespace PokemonBox
         /// <returns>dictionary key is PokeTypeID and value is how many exist</returns>
         IReadOnlyDictionary<string, uint> PokeTypeCount(DateTimeOffset start, DateTimeOffset end);
 
+        IReadOnlyList<PokeOwned> SelectAllPokemonOwnedByUserPages(string userName, uint pageNum);
+
     }
 }

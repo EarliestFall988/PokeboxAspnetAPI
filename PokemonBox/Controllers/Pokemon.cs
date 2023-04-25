@@ -100,6 +100,21 @@ namespace PokemonBox.Controllers
             return JsonSerializer.Serialize(pokemon);
         }
 
+        [HttpGet("SelectAllPokeOwnedOffset")]
+        public string SelectAllPokeOwnedOffset([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] int pageNum)
+        {
+            IReadOnlyList<PokeOwned> pokemon = DatabaseConnection.PokeOwnedRepo.SelectAllPokemonOwnedByUserPages(username, (uint)pageNum);
+            return JsonSerializer.Serialize(pokemon);
+        }
+
+        [HttpGet("GetNumberOfPages")]
+        public string GetNumberOfPages([FromHeader] string SessionId, [FromQuery] string username)
+        {
+            //int pages = DatabaseConnection.PokeOwnedRepo.SelectAllPokemonOwnedByUserPages(username);
+            //return JsonSerializer.Serialize(pages);
+            throw new NotImplementedException();
+        }
+
         /*********************************
         * 
         * PokemonType Methods
