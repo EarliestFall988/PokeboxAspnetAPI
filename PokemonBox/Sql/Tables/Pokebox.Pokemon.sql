@@ -6,6 +6,7 @@ CREATE TABLE Pokebox.Pokemon
     IsLegendary INT NOT NULL DEFAULT(0),
     [Description] NVARCHAR(128) NOT NULL,
     DateAdded DATETIMEOFFSET NOT NULL DEFAULT(SYSDATETIMEOFFSET()),
+    ImageLink NVARCHAR(256) NULL DEFAULT(N''),
 
     UNIQUE(PokemonName),
 

@@ -3,20 +3,10 @@ CREATE OR ALTER PROCEDURE Pokebox.SelectSingleItemOwned
     @ItemName NVARCHAR(64)
 AS
 
-DECLARE @UserID INT =
-    (
-        SELECT U.UserID
-        FROM Pokebox.[User] U
-        WHERE U.Username = @Username
-    )
-
-DECLARE @ItemID INT = 
-    (
-        SELECT I.ItemID
-        FROM Pokebox.Item I
-        WHERE ItemName = @ItemName
-    )
-
-SELECT *
-FROM Pokebox.ItemOwned I
-WHERE I.UserID = @UserID AND I.ItemID = @ItemID
+SELECT I.ItemName, I.ImageLink, I.[Description], IT.ItemTypeName, IOW.DatePutInBox, IOW.ItemID, IOW.UserID, IOW.ItemOwnedID
+FROM [User] U 
+    INNER JOIN ItemOwned IOW ON IOW.UserID = U.UserID
+    INNER JOIN Item I ON I.ItemID = IOW.ItemID
+    INNER JOIN ItemType IT ON IT.ItemTypeID = I.ItemTypeID
+WHERE U.Username = @Username AND I.ItemName = @ItemName
+GO

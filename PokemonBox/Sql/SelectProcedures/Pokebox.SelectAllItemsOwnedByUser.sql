@@ -1,5 +1,5 @@
 CREATE OR ALTER PROCEDURE Pokebox.SelectAllItemsOwnedByUser
-    @Username NVARCHAR(32)
+    @Username NVARCHAR(64)
 AS
 
 SELECT I.ItemName, IT.ItemTypeName, IOW.DatePutInBox, IOW.ItemOwnedID, U.UserID, I.ItemID
