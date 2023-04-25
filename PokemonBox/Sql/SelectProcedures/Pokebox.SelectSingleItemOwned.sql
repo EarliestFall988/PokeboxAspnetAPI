@@ -3,7 +3,7 @@ CREATE OR ALTER PROCEDURE Pokebox.SelectSingleItemOwned
     @ItemName NVARCHAR(64)
 AS
 
-SELECT I.ItemName, I.ImageLink, I.[Description], IT.ItemTypeName, IOW.DatePutInBox, IOW.ItemID, IOW.UserID, IOW.ItemOwnedID
+SELECT I.ItemName, I.ItemImageLink, I.[Description], IT.ItemTypeName, IOW.DatePutInBox, IOW.ItemID, IOW.UserID, IOW.ItemOwnedID
 FROM [User] U 
     INNER JOIN ItemOwned IOW ON IOW.UserID = U.UserID
     INNER JOIN Item I ON I.ItemID = IOW.ItemID

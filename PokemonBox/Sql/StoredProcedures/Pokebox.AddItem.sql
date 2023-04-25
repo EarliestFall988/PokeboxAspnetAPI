@@ -2,6 +2,7 @@ CREATE OR ALTER PROCEDURE Pokebox.AddItem
     @ItemTypeName NVARCHAR(64),
     @ItemName NVARCHAR(64),
     @Description NVARCHAR(128),
+	@ItemImageLink NVARCHAR(256),
     @ItemID INT OUTPUT,
     @DateAdded DATETIMEOFFSET OUTPUT,
     @OutItemTypeID INT OUTPUT
@@ -13,8 +14,8 @@ DECLARE @ItemTypeID INT =
         WHERE IT.ItemTypeName = @ItemTypeName
     )
 
-INSERT Pokebox.Item(ItemTypeID, ItemName, [Description])
-Values(@ItemTypeID, @ItemName, @Description)
+INSERT Pokebox.Item(ItemTypeID, ItemName, [Description], ItemImageLink)
+Values(@ItemTypeID, @ItemName, @Description, @ItemImageLink)
 
 
 SET @ItemID = SCOPE_IDENTITY();
