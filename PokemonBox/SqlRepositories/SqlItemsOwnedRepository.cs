@@ -6,6 +6,7 @@ using System.Data;
 using System.Transactions;
 using PokemonBox.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using PokemonBox.Controllers;
 
 /*
  * Last updated: 4/17/2023
@@ -78,17 +79,9 @@ namespace PokemonBox.SqlRepositories
 
                     connection.Open();
 
-                    using (var reader = command.ExecuteReader())
-                    {
-                        RemoveItemsOwned(reader);
-                    }
+                    var reader = command.ExecuteReader();
                 }
             }
-        }
-
-        private void RemoveItemsOwned(SqlDataReader reader)
-        {
-            throw new NotImplementedException();
         }
 
         public IReadOnlyList<ItemsOwned> SelectAllItemsOwnedByUser(string userName)
@@ -228,6 +221,51 @@ namespace PokemonBox.SqlRepositories
             }
 
             return dict;
+        }
+
+        public IReadOnlyList<ItemsOwned> SelectAllItemsOwnedByUserOffset(string userName, uint pageNum)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.SelectAllItemOwnedOffset", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Username", userName);
+                    command.Parameters.AddWithValue("Page", pageNum);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return TranslateItemsOwned(reader);
+                    }
+                }
+            }
+        }
+
+        public uint SelectAllItemsOwnedByUserOffsetPages(string userName)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.SelectAllItemsOwnedByUser", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Username", userName);
+
+                    connection.Open();
+                    IReadOnlyList<ItemsOwned> item;
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        item = TranslateItemsOwned(reader);
+                    }
+                    double num = item.Count / 30.0;
+                    return (uint)Math.Ceiling(num);
+
+                }
+            }
         }
 
     }

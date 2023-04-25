@@ -62,7 +62,19 @@ namespace PokemonBox.Controllers
             return JsonSerializer.Serialize(items);
         }
 
+        [HttpGet("SelectAllItemOwnedOffset")]
+        public string SelectAllItemOwnedOffset([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] int pageNum)
+        {
+            IReadOnlyList<ItemsOwned> items = DatabaseConnection.ItemsOwnedRepo.SelectAllItemsOwnedByUserOffset(username, (uint)pageNum);
+            return JsonSerializer.Serialize(items);
+        }
 
+        [HttpGet("GetNumberOfPagesItems")]
+        public string GetNumberOfPages([FromHeader] string SessionId, [FromQuery] string username)
+        {
+            uint pages = DatabaseConnection.ItemsOwnedRepo.SelectAllItemsOwnedByUserOffsetPages(username);
+            return JsonSerializer.Serialize(pages);
+        }
 
         /*********************************
          * 
