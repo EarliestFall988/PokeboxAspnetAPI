@@ -107,12 +107,11 @@ namespace PokemonBox.Controllers
             return JsonSerializer.Serialize(pokemon);
         }
 
-        [HttpGet("GetNumberOfPages")]
+        [HttpGet("GetNumberOfPagesPokeOwned")]
         public string GetNumberOfPages([FromHeader] string SessionId, [FromQuery] string username)
         {
-            //int pages = DatabaseConnection.PokeOwnedRepo.SelectAllPokemonOwnedByUserPages(username);
-            //return JsonSerializer.Serialize(pages);
-            throw new NotImplementedException();
+            uint pages = DatabaseConnection.PokeOwnedRepo.SelectAllPokemonOwnedByUserNumberPages(username);
+            return JsonSerializer.Serialize(pages);
         }
 
         /*********************************
