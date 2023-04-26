@@ -30,12 +30,14 @@ namespace PokemonBox.Test
             var itemTypeName = "other";
             var itemName = "testItem";
             var description = "WORDSSSS";
+            var itemLink = "Link";
 
-            var actual = ItemRepo.AddItem(itemName, description, itemTypeName);
+            var actual = ItemRepo.AddItem(itemName, description, itemTypeName, itemLink);
 
             Assert.IsNotNull(actual);
             Assert.That(actual.ItemName, Is.EqualTo(itemName));
             Assert.That(actual.Description, Is.EqualTo(description));
+            Assert.That(actual.ItemImageLink, Is.EqualTo(itemLink));
         }
 
         [Test]
@@ -88,7 +90,7 @@ namespace PokemonBox.Test
 
         private Item CreateTestItem(int a, uint b, string typeName)
         {
-            return ItemRepo.AddItem("Test "+ a, "a"+b, typeName);
+            return ItemRepo.AddItem("Test "+ a, "a"+b, typeName, "link"+b);
         }
     }
 }
