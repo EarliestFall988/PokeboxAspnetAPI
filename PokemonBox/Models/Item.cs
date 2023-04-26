@@ -12,13 +12,16 @@
 
         public string Description { get; }
 
-        public Item(uint itemID, uint itemTypeID, string itemName, DateTimeOffset dateAdded, string description)
+        public string ItemImageLink { get; }
+
+        public Item(uint itemID, uint itemTypeID, string itemName, DateTimeOffset dateAdded, string description, string itemImageLink)
         {
             ItemID = itemID;
             ItemTypeID = itemTypeID;
             ItemName = itemName;
             DateAdded = dateAdded;
             Description = description;
+            ItemImageLink = itemImageLink;
         }
     }
 }

@@ -16,6 +16,6 @@ namespace PokemonBox.Interfaces
         IReadOnlyList<Item> SelectItem();
         Item GetItem(string itemName);
         Item FetchItem(uint itemID);
-        Item AddItem(string itemName, string description, string itemTypeName);
+        Item AddItem(string itemName, string description, string itemTypeName, string itemImageLink);
     }
 }
