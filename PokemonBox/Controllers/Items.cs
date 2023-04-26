@@ -82,14 +82,14 @@ namespace PokemonBox.Controllers
          * 
          * ******************************/
 
-        [HttpGet("api/SelectItemType")]
+        [HttpGet("SelectItemType")]
         public string SelectItemType()
         {
             IReadOnlyList<ItemType> itemTypes = DatabaseConnection.ItemTypeRepo.SelectItemType();
             return JsonSerializer.Serialize(itemTypes);
         }
 
-        [HttpGet("api/AddItemType")]
+        [HttpGet("AddItemType")]
         public void AddItemType([FromHeader] string SessionId, [FromQuery] string itemTypeName)
         {
             ItemType itemTypes = DatabaseConnection.ItemTypeRepo.AddItemType(itemTypeName);
@@ -100,14 +100,14 @@ namespace PokemonBox.Controllers
          * Item Methods
          * 
          * ******************************/
-        [HttpGet("api/SelectItem")]
+        [HttpGet("SelectItem")]
         public string SelectItem()
         {
             IReadOnlyList<Item> item = DatabaseConnection.ItemRepo.SelectItem();
             return JsonSerializer.Serialize(item);
         }
 
-        [HttpGet("api/AddItem")]
+        [HttpGet("AddItem")]
         public void AddItem([FromHeader] string SessionId, [FromQuery] string itemName, [FromQuery] string description, [FromQuery] string itemTypeName)
         {
             Item item = DatabaseConnection.ItemRepo.AddItem(itemName, description, itemTypeName);

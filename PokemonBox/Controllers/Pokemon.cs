@@ -86,7 +86,7 @@ namespace PokemonBox.Controllers
             return JsonSerializer.Serialize(pokemon);
         }
 
-        [HttpGet("SelectAllPokemonOwned")]
+        [HttpGet("SelectSinglePokemonOwned")]
         public string SelectSinglePokeOwned([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] string pokemonName, [FromQuery] string name)
         {
             PokeOwned pokemon = DatabaseConnection.PokeOwnedRepo.SelectSinglePokeOwned(username, pokemonName, name);
