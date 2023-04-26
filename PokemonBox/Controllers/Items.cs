@@ -37,9 +37,19 @@ namespace PokemonBox.Controllers
         }
 
         [HttpPost("CreateItemsOwned")]
-        public void CreateItemsOwned([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] string itemName)
+        public string CreateItemsOwned([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] string itemName)
         {
-            ItemsOwned item = DatabaseConnection.ItemsOwnedRepo.CreateItemsOwned(username, itemName);
+            var str = GetValidItemOwnedAdd(username, itemName);
+            if (str.Equals("Valid"))
+            {
+                ItemsOwned item = DatabaseConnection.ItemsOwnedRepo.CreateItemsOwned(username, itemName);
+                return JsonSerializer.Serialize(item);
+            }
+            else
+            {
+                return str;
+            }
+            
         }
 
         [HttpPost("RemoveItemsOwned")]
@@ -90,9 +100,19 @@ namespace PokemonBox.Controllers
         }
 
         [HttpGet("AddItemType")]
-        public void AddItemType([FromHeader] string SessionId, [FromQuery] string itemTypeName)
+        public string AddItemType([FromHeader] string SessionId, [FromQuery] string itemTypeName)
         {
-            ItemType itemTypes = DatabaseConnection.ItemTypeRepo.AddItemType(itemTypeName);
+            var str = GetValidItemTypeAdd(itemTypeName);
+            if (str.Equals("Valid"))
+            {
+                ItemType itemTypes = DatabaseConnection.ItemTypeRepo.AddItemType(itemTypeName);
+                return JsonSerializer.Serialize(itemTypes);
+            }
+            else
+            {
+                return str;
+            }
+            
         }
 
         /*********************************
@@ -108,10 +128,64 @@ namespace PokemonBox.Controllers
         }
 
         [HttpGet("AddItem")]
-        public void AddItem([FromHeader] string SessionId, [FromQuery] string itemName, [FromQuery] string description, [FromQuery] string itemTypeName)
+        public string AddItem([FromHeader] string SessionId, [FromQuery] string itemName, [FromQuery] string description, [FromQuery] string itemTypeName)
         {
-            Item item = DatabaseConnection.ItemRepo.AddItem(itemName, description, itemTypeName);
+            var str = GetValidItemAdd(itemName);
+            if(str.Equals("Valid"))
+            {
+                Item item = DatabaseConnection.ItemRepo.AddItem(itemName, description, itemTypeName);
+                return JsonSerializer.Serialize(item);
+            }
+            else
+            {
+                return str;
+            }
             
+        }
+
+        /*********************************
+        * 
+        * Helper Methods
+        * 
+        * ******************************/
+        private string GetValidItemAdd(string itemName)
+        {
+            IReadOnlyList<Item> item = DatabaseConnection.ItemRepo.SelectItem();
+            foreach (var i in item)
+            {
+                if (i.ItemName.Equals(itemName))
+                {
+                    return APIUtilities.InputError("CANNOT ADD ITEM THERE EXISTS ONE WITH SAME NAME");
+                }
+            }
+            return "Valid";
+        }
+
+        private string GetValidItemOwnedAdd(string username, string itemName)
+        {
+            IReadOnlyList<ItemsOwned> items = DatabaseConnection.ItemsOwnedRepo.SelectAllItemsOwnedByUser(username);
+            foreach (var i in items)
+            {
+                var id = DatabaseConnection.ItemsOwnedRepo.FetchItemOwned(username, i.ItemOwnedID);
+                if (i.ItemID == id)
+                {
+                    return APIUtilities.InputError("CANNOT ADD ITEM THERE EXISTS ONE WITH SAME NAME");
+                }
+            }
+            return "Valid";
+        }
+
+        private string GetValidItemTypeAdd(string itemTypeName)
+        {
+            IReadOnlyList<ItemType> itemTypes = DatabaseConnection.ItemTypeRepo.SelectItemType();
+            foreach (var i in itemTypes)
+            {
+                if (i.ItemTypeName.Equals(itemTypeName))
+                {
+                    return APIUtilities.InputError("CANNOT ADD ITEMTYPE THERE EXISTS ONE WITH SAME NAME");
+                }
+            }
+            return "Valid";
         }
 
     }
