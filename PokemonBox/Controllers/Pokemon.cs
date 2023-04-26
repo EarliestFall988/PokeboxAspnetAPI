@@ -6,8 +6,11 @@ using PokemonBox.SqlRepositories;
 using PokemonBox.Utils;
 
 using System.Diagnostics;
+using System.Reflection.Emit;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 
 namespace PokemonBox.Controllers
 {
@@ -36,9 +39,18 @@ namespace PokemonBox.Controllers
         }
 
         [HttpPost("AddPokemon")]
-        public void AddPokemon([FromHeader] string SessionId, [FromQuery] string pokemonName, [FromQuery] uint pokedexNumber, [FromQuery] string description, [FromQuery] bool isLegendary)
+        public string AddPokemon([FromHeader] string SessionId, [FromQuery] string pokemonName, [FromQuery] int pokedexNumber, [FromQuery] string description, [FromQuery] bool isLegendary)
         {
-            Models.Pokemon pokemon = DatabaseConnection.PokemonRepo.AddPokemon(pokemonName, pokedexNumber, description, isLegendary);
+            var str = GetValidPokemonAdd(pokemonName, pokedexNumber);
+            if(str.Equals("Valid"))
+            {
+                Models.Pokemon pokemon = DatabaseConnection.PokemonRepo.AddPokemon(pokemonName, (uint)pokedexNumber, description, isLegendary);
+                return JsonSerializer.Serialize(pokemon);
+            }
+            else
+            {
+                return str;
+            }
         }
 
         /*********************************
@@ -47,9 +59,18 @@ namespace PokemonBox.Controllers
         * 
         * ******************************/
         [HttpPost("CreatePokeOwned")]
-        public void CreatePokeOwned([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] string pokemonName, [FromQuery] string name, [FromQuery] pokeGender gender, [FromQuery] uint level)
+        public string CreatePokeOwned([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] string pokemonName, [FromQuery] string name, [FromQuery] pokeGender gender, [FromQuery] uint level)
         {
-            PokeOwned pokemon = DatabaseConnection.PokeOwnedRepo.CreatePokeOwned(username, pokemonName, name, gender, level);
+            var str = GetValidPokeOwnedAdd(username, pokemonName, name);
+            if(str.Equals("Valid"))
+            {
+                PokeOwned pokemon = DatabaseConnection.PokeOwnedRepo.CreatePokeOwned(username, pokemonName, name, gender, level);
+                return JsonSerializer.Serialize(pokemon);
+            }
+            else
+            {
+                return str;
+            }
         }
 
         [HttpPost("RemovePokeOwned")]
@@ -120,9 +141,19 @@ namespace PokemonBox.Controllers
         * 
         * ******************************/
         [HttpPost("AddPokemonType")]
-        public void AddPokemonType([FromHeader] string SessionId, [FromQuery] string typeName)
+        public string AddPokemonType([FromHeader] string SessionId, [FromQuery] string typeName)
         {
-            PokemonType type = DatabaseConnection.PokemonTypeRepo.AddPokemonType(typeName);
+            var str = GetValidPokemonTypeAdd(typeName);
+            if (str.Equals("Valid"))
+            {
+                PokemonType type = DatabaseConnection.PokemonTypeRepo.AddPokemonType(typeName);
+                return JsonSerializer.Serialize(type);
+            }
+            else
+            {
+                return str;
+            }
+            
         }
 
         [HttpGet("SelectPokemonTypes")]
@@ -148,6 +179,55 @@ namespace PokemonBox.Controllers
         {
             IReadOnlyList<PokeType> pokemon = DatabaseConnection.PokeTypeRepo.SelectPokeType();
             return JsonSerializer.Serialize(pokemon);
+        }
+
+        /*********************************
+        * 
+        * Helper Methods
+        * 
+        * ******************************/
+        private string GetValidPokemonAdd(string pokemonName, int pokedex)
+        {
+            IReadOnlyList<Models.Pokemon> pokemon = DatabaseConnection.PokemonRepo.SelectPokemon();
+            foreach(var p in pokemon)
+            {
+                if(p.PokemonName.Equals(pokemonName))
+                {
+                    return APIUtilities.InputError("CANNOT ADD POKEMON THERE EXISTS ONE WITH SAME NAME");
+                }
+                if(p.PokedexNumber == pokedex)
+                {
+                    return APIUtilities.InputError("CANNOT ADD POKEMON THERE EXISTS ONE WITH SAME POKEDEX");
+                }
+            }
+            return "Valid";
+        }
+
+        private string GetValidPokeOwnedAdd(string username, string pokemonName, string nickname)
+        {
+            IReadOnlyList<PokeOwned> pokemon = DatabaseConnection.PokeOwnedRepo.SelectAllPokemonOwnedByUser(username);
+            foreach (var p in pokemon)
+            {
+                Tuple<string, string> words = DatabaseConnection.PokeOwnedRepo.FetchPokemonOwned(username, p.PokeOwnedID);
+                if (words.Item1.Equals(pokemonName) && words.Item2.Equals(nickname))
+                {
+                    return APIUtilities.InputError("CANNOT ADD POKEMON THERE EXISTS ONE WITH SAME NICKNAME");
+                }
+            }
+            return "Valid";
+        }
+
+        private string GetValidPokemonTypeAdd(string pokemonTypeName)
+        {
+            IReadOnlyList<PokemonType> pokemon = DatabaseConnection.PokemonTypeRepo.SelectPokemonTypes();
+            foreach (var p in pokemon)
+            {
+                if (p.PokemonTypeName.Equals(pokemonTypeName))
+                {
+                    return APIUtilities.InputError("CANNOT ADD POKEMONTYPE THERE EXISTS ONE WITH SAME NAME");
+                }
+            }
+            return "Valid";
         }
 
     }

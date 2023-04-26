@@ -413,5 +413,38 @@ namespace PokemonBox
                 }
             }
         }
+
+        public Tuple<string,string> FetchPokemonOwned(string userName, uint pokeOwnedID)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.FetchSinglePokeOwned", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Username", userName);
+                    command.Parameters.AddWithValue("PokeOwnedID", (int)pokeOwnedID);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return TranslateFetchSinglePokeOwned(reader);
+                    }
+                }
+            }
+        }
+
+        private Tuple<string, string> TranslateFetchSinglePokeOwned(SqlDataReader reader)
+        {
+
+            var pokemonName = reader.GetOrdinal("PokemonName");
+            var nickname = reader.GetOrdinal("Name");
+            reader.Read();
+            var pokeName = reader.GetString(pokemonName);
+            var nickName = reader.GetString(nickname);
+            return new Tuple<string, string>(pokeName,nickName);
+        }
+
     }
 }
