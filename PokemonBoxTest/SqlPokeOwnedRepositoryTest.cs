@@ -152,8 +152,6 @@ namespace PokemonBox.Test
             var pokemonName2 = "Ivysaur";
             var pokemonName3 = "Venusaur";
 
-
-
             var p1 = CreateTestPokeOwned(userName, pokemonName1, "Bob", pokeGender.unknown, 10);
             var p2 = CreateTestPokeOwned(userName, pokemonName2, "Gab", pokeGender.unknown, 10);
             var p3 = CreateTestPokeOwned(userName, pokemonName3, "Sog", pokeGender.unknown, 10);
@@ -313,6 +311,21 @@ namespace PokemonBox.Test
             newDic.TryGetValue("grass", out second);
 
             Assert.That(second, !Is.EqualTo(first));
+        }
+
+        [Test]
+        public void FetchPokemonOwnedWork()
+        {
+            var userName = "magna.cras@hotmail.net";
+            var pokemonName1 = "Bulbasaur";
+            var pokeName = "Bobby";
+
+            var p1 = CreateTestPokeOwned(userName, pokemonName1, pokeName, pokeGender.unknown, 10);
+            var actual = PokeOwnedRepo.SelectSinglePokeOwned(userName, pokemonName1, "Bobby");
+
+            Tuple<string, string> pokemon = PokeOwnedRepo.FetchPokemonOwned(userName, actual.PokeOwnedID);
+
+            Assert.That(actual.NickName, Is.EqualTo(pokemon.Item2));
         }
 
         private static void AssertPokeOwnedAreEqual(PokeOwned expected, PokeOwned actual)

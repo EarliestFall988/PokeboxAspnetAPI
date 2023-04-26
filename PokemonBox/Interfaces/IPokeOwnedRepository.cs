@@ -36,5 +36,13 @@ namespace PokemonBox
 
         IReadOnlyList<PokeOwned> SelectAllPokemonOwnedByUserPages(string userName, uint pageNum);
 
+        /// <summary>
+        /// The first string is the pokemonName and the second string is the nickname
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="pokeOwnedID"></param>
+        /// <returns></returns>
+        Tuple<string, string> FetchPokemonOwned(string userName, uint pokeOwnedID);
+
     }
 }
