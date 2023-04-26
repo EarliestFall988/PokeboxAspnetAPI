@@ -24,7 +24,7 @@ namespace PokemonBox.SqlRepositories
             _connectionString = connectionString;
         }
 
-        public Item AddItem(string itemName, string description, string itemTypeName)
+        public Item AddItem(string itemName, string description, string itemTypeName, string itemImageLink)
         {
             if (itemName == null) throw new ArgumentNullException(nameof(itemName));
             if (description == null) throw new ArgumentNullException(nameof(description));
@@ -40,6 +40,7 @@ namespace PokemonBox.SqlRepositories
                         command.Parameters.AddWithValue("ItemName", itemName);
                         command.Parameters.AddWithValue("Description", description);
                         command.Parameters.AddWithValue("ItemTypeName", itemTypeName);
+                        command.Parameters.AddWithValue("ItemImageLink", itemImageLink);
 
                         var iID = command.Parameters.Add("ItemID", SqlDbType.Int);
                         iID.Direction = ParameterDirection.Output;
@@ -58,7 +59,7 @@ namespace PokemonBox.SqlRepositories
                         var itemTypeID = (int)command.Parameters["OutItemTypeID"].Value;
                         var dateAdded = (DateTimeOffset)command.Parameters["DateAdded"].Value;
 
-                        return new Item((uint)itemID, (uint)itemTypeID, itemName, dateAdded, description);
+                        return new Item((uint)itemID, (uint)itemTypeID, itemName, dateAdded, description, itemImageLink);
                     }
                 }
             }

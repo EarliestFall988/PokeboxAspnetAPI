@@ -88,6 +88,15 @@ namespace PokemonBox.Controllers
 
                 //public User AddUser(string userName, string password, string firstName, string lastName, bool isAdmin)
                 //do something with the email and password
+                //TODO: ADD check user does not already exist
+                var users = DatabaseConnection.UserRepo.SelectUser();
+                foreach(var u in users)
+                {
+                    if(u.UserName.Equals(email))
+                    {
+                        return APIUtilities.InputError("email already has account");
+                    }
+                }
                 DatabaseConnection.UserRepo.AddUser(email, password, userProxy.fName, userProxy.lName, false);
 
                 // TODO: Double-check if the user needs to be logged in after registering
