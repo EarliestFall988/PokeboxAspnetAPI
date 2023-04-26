@@ -70,7 +70,7 @@ namespace PokemonBox.SqlRepositories
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("Pokebox.RemoveItemsOwned", connection))
+                using (var command = new SqlCommand("Pokebox.RemoveItemOwned", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
@@ -291,7 +291,7 @@ namespace PokemonBox.SqlRepositories
 
         private int TranslateFetchSingleItemOwned(SqlDataReader reader)
         {
-
+            //var username = reader.GetOrdinal("PokemonName");
             var id = reader.GetOrdinal("ItemID");
             reader.Read();
             var itemID = reader.GetInt32(id);
