@@ -31,13 +31,6 @@ namespace PokemonBox.Controllers
             return JsonSerializer.Serialize(pokemon);
         }
 
-        [HttpGet("PokeTypeCount")]
-        public string PokeTypeCount()
-        {
-            IReadOnlyDictionary<Models.Pokemon, PokeType> pokemon = DatabaseConnection.PokemonRepo.PokeTypeCount();
-            return JsonSerializer.Serialize(pokemon);
-        }
-
         [HttpPost("AddPokemon")]
         public string AddPokemon([FromHeader] string SessionId, [FromQuery] string pokemonName, [FromQuery] int pokedexNumber, [FromQuery] string description, [FromQuery] bool isLegendary)
         {
@@ -229,6 +222,8 @@ namespace PokemonBox.Controllers
             }
             return "Valid";
         }
+
+
 
     }
 }
