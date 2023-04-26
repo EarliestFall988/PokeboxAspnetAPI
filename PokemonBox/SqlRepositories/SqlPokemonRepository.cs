@@ -61,53 +61,6 @@ namespace PokemonBox
 
         }
 
-        //public Pokemon FetchPokemon(uint pokemonID)
-        //{
-        //    using (var connection = new SqlConnection(_connectionString))
-        //    {
-        //        using (var command = new SqlCommand("User.FetchPokemon", connection))
-        //        {
-        //            command.CommandType = CommandType.StoredProcedure;
-        //
-        //            command.Parameters.AddWithValue("PokemonID", pokemonID);
-        //
-        //            connection.Open();
-        //
-        //            using (var reader = command.ExecuteReader())
-        //            {
-        //                var user = TranslatePokemon(reader);
-        //
-        //                if (user == null)
-        //                {
-        //                    throw new RecordNotFoundException(pokemonID.ToString());
-        //                }
-        //
-        //                return user;
-        //            }
-        //        }
-        //    }
-        //}
-
-        //public Pokemon GetPokemon(string pokemonName)
-        //{
-        //    using (var connection = new SqlConnection(_connectionString))
-        //    {
-        //        using (var command = new SqlCommand("User.GetUserByUserName"))
-        //        {
-        //            command.CommandType = CommandType.StoredProcedure;
-        //
-        //            command.Parameters.AddWithValue("PokemonName", pokemonName);
-        //
-        //            connection.Open();
-        //
-        //            using (var reader = command.ExecuteReader())
-        //            {
-        //                return TranslatePokemon(reader);
-        //            }
-        //        }
-        //    }
-        //}
-
         public IReadOnlyList<Pokemon> SelectPokemon()
         {
             using (var connection = new SqlConnection(_connectionString)) 
@@ -124,25 +77,6 @@ namespace PokemonBox
                     }
                 }
             }
-        }
-
-        private Pokemon TranslatePokemon(SqlDataReader reader)
-        {
-            var pokemonID = reader.GetOrdinal("PokemonID");
-            var pokemonName = reader.GetOrdinal("PokemonName");
-            var pokedexNumber = reader.GetOrdinal("PokedexNumber");
-            var decription = reader.GetOrdinal("Decription");
-            var dateAdded = reader.GetOrdinal("DateAdded");
-            var isLegendary = reader.GetOrdinal("IsLegendary");
-
-            return new Pokemon(
-                    (uint)reader.GetInt32(pokemonID),
-                    reader.GetString(pokemonName),
-                    (uint)reader.GetInt32(pokedexNumber),
-                    reader.GetString(decription),
-                    reader.GetDateTimeOffset(dateAdded),
-                    reader.GetBoolean(isLegendary));                    
-
         }
 
         private IReadOnlyList<Pokemon> TranslatePokeman(SqlDataReader reader)

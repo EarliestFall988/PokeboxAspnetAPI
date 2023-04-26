@@ -268,5 +268,35 @@ namespace PokemonBox.SqlRepositories
             }
         }
 
+        public int FetchItemOwned(string userName, uint itemOwnedID)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.FetchSingleItemOwned", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Username", userName);
+                    command.Parameters.AddWithValue("ItemOwnedID", (int)itemOwnedID);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return TranslateFetchSingleItemOwned(reader);
+                    }
+                }
+            }
+        }
+
+        private int TranslateFetchSingleItemOwned(SqlDataReader reader)
+        {
+
+            var id = reader.GetOrdinal("ItemID");
+            reader.Read();
+            var itemID = reader.GetInt32(id);
+            return itemID;
+        }
+
     }
 }

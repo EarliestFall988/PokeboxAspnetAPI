@@ -51,6 +51,7 @@ Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\Aggreg
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\RemoveProcedures\Pokebox.RemoveItemOwned.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\RemoveProcedures\Pokebox.RemovePokeOwned.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.FetchSinglePokeOwned.sql"
+Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.FetchSingleItemOwned.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.SelectAllItemsOwnedByUser.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.SelectAllPokemonOwnedByUser.sql"
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\SelectProcedures\Pokebox.SelectAllPokeOwnedOffset.sql"
