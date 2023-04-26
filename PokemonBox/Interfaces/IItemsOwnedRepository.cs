@@ -18,7 +18,7 @@ namespace PokemonBox.Interfaces
 
         IReadOnlyList<ItemsOwned> SelectAllItemsOwnedByUser(string userName);
 
-        IReadOnlyList<ItemsOwned> SelectAllItemsOwnedByUserOffset(string userName, uint pageNum);
+        IReadOnlyList<ItemsOwned> SelectAllItemsOwnedByUserOffset(string userName, int pageNum);
 
         IReadOnlyList<ItemsOwned> SelectAllItemsOwned();
 

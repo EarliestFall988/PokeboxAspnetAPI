@@ -223,7 +223,7 @@ namespace PokemonBox.SqlRepositories
             return dict;
         }
 
-        public IReadOnlyList<ItemsOwned> SelectAllItemsOwnedByUserOffset(string userName, uint pageNum)
+        public IReadOnlyList<ItemsOwned> SelectAllItemsOwnedByUserOffset(string userName, int pageNum)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
