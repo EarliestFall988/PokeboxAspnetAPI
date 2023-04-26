@@ -47,7 +47,7 @@ namespace PokemonBox.Controllers
             }
             else
             {
-                JsonSerializer.Serialize(str);
+                return JsonSerializer.Serialize(str);
             }
             
         }
@@ -110,7 +110,7 @@ namespace PokemonBox.Controllers
             }
             else
             {
-                JsonSerializer.Serialize(str);
+                return JsonSerializer.Serialize(str);
             }
             
         }
@@ -190,7 +190,7 @@ namespace PokemonBox.Controllers
             IReadOnlyList<ItemsOwned> items = DatabaseConnection.ItemsOwnedRepo.SelectAllItemsOwnedByUser(username);
 
             var allItemsList = DatabaseConnection.ItemRepo.SelectItem();
-            var item = new Item(0, 0, "", default(DateTime), "");
+            var item = new Item(0, 0, "", default(DateTime), "", "");
 
             foreach (var i in allItemsList)
             {

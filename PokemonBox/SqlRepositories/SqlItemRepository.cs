@@ -140,13 +140,15 @@ namespace PokemonBox.SqlRepositories
             var itemName = reader.GetOrdinal("ItemName");
             var dateAdded = reader.GetOrdinal("DateAdded");
             var description = reader.GetOrdinal("Description");
+            var itemLink = reader.GetOrdinal("ItemImageLink");
 
             return new Item(
                 (uint)reader.GetInt32(itemID),
                 (uint)reader.GetInt32(itemTypeID),
                 reader.GetString(itemName),
                 reader.GetDateTimeOffset(dateAdded),
-                reader.GetString(description)
+                reader.GetString(description),
+                reader.GetString(itemLink)
             );
         }
 
@@ -159,6 +161,7 @@ namespace PokemonBox.SqlRepositories
             var itemName = reader.GetOrdinal("ItemName");
             var dateAdded = reader.GetOrdinal("DateAdded");
             var description = reader.GetOrdinal("Description");
+            var itemImageLink = reader.GetOrdinal("ItemImageLink");
 
             while(reader.Read())
             {
@@ -167,7 +170,8 @@ namespace PokemonBox.SqlRepositories
                     (uint)reader.GetInt32(itemTypeID),
                     reader.GetString(itemName),
                     reader.GetDateTimeOffset(dateAdded),
-                    reader.GetString(description)
+                    reader.GetString(description),
+                    reader.GetString(itemImageLink)
                 );
 
                 items.Add(item);
