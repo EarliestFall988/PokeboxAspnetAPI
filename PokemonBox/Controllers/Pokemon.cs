@@ -32,12 +32,12 @@ namespace PokemonBox.Controllers
         }
 
         [HttpPost("AddPokemon")]
-        public string AddPokemon([FromHeader] string SessionId, [FromQuery] string pokemonName, [FromQuery] int pokedexNumber, [FromQuery] string description, [FromQuery] bool isLegendary)
+        public string AddPokemon([FromHeader] string SessionId, [FromQuery] string pokemonName, [FromQuery] int pokedexNumber, [FromQuery] string imageLink, [FromQuery] bool isLegendary)
         {
-            var str = GetValidPokemonAdd(pokemonName, pokedexNumber);
+            var str = GetValidPokemonAdd(pokemonName, pokedexNumber, imageLink);
             if(str.Equals("Valid"))
             {
-                Models.Pokemon pokemon = DatabaseConnection.PokemonRepo.AddPokemon(pokemonName, (uint)pokedexNumber, description, isLegendary);
+                Models.Pokemon pokemon = DatabaseConnection.PokemonRepo.AddPokemon(pokemonName, (uint)pokedexNumber, imageLink, isLegendary);
                 return JsonSerializer.Serialize(pokemon);
             }
             else
@@ -179,16 +179,25 @@ namespace PokemonBox.Controllers
         * Helper Methods
         * 
         * ******************************/
-        private string GetValidPokemonAdd(string pokemonName, int pokedex)
+        private string GetValidPokemonAdd(string pokemonName, int pokedex, string imageLink)
         {
+            if (pokemonName.Length > 0)
+            {
+                return APIUtilities.InputError("MUST HAVE POKEMON NAME");
+            }
+            if (imageLink.Length > 0)
+            {
+                return APIUtilities.InputError("MUST HAVE IMAGE LINK");
+            }
+            
             IReadOnlyList<Models.Pokemon> pokemon = DatabaseConnection.PokemonRepo.SelectPokemon();
             foreach(var p in pokemon)
             {
-                if(p.PokemonName.Equals(pokemonName))
+                if (p.PokemonName.Equals(pokemonName))
                 {
                     return APIUtilities.InputError("CANNOT ADD POKEMON THERE EXISTS ONE WITH SAME NAME");
                 }
-                if(p.PokedexNumber == pokedex)
+                if (p.PokedexNumber == pokedex)
                 {
                     return APIUtilities.InputError("CANNOT ADD POKEMON THERE EXISTS ONE WITH SAME POKEDEX");
                 }
@@ -198,6 +207,14 @@ namespace PokemonBox.Controllers
 
         private string GetValidPokeOwnedAdd(string username, string pokemonName, string nickname)
         {
+            if (pokemonName.Length > 0)
+            {
+                return APIUtilities.InputError("MUST HAVE POKEMON NAME");
+            }
+            if (nickname.Length > 0)
+            {
+                return APIUtilities.InputError("MUST HAVE NICKNAME");
+            }
             IReadOnlyList<PokeOwned> pokemon = DatabaseConnection.PokeOwnedRepo.SelectAllPokemonOwnedByUser(username);
             foreach (var p in pokemon)
             {
@@ -213,6 +230,10 @@ namespace PokemonBox.Controllers
         private string GetValidPokemonTypeAdd(string pokemonTypeName)
         {
             IReadOnlyList<PokemonType> pokemon = DatabaseConnection.PokemonTypeRepo.SelectPokemonTypes();
+            if (pokemonTypeName.Length > 0)
+            {
+                return APIUtilities.InputError("MUST HAVE POKEMON TYPE NAME");
+            }
             foreach (var p in pokemon)
             {
                 if (p.PokemonTypeName.Equals(pokemonTypeName))
