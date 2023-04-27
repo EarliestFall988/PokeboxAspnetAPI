@@ -529,31 +529,34 @@ namespace PokemonBox
 
             int same = 0;
             var count = 0;
-            var pokemon = pokeOwned[count];
-            while(count < (pokeOwned.Count -1 ) && pokemon != null && pokeOwned[count+1] != null )
+            if (pokeOwned.Count > 0)
             {
-                var check = pokeOwned[count + 1];
-                same = arePokeOwnedPresentationSame(pokemon, check);
-                if(same == 0)//Veno
+                var pokemon = pokeOwned[count];
+                while (count < (pokeOwned.Count - 1) && pokemon != null && pokeOwned[count + 1] != null)
                 {
-                    pokeOwned.Remove(pokemon);
-                    pokeOwned.Remove(check);
-                    count++;
+                    var check = pokeOwned[count + 1];
+                    same = arePokeOwnedPresentationSame(pokemon, check);
+                    if (same == 0)//Veno
+                    {
+                        pokeOwned.Remove(pokemon);
+                        pokeOwned.Remove(check);
+                        count++;
+                    }
+                    else if (same == 1) //Stantler
+                    {
+                        pokeOwned.Remove(pokemon);
+                        count++;
+                    }
+                    else
+                    {
+                        count++;
+                    }
+                    if (count < pokeOwned.Count)
+                    {
+                        pokemon = pokeOwned[count];
+                    }
                 }
-                else if(same == 1) //Stantler
-                {
-                    pokeOwned.Remove(pokemon);
-                    count++;
-                }
-                else
-                {
-                    count++;
-                }
-                if(count < pokeOwned.Count)
-                {
-                    pokemon = pokeOwned[count];
-                }
-            }           
+            }
 
             return pokeOwned;
         }

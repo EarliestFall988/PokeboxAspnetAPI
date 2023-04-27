@@ -84,8 +84,6 @@ namespace PokemonBox.Controllers
                 if (!email.Contains('@'))
                     return APIUtilities.InputError("invalid email");
 
-                var password = Cryptography.QuickSHA256Hash(unhashedPassword); //i know this is not secure, just for obfuscation (maybe brownie points) ... 
-
                 //public User AddUser(string userName, string password, string firstName, string lastName, bool isAdmin)
                 //do something with the email and password
                 //TODO: ADD check user does not already exist
@@ -97,7 +95,7 @@ namespace PokemonBox.Controllers
                         return APIUtilities.InputError("email already has account");
                     }
                 }
-                DatabaseConnection.UserRepo.AddUser(email, password, userProxy.fName, userProxy.lName, false);
+                DatabaseConnection.UserRepo.AddUser(email, unhashedPassword, userProxy.fName, userProxy.lName, false);
 
                 // TODO: Double-check if the user needs to be logged in after registering
                 return APIUtilities.res(200);
@@ -116,15 +114,14 @@ namespace PokemonBox.Controllers
             if (userProxy.result)
             {
                 string email = userProxy.email;
-                string unhashedPassword = userProxy.password;
 
-                var password = Cryptography.QuickSHA256Hash(unhashedPassword); //i know this is not secure, just for obfuscation
+                var password = userProxy.password; //i know this is not secure, just for obfuscation
 
                 // do something with the email and password here
                 // get real user info from the database instead of what the user entered w/ GetCredentials
 
                 var user = DatabaseConnection.UserRepo.SelectSingleUser(email);
-                if (Cryptography.QuickSHA256Hash(user.Password) != password) // this feels wrong, should double-check later
+                if (user.Password != password) // this feels wrong, should double-check later
                 {
                     return APIUtilities.InputError("INVALID PASSWORD");
                 }
