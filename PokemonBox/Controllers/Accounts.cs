@@ -90,9 +90,9 @@ namespace PokemonBox.Controllers
                 //do something with the email and password
                 //TODO: ADD check user does not already exist
                 var users = DatabaseConnection.UserRepo.SelectUser();
-                foreach(var u in users)
+                foreach (var u in users)
                 {
-                    if(u.UserName.Equals(email))
+                    if (u.UserName.Equals(email))
                     {
                         return APIUtilities.InputError("email already has account");
                     }
@@ -131,8 +131,8 @@ namespace PokemonBox.Controllers
 
                 string uid = Guid.NewGuid().ToString(); //creating a session key
                 DatabaseConnection.Sessions.Add(uid, email); // adding users to the list of loggedin users, this should probably be time stamped, and stored the database
-                return DatabaseConnection.Sessions[uid];
-                //return APIUtilities.CreateSession(email, uid); // I need to return more data than just the email...
+                                                             //return DatabaseConnection.Sessions[uid];
+                return APIUtilities.CreateSession(email, uid); // I need to return more data than just the email...
             }
             else
             {

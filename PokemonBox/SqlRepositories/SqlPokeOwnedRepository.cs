@@ -530,7 +530,7 @@ namespace PokemonBox
             int same = 0;
             var count = 0;
             var pokemon = pokeOwned[count];
-            while(count != (pokeOwned.Count -1 ) && pokemon != null && pokeOwned[count+1] != null )
+            while(count < (pokeOwned.Count -1 ) && pokemon != null && pokeOwned[count+1] != null )
             {
                 var check = pokeOwned[count + 1];
                 same = arePokeOwnedPresentationSame(pokemon, check);
@@ -549,7 +549,10 @@ namespace PokemonBox
                 {
                     count++;
                 }
-                pokemon = pokeOwned[count];
+                if(count < pokeOwned.Count)
+                {
+                    pokemon = pokeOwned[count];
+                }
             }           
 
             return pokeOwned;
@@ -572,7 +575,7 @@ namespace PokemonBox
             {
                 if (a.PokemonTypeNameTwo.Equals("null") && b.PokemonTypeNameTwo.Equals("null"))
                 {
-                    if(a.PokemonTypeNameOne.Equals(b.PokemonTypeNameTwo))
+                    if(a.PokemonTypeNameOne.Equals(b.PokemonTypeNameOne))
                     {
                         return 1;
                     }

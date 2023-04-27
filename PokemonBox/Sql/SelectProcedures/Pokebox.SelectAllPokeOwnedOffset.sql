@@ -4,7 +4,7 @@ CREATE OR ALTER PROCEDURE Pokebox.SelectAllPokeOwnedOffset
 AS
 
 SELECT PO.[Name], PO.[Level], PO.Gender, P.PokemonName, POT.PokemonTypeName, P.IsLegendary, PO.DatePutInBox,
-    PO.Username, PO.PokemonID, PO.PokeOwnedID, P.ImageLink
+    U.Username, PO.PokemonID, PO.PokeOwnedID, P.ImageLink
 FROM [User] U
     INNER JOIN PokeOwned PO ON PO.UserID = U.UserID
     INNER JOIN Pokemon P ON P.PokemonID = PO.PokemonID
