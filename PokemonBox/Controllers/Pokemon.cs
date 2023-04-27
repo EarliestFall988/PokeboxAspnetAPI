@@ -108,9 +108,12 @@ namespace PokemonBox.Controllers
         }
 
         [HttpGet("PokeTypeCount")]
-        public string PokeTypeCount([FromHeader] string SessionId, [FromQuery] DateTimeOffset start, [FromQuery] DateTimeOffset end)
+        public string PokeTypeCount([FromHeader] string SessionId, [FromQuery] int startMonth, int startYear, [FromQuery] int endMonth, [FromQuery] int endYear)
         {
-            IReadOnlyDictionary<string, uint> pokemon = DatabaseConnection.PokeOwnedRepo.PokeTypeCount(start, end);
+            var start = new DateTime(startYear, startMonth, 1);
+            var end = new DateTime(endYear, endMonth, 28);
+            
+            IReadOnlyDictionary<string, uint> pokemon = DatabaseConnection.PokeOwnedRepo.PokeTypeCount(DateTime.SpecifyKind(start, DateTimeKind.Utc), DateTime.SpecifyKind(end, DateTimeKind.Utc));
             return JsonSerializer.Serialize(pokemon);
         }
 
