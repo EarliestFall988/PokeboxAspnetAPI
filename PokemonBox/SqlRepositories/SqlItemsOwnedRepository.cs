@@ -237,6 +237,7 @@ namespace PokemonBox.SqlRepositories
             var itemCount = reader.GetOrdinal("ItemCount");
             var itemName = reader.GetOrdinal("ItemName");
             var itemImage = reader.GetOrdinal("ItemImageLink");
+            uint count = 1;
 
             while (reader.Read())
             {
@@ -245,7 +246,8 @@ namespace PokemonBox.SqlRepositories
                 var iN = reader.GetString(itemName);
                 var iI = reader.GetString(itemImage);
 
-                var t = new TopItem(iID, iN, iC, iI);
+                var t = new TopItem(iID, iN, iC, iI, count);
+                count++;
                 dict.Add(t);
             }
 

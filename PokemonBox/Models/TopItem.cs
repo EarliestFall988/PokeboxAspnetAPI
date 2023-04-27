@@ -10,12 +10,15 @@
 
         public string ItemImageLink { get; }
 
-        public TopItem(uint itemID, string itemName, uint itemCount, string itemImageLink)
+        public uint Rank { get; }
+
+        public TopItem(uint itemID, string itemName, uint itemCount, string itemImageLink, uint rank)
         {
             ItemID = itemID;
             ItemName = itemName;
             ItemCount = itemCount;
             ItemImageLink = itemImageLink;
+            Rank = rank;    
         }
     }
 }
