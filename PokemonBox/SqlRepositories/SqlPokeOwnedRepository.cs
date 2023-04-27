@@ -291,7 +291,7 @@ namespace PokemonBox
             return dic;
         }
 
-        public IReadOnlyDictionary<uint, uint> PokeRank(string pokemonName)
+        public IReadOnlyList<PokeRank> PokeRank(string pokemonName)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -312,22 +312,26 @@ namespace PokemonBox
             }
         }
 
-        private IReadOnlyDictionary<uint, uint> translatePokeRank(SqlDataReader reader)
+        private IReadOnlyList<PokeRank> translatePokeRank(SqlDataReader reader)
         {
-            var dic = new Dictionary<uint, uint>();
+            var list = new List<PokeRank>();
 
             var u = reader.GetOrdinal("UserID");
+            var un = reader.GetOrdinal("Username");
             var p = reader.GetOrdinal("PokemonCount");
+            var r = reader.GetOrdinal("Rank");
 
             while (reader.Read())
             {
                 var userID = reader.GetInt32(u);
+                var username = reader.GetString(un);
                 var pokemonCount = reader.GetInt32(p);
-
-                dic.Add((uint)userID, (uint)pokemonCount);
+                var rank = reader.GetInt32(r);
+                var poke = new PokeRank((uint)userID, username, (uint)pokemonCount, (uint)rank);
+                list.Add(poke);
             }
 
-            return dic;
+            return list;
         }
 
         public IReadOnlyDictionary<string, uint> PokeTypeCount(DateTimeOffset start, DateTimeOffset end)

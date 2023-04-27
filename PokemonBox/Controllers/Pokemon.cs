@@ -103,7 +103,7 @@ namespace PokemonBox.Controllers
         [HttpGet("PokeRank")]
         public string PokeRank([FromHeader] string SessionId, [FromQuery] string pokemonName)
         {
-            IReadOnlyDictionary<uint, uint> pokemon = DatabaseConnection.PokeOwnedRepo.PokeRank(pokemonName);
+            IReadOnlyList<PokeRank> pokemon = DatabaseConnection.PokeOwnedRepo.PokeRank(pokemonName);
             return JsonSerializer.Serialize(pokemon);
         }
 
