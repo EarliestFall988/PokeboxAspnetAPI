@@ -75,7 +75,7 @@ namespace PokemonBox.Controllers
         [HttpGet("SelectAllItemOwnedOffset")]
         public string SelectAllItemOwnedOffset([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] int pageNum)
         {
-            IReadOnlyList<ItemsOwned> items = DatabaseConnection.ItemsOwnedRepo.SelectAllItemsOwnedByUserOffset(username, pageNum);
+            IReadOnlyList<ItemOwnedPresentation> items = DatabaseConnection.ItemsOwnedRepo.SelectAllItemsOwnedByUserOffset(username, pageNum);
             return JsonSerializer.Serialize(items);
         }
 
@@ -150,31 +150,33 @@ namespace PokemonBox.Controllers
         * ******************************/
         private string GetValidItemAdd(string itemName, string description, string imageLink, string itemTypeName)
         {
+            if (itemName.Length <= 0)
+            {
+                return APIUtilities.InputError("MUST HAVE ITEM NAME");
+            }
+            if (imageLink.Length <= 0)
+            {
+                return APIUtilities.InputError("MUST HAVE IMAGE LINK");
+            }
+            if (description.Length <= 0)
+            {
+                return APIUtilities.InputError("MUST HAVE DESCRIPTION");
+            }
+            if (itemTypeName.Length <= 0)
+            {
+                return APIUtilities.InputError("MUST HAVE ITEM TYPE NAME");
+            }
+
+            bool valid = false;
             IReadOnlyList<Item> item = DatabaseConnection.ItemRepo.SelectItem();
             foreach (var i in item)
             {
-                if(itemName.Length > 0)
-                {
-                    return APIUtilities.InputError("MUST HAVE ITEM NAME");
-                }
-                if(imageLink.Length > 0)
-                {
-                    return APIUtilities.InputError("MUST HAVE IMAGE LINK");
-                }
-                if(description.Length > 0)
-                {
-                    return APIUtilities.InputError("MUST HAVE DESCRIPTION");
-                }
-                if (itemTypeName.Length > 0)
-                {
-                    return APIUtilities.InputError("MUST HAVE ITEM TYPE NAME");
-                }
                 IReadOnlyList<ItemType> itemTypes = DatabaseConnection.ItemTypeRepo.SelectItemType();
                 foreach(var it in itemTypes) 
                 {
-                    if(!it.ItemTypeName.Equals(itemTypeName))
+                    if(it.ItemTypeName.Equals(itemTypeName))
                     {
-                        return APIUtilities.InputError("MUST HAVE VALID ITEM TYPE NAME");
+                        valid = true; break;
                     }
                 }
                 if (i.ItemName.Equals(itemName))
@@ -182,6 +184,9 @@ namespace PokemonBox.Controllers
                     return APIUtilities.InputError("CANNOT ADD ITEM THERE EXISTS ONE WITH SAME NAME");
                 }
             }
+
+            if (!valid) return APIUtilities.InputError("MUST HAVE VALID ITEM TYPE NAME");
+
             return "Valid";
         }
 
@@ -213,13 +218,14 @@ namespace PokemonBox.Controllers
 
         private string GetValidItemTypeAdd(string itemTypeName)
         {
+            if (itemTypeName.Length <= 0)
+            {
+                return APIUtilities.InputError("MUST HAVE ITEM TYPE NAME");
+            }
+
             IReadOnlyList<ItemType> itemTypes = DatabaseConnection.ItemTypeRepo.SelectItemType();
             foreach (var i in itemTypes)
             {
-                if (itemTypeName.Length > 0)
-                {
-                    return APIUtilities.InputError("MUST HAVE ITEM TYPE NAME");
-                }
                 if (i.ItemTypeName.Equals(itemTypeName))
                 {
                     return APIUtilities.InputError("CANNOT ADD ITEMTYPE THERE EXISTS ONE WITH SAME NAME");

@@ -3,7 +3,7 @@ CREATE OR ALTER PROCEDURE Pokebox.SelectAllItemOwnedOffset
     @Page INT
 AS
 
-SELECT ITO.DatePutInBox, IT.ItemTypeName, I.ItemImageLink, I.ItemName, I.[Description]
+SELECT ITO.DatePutInBox, IT.ItemTypeName, I.ItemImageLink, I.ItemName, I.[Description] --, ITO.ItemOwnedID, ITO.UserID, ITO.ItemID
 FROM [User] U
     INNER JOIN ItemOwned ITO ON ITO.UserID = U.UserID
     INNER JOIN Item I ON I.ItemID = ITO.ItemID

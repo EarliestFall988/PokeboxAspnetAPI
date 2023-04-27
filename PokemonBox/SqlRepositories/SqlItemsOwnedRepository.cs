@@ -145,6 +145,30 @@ namespace PokemonBox.SqlRepositories
             return new ItemsOwned(oID, uID, iID, date);
         }
 
+        private List<ItemOwnedPresentation> TranslateItemsOwnedOffset(SqlDataReader reader)
+        {
+            var itemsOwnedPres = new List<ItemOwnedPresentation>();
+
+            var datePutInBox = reader.GetOrdinal("DatePutInBox");
+            var itemTypeName = reader.GetOrdinal("ItemTypeName");
+            var itemImageLink = reader.GetOrdinal("ItemImageLink");
+            var itemName = reader.GetOrdinal("ItemName");
+            var description = reader.GetOrdinal("Description");
+
+            while (reader.Read())
+            {
+                var date = reader.GetDateTimeOffset(datePutInBox);
+                var type = reader.GetString(itemTypeName);
+                var image = reader.GetString(itemImageLink);
+                var name = reader.GetString(itemName);
+                var desc = reader.GetString(description);
+
+                itemsOwnedPres.Add(new ItemOwnedPresentation(date, type, image, name, desc));
+            }
+
+            return itemsOwnedPres;
+        }
+
         public IReadOnlyList<ItemsOwned> SelectAllItemsOwned()
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -223,7 +247,7 @@ namespace PokemonBox.SqlRepositories
             return dict;
         }
 
-        public IReadOnlyList<ItemsOwned> SelectAllItemsOwnedByUserOffset(string userName, int pageNum)
+        public IReadOnlyList<ItemOwnedPresentation> SelectAllItemsOwnedByUserOffset(string userName, int pageNum)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -238,7 +262,7 @@ namespace PokemonBox.SqlRepositories
 
                     using (var reader = command.ExecuteReader())
                     {
-                        return TranslateItemsOwned(reader);
+                        return TranslateItemsOwnedOffset(reader);
                     }
                 }
             }
@@ -291,7 +315,6 @@ namespace PokemonBox.SqlRepositories
 
         private int TranslateFetchSingleItemOwned(SqlDataReader reader)
         {
-            //var username = reader.GetOrdinal("PokemonName");
             var id = reader.GetOrdinal("ItemID");
             reader.Read();
             var itemID = reader.GetInt32(id);
