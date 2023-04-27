@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Transactions;
 using System.Xml.Linq;
+using System.Security.Cryptography;
 
 namespace PokemonBox
 {
@@ -378,7 +379,7 @@ namespace PokemonBox
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.AddWithValue("Username", userName);
-                    command.Parameters.AddWithValue("Page", pageNum);
+                    command.Parameters.AddWithValue("Page", (int)pageNum);
 
                     connection.Open();
 
@@ -449,6 +450,7 @@ namespace PokemonBox
         private IReadOnlyList<PokeOwnedPresentation> TranslatePokeOwnedPresentation(SqlDataReader reader)
         {
             var pokeOwned = new List<PokeOwnedPresentation>();
+            var pokeOwned2 = new List<PokeOwnedPresentation>();
             var sortedPokeOwned = new List<PokeOwnedPresentation>();
 
             var name = reader.GetOrdinal("Name");
@@ -479,7 +481,7 @@ namespace PokemonBox
                 pokeGender g;
 
                 bool leg;
-                if (reader.GetInt32(checkL) == 1)
+                if (checkL == 1)
                 {
                     leg = true;
                 }
@@ -500,42 +502,87 @@ namespace PokemonBox
                 {
                     g = pokeGender.unknown;
                 }
-
-                var p = new PokeOwnedPresentation(nickName, l, g, pokemonName, pokemonTypeName, null, leg, date, userName, pokemonID, pokeOwnedID, link);
-                pokeOwned.Add(p);
-
-            }
-            
-            foreach (var p in pokeOwned)
-            {
-                foreach(var p2 in pokeOwned)
+                bool same1 = false;
+                var newPoke = new PokeOwnedPresentation(nickName, l, g, pokemonName, pokemonTypeName, "null", leg, date, userName, pokemonID, pokeOwnedID, link);
+                pokeOwned.Add(newPoke);
+                PokeOwnedPresentation poke = null;
+                foreach (var p in pokeOwned)
                 {
-                    if(p.PokeOwnedID == p2.PokeOwnedID)
+                    same1 = arePokeOwnedPresentationSameWithSameType(p, newPoke);
+                    if(same1)
                     {
-                        var types = new PokeOwnedPresentation(p.NickName, p.Level, p.Gender, p.PokemonName, p.PokemonTypeNameOne, p2.PokemonTypeNameOne, p.IsLegendary, p.DatePutInBox, p.Username, p.PokemonID, p.PokeOwnedID, p.ImageLink);
-                        sortedPokeOwned.Add(types);
+                        poke = p; break;
                     }
                 }
+                if (!same1)
+                {
+                    pokeOwned.Add(newPoke);
+                }
+                else
+                {
+                    var types = new PokeOwnedPresentation(poke.NickName, poke.Level, poke.Gender, poke.PokemonName, poke.PokemonTypeNameOne, newPoke.PokemonTypeNameOne, poke.IsLegendary, poke.DatePutInBox, poke.Username, poke.PokemonID, poke.PokeOwnedID, poke.ImageLink);
+                    pokeOwned.Add(types);
+                    pokeOwned.Remove(poke);
+                }
+
             }
 
-            foreach (var p in pokeOwned )
+            int same = 0;
+            var count = 0;
+            var pokemon = pokeOwned[count];
+            while(count != (pokeOwned.Count -1 ) && pokemon != null && pokeOwned[count+1] != null )
             {
-                bool valid = true;
-                foreach( var p2 in sortedPokeOwned)
+                var check = pokeOwned[count + 1];
+                same = arePokeOwnedPresentationSame(pokemon, check);
+                if(same == 0)//Veno
                 {
-                    if (p.PokeOwnedID == p2.PokeOwnedID)
-                    {
-                        valid = false;
-                    }
+                    pokeOwned.Remove(pokemon);
+                    pokeOwned.Remove(check);
+                    count++;
                 }
-                if(valid)
+                else if(same == 1) //Stantler
                 {
-                    sortedPokeOwned.Add(p);
+                    pokeOwned.Remove(pokemon);
+                    count++;
                 }
-            }
+                else
+                {
+                    count++;
+                }
+                pokemon = pokeOwned[count];
+            }           
 
-            return sortedPokeOwned;
+            return pokeOwned;
         }
 
+        private bool arePokeOwnedPresentationSameWithSameType(PokeOwnedPresentation a, PokeOwnedPresentation b)
+        {
+            if (a.PokeOwnedID == b.PokeOwnedID)
+            {
+                if(a.PokemonTypeNameOne != b.PokemonTypeNameOne)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private int arePokeOwnedPresentationSame(PokeOwnedPresentation a, PokeOwnedPresentation b)
+        {
+            if (a.PokeOwnedID == b.PokeOwnedID)
+            {
+                if (a.PokemonTypeNameTwo.Equals("null") && b.PokemonTypeNameTwo.Equals("null"))
+                {
+                    if(a.PokemonTypeNameOne.Equals(b.PokemonTypeNameTwo))
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
+            return 2;
+        }
     }
 }
