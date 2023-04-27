@@ -26,7 +26,7 @@ namespace PokemonBox
         /// </summary>
         /// <param name="pokemonName">The pokemons name like "Bulbasaur"</param>
         /// <returns>dictionary where the key is UserID and value is how many of the pokemon they have</returns>
-        IReadOnlyDictionary<uint, uint> PokeRank(string pokemonName);
+        IReadOnlyList<PokeRank> PokeRank(string pokemonName);
 
         /// <summary>
         /// Gets the amount of pokemon types that are owned
