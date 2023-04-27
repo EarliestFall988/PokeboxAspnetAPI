@@ -497,7 +497,8 @@ VALUES
     (N'odio.etiam@icloud.ca', N'UTP30PIF6XB', N'Imelda', N'Matthews', 0),
     (N'arcu.eu.odio@hotmail.com', N'VRN31NMN1CB', N'Nola', N'Oliver', 1),
     (N'vivamus@google.edu', N'COO93LGL7JO', N'Jorden', N'Thomas', 1),
-    (N'et.rutrum@google.net', N'GWT95FCV3KN', N'Wesley', N'Butler', 0);
+    (N'et.rutrum@google.net', N'GWT95FCV3KN', N'Wesley', N'Butler', 0),
+    (N'nosekk', N'lmao', N'Jacob', N'Legg', 1);
 
 INSERT Pokebox.PokemonType(PokemonTypeName)
 VALUES
@@ -7285,7 +7286,38 @@ WITH SourceCTE(Username, PokemonName, [Name], Gender, [Level]) AS
  (N'arcu.eu.odio@hotmail.com', N'Ducklett', N'Sophia', N'M', 75),
  (N'vivamus@google.edu', N'Greninja', N'Ebony', N'M', 75),
  (N'et.rutrum@google.net', N'Noibat', N'Gay', N'M', 48),
- (N'et.rutrum@google.net', N'Archen', N'Gay', N'M', 48)
+ (N'et.rutrum@google.net', N'Archen', N'Gay', N'M', 48),
+ (N'nosekk', N'Tepig', N'a', N'M', 69),
+ (N'nosekk', N'Tepig', N'b', N'M', 69),
+ (N'nosekk', N'Tepig', N'c', N'M', 69),
+ (N'nosekk', N'Tepig', N'd', N'M', 69),
+ (N'nosekk', N'Tepig', N'e', N'M', 69),
+ (N'nosekk', N'Tepig', N'f', N'M', 69),
+ (N'nosekk', N'Tepig', N'g', N'M', 69),
+ (N'nosekk', N'Tepig', N'h', N'M', 69),
+ (N'nosekk', N'Tepig', N'i', N'M', 69),
+ (N'nosekk', N'Tepig', N'j', N'M', 69),
+ (N'nosekk', N'Ditto', N'k', N'M', 69),
+ (N'nosekk', N'Tepig', N'l', N'M', 69),
+ (N'nosekk', N'Tepig', N'm', N'M', 69),
+ (N'nosekk', N'Tepig', N'n', N'M', 69),
+ (N'nosekk', N'Tepig', N'o', N'M', 69),
+ (N'nosekk', N'Tepig', N'p', N'M', 69),
+ (N'nosekk', N'Tepig', N'q', N'M', 69),
+ (N'nosekk', N'Tepig', N'r', N'M', 69),
+ (N'nosekk', N'Tepig', N's', N'M', 69),
+ (N'nosekk', N'Tepig', N't', N'M', 69),
+ (N'nosekk', N'Tepig', N'u', N'M', 69),
+ (N'nosekk', N'Tepig', N'v', N'M', 69),
+ (N'nosekk', N'Tepig', N'w', N'M', 69),
+ (N'nosekk', N'Tepig', N'x', N'M', 69),
+ (N'nosekk', N'Tepig', N'y', N'M', 69),
+ (N'nosekk', N'Tepig', N'z', N'M', 69),
+ (N'nosekk', N'Tepig', N'alpha', N'M', 69),
+ (N'nosekk', N'Tepig', N'beta', N'M', 69),
+ (N'nosekk', N'Tepig', N'gamma', N'M', 69),
+ (N'nosekk', N'Tepig', N'delta', N'M', 69),
+ (N'nosekk', N'Tepig', N'epsilon', N'M', 69)
         ) tab(Username, PokemonName, [Name], Gender, [Level])
 )
 INSERT Pokebox.PokeOwned(UserID, PokemonID, [Name], Gender, [Level])
