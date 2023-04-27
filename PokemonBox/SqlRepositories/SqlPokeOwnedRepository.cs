@@ -369,7 +369,7 @@ namespace PokemonBox
             return dic;
         }
 
-        public IReadOnlyList<PokeOwned> SelectAllPokemonOwnedByUserPages(string userName, uint pageNum)
+        public IReadOnlyList<PokeOwnedPresentation> SelectAllPokemonOwnedByUserPages(string userName, uint pageNum)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -384,7 +384,7 @@ namespace PokemonBox
 
                     using (var reader = command.ExecuteReader())
                     {
-                        return TranslatePokeOwned(reader);
+                        return TranslatePokeOwnedPresentation(reader);
                     }
                 }
             }
@@ -444,6 +444,97 @@ namespace PokemonBox
             var pokeName = reader.GetString(pokemonName);
             var nickName = reader.GetString(nickname);
             return new Tuple<string, string>(pokeName,nickName);
+        }
+
+        private IReadOnlyList<PokeOwnedPresentation> TranslatePokeOwnedPresentation(SqlDataReader reader)
+        {
+            var pokeOwned = new List<PokeOwnedPresentation>();
+            var sortedPokeOwned = new List<PokeOwnedPresentation>();
+
+            var name = reader.GetOrdinal("Name");
+            var level = reader.GetOrdinal("Level");
+            var gender = reader.GetOrdinal("Gender");
+            var pName = reader.GetOrdinal("PokemonName");
+            var pTypeName = reader.GetOrdinal("PokemonTypeName");
+            var legend = reader.GetOrdinal("IsLegendary");
+            var datePutInBox = reader.GetOrdinal("DatePutInBox");
+            var username = reader.GetOrdinal("Username");
+            var pID = reader.GetOrdinal("PokemonID");
+            var poID = reader.GetOrdinal("PokeOwnedID");
+            var imageLink = reader.GetOrdinal("ImageLink");
+
+            while (reader.Read())
+            {
+                var nickName = reader.GetString(name);
+                var l = (uint)reader.GetInt32(level);
+                var gCheck = reader.GetString(gender);
+                var pokemonName = reader.GetString(pName);
+                var pokemonTypeName = reader.GetString(pTypeName);
+                var checkL = reader.GetInt32(legend);
+                var date = reader.GetDateTimeOffset(datePutInBox);
+                var userName = reader.GetString(username);
+                var pokemonID = (uint)reader.GetInt32(pID);
+                var pokeOwnedID = (uint)reader.GetInt32(poID);
+                var link = reader.GetString(imageLink);
+                pokeGender g;
+
+                bool leg;
+                if (reader.GetInt32(checkL) == 1)
+                {
+                    leg = true;
+                }
+                else
+                {
+                    leg = false;
+                }
+
+                if (gCheck.Equals("F"))
+                {
+                    g = pokeGender.female;
+                }
+                else if (gCheck.Equals("M"))
+                {
+                    g = pokeGender.male;
+                }
+                else
+                {
+                    g = pokeGender.unknown;
+                }
+
+                var p = new PokeOwnedPresentation(nickName, l, g, pokemonName, pokemonTypeName, null, leg, date, userName, pokemonID, pokeOwnedID, link);
+                pokeOwned.Add(p);
+
+            }
+            
+            foreach (var p in pokeOwned)
+            {
+                foreach(var p2 in pokeOwned)
+                {
+                    if(p.PokeOwnedID == p2.PokeOwnedID)
+                    {
+                        var types = new PokeOwnedPresentation(p.NickName, p.Level, p.Gender, p.PokemonName, p.PokemonTypeNameOne, p2.PokemonTypeNameOne, p.IsLegendary, p.DatePutInBox, p.Username, p.PokemonID, p.PokeOwnedID, p.ImageLink);
+                        sortedPokeOwned.Add(types);
+                    }
+                }
+            }
+
+            foreach (var p in pokeOwned )
+            {
+                bool valid = true;
+                foreach( var p2 in sortedPokeOwned)
+                {
+                    if (p.PokeOwnedID == p2.PokeOwnedID)
+                    {
+                        valid = false;
+                    }
+                }
+                if(valid)
+                {
+                    sortedPokeOwned.Add(p);
+                }
+            }
+
+            return sortedPokeOwned;
         }
 
     }

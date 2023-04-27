@@ -117,7 +117,7 @@ namespace PokemonBox.Controllers
         [HttpGet("SelectAllPokeOwnedOffset")]
         public string SelectAllPokeOwnedOffset([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] int pageNum)
         {
-            IReadOnlyList<PokeOwned> pokemon = DatabaseConnection.PokeOwnedRepo.SelectAllPokemonOwnedByUserPages(username, (uint)pageNum);
+            IReadOnlyList<PokeOwnedPresentation> pokemon = DatabaseConnection.PokeOwnedRepo.SelectAllPokemonOwnedByUserPages(username, (uint)pageNum);
             return JsonSerializer.Serialize(pokemon);
         }
 
