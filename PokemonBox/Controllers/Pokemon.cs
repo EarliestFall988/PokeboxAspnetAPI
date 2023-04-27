@@ -32,12 +32,12 @@ namespace PokemonBox.Controllers
         }
 
         [HttpPost("AddPokemon")]
-        public string AddPokemon([FromHeader] string SessionId, [FromQuery] string pokemonName, [FromQuery] int pokedexNumber, [FromQuery] string imageLink, [FromQuery] bool isLegendary)
+        public string AddPokemon([FromHeader] string SessionId, [FromQuery] string pokemonName, [FromQuery] string pokedexNumber, [FromQuery] string imageLink, [FromQuery] string isLegendary)
         {
-            var str = GetValidPokemonAdd(pokemonName, pokedexNumber, imageLink);
+            var str = GetValidPokemonAdd(pokemonName, int.Parse(pokedexNumber), imageLink);
             if(str.Equals("Valid"))
             {
-                Models.Pokemon pokemon = DatabaseConnection.PokemonRepo.AddPokemon(pokemonName, (uint)pokedexNumber, imageLink, isLegendary);
+                Models.Pokemon pokemon = DatabaseConnection.PokemonRepo.AddPokemon(pokemonName, uint.Parse(pokedexNumber), imageLink, bool.Parse(isLegendary));
                 return JsonSerializer.Serialize(pokemon);
             }
             else
@@ -108,10 +108,10 @@ namespace PokemonBox.Controllers
         }
 
         [HttpGet("PokeTypeCount")]
-        public string PokeTypeCount([FromHeader] string SessionId, [FromQuery] int startMonth, int startYear, [FromQuery] int endMonth, [FromQuery] int endYear)
+        public string PokeTypeCount([FromHeader] string SessionId, [FromQuery] string startMonth, string startYear, [FromQuery] string endMonth, [FromQuery] string endYear)
         {
-            var start = new DateTime(startYear, startMonth, 1);
-            var end = new DateTime(endYear, endMonth, 28);
+            var start = new DateTime(int.Parse(startYear), int.Parse(startMonth), 1);
+            var end = new DateTime(int.Parse(endYear), int.Parse(endMonth), 28);
             
             IReadOnlyDictionary<string, uint> pokemon = DatabaseConnection.PokeOwnedRepo.PokeTypeCount(DateTime.SpecifyKind(start, DateTimeKind.Utc), DateTime.SpecifyKind(end, DateTimeKind.Utc));
             return JsonSerializer.Serialize(pokemon);
