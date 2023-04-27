@@ -208,7 +208,7 @@ namespace PokemonBox.SqlRepositories
             }
         }
         
-        public IReadOnlyDictionary<uint, uint> TopItem(uint year, uint month)
+        public IReadOnlyList<TopItem> TopItem(uint year, uint month)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -229,25 +229,30 @@ namespace PokemonBox.SqlRepositories
             }
         }
 
-        private IReadOnlyDictionary<uint, uint> TranslateTopItem(SqlDataReader reader) 
+        private IReadOnlyList<TopItem> TranslateTopItem(SqlDataReader reader) 
         { 
-            var dict = new Dictionary<uint, uint>();
+            var dict = new List<TopItem>();
 
             var itemID = reader.GetOrdinal("ItemID");
             var itemCount = reader.GetOrdinal("ItemCount");
+            var itemName = reader.GetOrdinal("ItemName");
+            var itemImage = reader.GetOrdinal("ItemImageLink");
 
-            while(reader.Read())
+            while (reader.Read())
             {
                 var iID = (uint)reader.GetInt32(itemID);
                 var iC = (uint)reader.GetInt32(itemCount);
+                var iN = reader.GetString(itemName);
+                var iI = reader.GetString(itemImage);
 
-                dict.Add(iID, iC);
+                var t = new TopItem(iID, iN, iC, iI);
+                dict.Add(t);
             }
 
             return dict;
         }
 
-        public IReadOnlyList<ItemOwnedPresentation> SelectAllItemsOwnedByUserOffset(string userName, int pageNum)
+        public IReadOnlyList<ItemOwnedPresentation> SelectAllItemsOwnedByUserOffset(string userName, uint pageNum)
         {
             using (var connection = new SqlConnection(_connectionString))
             {

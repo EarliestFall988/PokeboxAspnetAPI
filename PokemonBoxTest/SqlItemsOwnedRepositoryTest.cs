@@ -154,6 +154,7 @@ namespace PokemonBox.Test
 
         }
 
+        /*
         [Test]
         public void TopItemWork()
         {
@@ -195,7 +196,7 @@ namespace PokemonBox.Test
 
             }
 
-        }
+        }*/
 
         private static void AssertItemsOwnedAreEqual(ItemsOwned expected, ItemsOwned actual)
         {

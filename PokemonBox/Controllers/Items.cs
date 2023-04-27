@@ -66,16 +66,16 @@ namespace PokemonBox.Controllers
         }
 
         [HttpGet("TopItem")]
-        public string TopItem([FromHeader] string SessionId, [FromQuery] uint year, [FromQuery] uint month)
+        public string TopItem([FromHeader] string SessionId, [FromQuery] string year, [FromQuery] string month)
         {
-            IReadOnlyDictionary<uint, uint> items = DatabaseConnection.ItemsOwnedRepo.TopItem(year, month);
+            IReadOnlyList<TopItem> items = DatabaseConnection.ItemsOwnedRepo.TopItem(uint.Parse(year), uint.Parse(month));
             return JsonSerializer.Serialize(items);
         }
 
         [HttpGet("SelectAllItemOwnedOffset")]
-        public string SelectAllItemOwnedOffset([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] int pageNum)
+        public string SelectAllItemOwnedOffset([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] string pageNum)
         {
-            IReadOnlyList<ItemOwnedPresentation> items = DatabaseConnection.ItemsOwnedRepo.SelectAllItemsOwnedByUserOffset(username, pageNum);
+            IReadOnlyList<ItemOwnedPresentation> items = DatabaseConnection.ItemsOwnedRepo.SelectAllItemsOwnedByUserOffset(username, uint.Parse(pageNum));
             return JsonSerializer.Serialize(items);
         }
 

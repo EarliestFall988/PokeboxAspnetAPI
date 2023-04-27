@@ -18,12 +18,12 @@ namespace PokemonBox.Interfaces
 
         IReadOnlyList<ItemsOwned> SelectAllItemsOwnedByUser(string userName);
 
-        IReadOnlyList<ItemOwnedPresentation> SelectAllItemsOwnedByUserOffset(string userName, int pageNum);
+        IReadOnlyList<ItemOwnedPresentation> SelectAllItemsOwnedByUserOffset(string userName, uint pageNum);
 
         IReadOnlyList<ItemsOwned> SelectAllItemsOwned();
 
         ItemsOwned SelectSingleItemOwned(string userName, string itemName);
 
-        IReadOnlyDictionary<uint, uint> TopItem(uint year, uint month);
+        IReadOnlyList<TopItem> TopItem(uint year, uint month);
     }
 }
