@@ -121,6 +121,10 @@ namespace PokemonBox.Controllers
                 // get real user info from the database instead of what the user entered w/ GetCredentials
 
                 var user = DatabaseConnection.UserRepo.SelectSingleUser(email);
+                if(user == null)
+                {
+                    return APIUtilities.InputError("INVALID USERNAME");
+                }
                 if (user.Password != password) // this feels wrong, should double-check later
                 {
                     return APIUtilities.InputError("INVALID PASSWORD");
@@ -190,7 +194,6 @@ namespace PokemonBox.Controllers
                 string password = "";
 
                 string password2 = "";
-                string uName = "";
                 string fName = "";
                 string lName = "";
                 bool admin = false;
@@ -209,7 +212,6 @@ namespace PokemonBox.Controllers
                     if (register)
                     {
                         success += APIUtilities.TryGetFromProperty(root, "password2", out password2) == true ? 1 : 0;
-                        success += APIUtilities.TryGetFromProperty(root, "username", out uName) == true ? 1 : 0;
                         success += APIUtilities.TryGetFromProperty(root, "firstName", out fName) == true ? 1 : 0;
                         success += APIUtilities.TryGetFromProperty(root, "lastName", out lName) == true ? 1 : 0;
                         success += APIUtilities.TryGetFromProperty(root, "admin", out admin) == true ? 1 : 0;
@@ -240,7 +242,7 @@ namespace PokemonBox.Controllers
                             };
                         }
 
-                    if (success == 7)
+                    if (success == 6)
                     {
                         return new UserProxyResult()
                         {
@@ -251,7 +253,6 @@ namespace PokemonBox.Controllers
                             email = email,
                             password = password,
                             password2 = password2,
-                            Username = uName,
                             fName = fName,
                             lName = lName,
                             admin = admin

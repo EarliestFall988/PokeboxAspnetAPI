@@ -254,7 +254,7 @@ namespace PokemonBox
             return false;
         }
 
-        public IReadOnlyDictionary<uint, decimal> AverageLevel()
+        public IReadOnlyDictionary<string, decimal> AverageLevel()
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -273,19 +273,19 @@ namespace PokemonBox
             }
         }
 
-        private IReadOnlyDictionary<uint, decimal> translateAverageLevel(SqlDataReader reader)
+        private IReadOnlyDictionary<string, decimal> translateAverageLevel(SqlDataReader reader)
         {
-            var dic = new Dictionary<uint, decimal>();
+            var dic = new Dictionary<string, decimal>();
 
-            var u = reader.GetOrdinal("UserID");
+            var u = reader.GetOrdinal("Username");
             var av = reader.GetOrdinal("AveragePokeLevel");
 
             while (reader.Read())
             {
-                var userID = reader.GetInt32(u);
+                var username = reader.GetString(u);
                 var average = reader.GetDecimal(av);
 
-                dic.Add((uint)userID, average);
+                dic.Add(username, average);
             }
 
             return dic;

@@ -19,7 +19,7 @@ namespace PokemonBox
         /// Gets the average level of pokemon each user has 
         /// </summary>
         /// <returns>The dicitionary uint is UserID and decimal is the average</returns>
-        IReadOnlyDictionary<uint, decimal> AverageLevel();
+        IReadOnlyDictionary<string, decimal> AverageLevel();
 
         /// <summary>
         /// Gets the number of a certain pokemon that the user has

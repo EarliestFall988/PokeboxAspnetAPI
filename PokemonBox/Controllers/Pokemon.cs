@@ -211,11 +211,11 @@ namespace PokemonBox.Controllers
 
         private string GetValidPokeOwnedAdd(string username, string pokemonName, string nickname)
         {
-            if (pokemonName.Length > 0)
+            if (!(pokemonName.Length > 0))
             {
                 return APIUtilities.InputError("MUST HAVE POKEMON NAME");
             }
-            if (nickname.Length > 0)
+            if (!(nickname.Length > 0))
             {
                 return APIUtilities.InputError("MUST HAVE NICKNAME");
             }
@@ -227,6 +227,19 @@ namespace PokemonBox.Controllers
                 {
                     return APIUtilities.InputError("CANNOT ADD POKEMON THERE EXISTS ONE WITH SAME NICKNAME");
                 }
+            }
+            IReadOnlyList<Models.Pokemon> checkPokemon = DatabaseConnection.PokemonRepo.SelectPokemon();
+            bool check = false;
+            foreach (var p in checkPokemon)
+            {
+                if(pokemonName.Equals(p.PokemonName))
+                {
+                    check = true;
+                }
+            }
+            if(!check)
+            {
+                return APIUtilities.InputError("CANNOT ADD THERE IS NO SUCH POKEMON");
             }
             return "Valid";
         }
