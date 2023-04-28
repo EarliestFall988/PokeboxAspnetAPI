@@ -263,7 +263,7 @@ namespace PokemonBox.SqlRepositories
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.AddWithValue("Username", userName);
-                    command.Parameters.AddWithValue("Page", pageNum);
+                    command.Parameters.AddWithValue("Page", (uint)pageNum);
 
                     connection.Open();
 
