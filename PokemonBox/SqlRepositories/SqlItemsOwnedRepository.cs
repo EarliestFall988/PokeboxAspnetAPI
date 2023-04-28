@@ -104,6 +104,42 @@ namespace PokemonBox.SqlRepositories
             }
         }
 
+        public IReadOnlyList<string> SelectAllItemsOwnedByUserNames(string userName)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.SelectAllItemsOwnedByUser", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("Username", userName);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        return TranslateItemsOwnedString(reader);
+                    }
+                }
+            }
+        }
+
+        private IReadOnlyList<string> TranslateItemsOwnedString(SqlDataReader reader)
+        {
+            var itemsOwned = new List<string>();
+
+            var itemOwnedID = reader.GetOrdinal("ItemName");
+
+            while (reader.Read())
+            {
+                var oID = reader.GetString(itemOwnedID);
+
+                itemsOwned.Add(oID);
+            }
+
+            return itemsOwned;
+        }
+
         private IReadOnlyList<ItemsOwned> TranslateItemsOwned(SqlDataReader reader)
         {
             var itemsOwned = new List<ItemsOwned>();

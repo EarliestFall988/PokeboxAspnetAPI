@@ -199,27 +199,31 @@ namespace PokemonBox.Controllers
 
         private string GetValidItemOwnedAdd(string username, string itemName)
         {
-            IReadOnlyList<ItemsOwned> items = DatabaseConnection.ItemsOwnedRepo.SelectAllItemsOwnedByUser(username);
+            IReadOnlyList<string> items = DatabaseConnection.ItemsOwnedRepo.SelectAllItemsOwnedByUserNames(username);
 
             var allItemsList = DatabaseConnection.ItemRepo.SelectItem();
-            var item = new Item(0, 0, "", default(DateTime), "", "");
 
-            foreach (var i in allItemsList)
+            foreach (var item in items)
             {
-                if (i.ItemName.Equals(itemName))
-                {
-                    item = i;
-                    break;
-                }
-            }
-
-            foreach (var i in items)
-            {
-                if (i.ItemID == item.ItemID)
+                if(item.Equals(itemName))
                 {
                     return APIUtilities.InputError("CANNOT ADD ITEM THERE EXISTS ONE WITH SAME NAME");
                 }
             }
+
+            bool check = false;
+            foreach (var item in allItemsList)
+            {
+                if(item.ItemName.Equals(itemName))
+                {
+                    check = true;
+                }
+            }
+            if(!check)
+            {
+                return APIUtilities.InputError("NOT VALID ITEM");
+            }
+            
             return "Valid";
         }
 
