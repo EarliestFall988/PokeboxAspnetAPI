@@ -508,11 +508,11 @@ namespace PokemonBox
                     leg = false;
                 }
 
-                if (gCheck.Equals("0"))
+                if (gCheck.Equals("0") || gCheck.Equals("F"))
                 {
                     g = pokeGender.female;
                 }
-                else if (gCheck.Equals("1"))
+                else if (gCheck.Equals("1") || gCheck.Equals("M"))
                 {
                     g = pokeGender.male;
                 }

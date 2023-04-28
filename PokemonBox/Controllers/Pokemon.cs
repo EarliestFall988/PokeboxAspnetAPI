@@ -65,11 +65,11 @@ namespace PokemonBox.Controllers
             if (str.Equals("Valid"))
             {
                 pokeGender g;
-                if( gender == "0")
+                if( gender == "0" || gender == "F")
                 {
                     g = pokeGender.female;
                 }
-                else if( gender == "1")
+                else if( gender == "1" || gender == "M")
                 {
                     g = pokeGender.male;
                 }
