@@ -80,7 +80,7 @@ Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\Stored
 Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\StoredProcedures\Pokebox.AddUser.sql"
 
 Write-Host "Inserting data..."
-Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\Data\FillTable.sql"
+Invoke-SqlCmd -ServerInstance $Server -Database $Database -InputFile "Sql\Data\Data.sql"
 
 Write-Host "Rebuild completed."
 Write-Host ""
