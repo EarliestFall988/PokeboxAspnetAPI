@@ -47,7 +47,7 @@ namespace PokemonBox.Controllers
             }
             else
             {
-                return JsonSerializer.Serialize(str);
+                return str;
             }
             
         }
@@ -110,7 +110,7 @@ namespace PokemonBox.Controllers
             }
             else
             {
-                return JsonSerializer.Serialize(str);
+                return str;
             }
             
         }
@@ -138,7 +138,7 @@ namespace PokemonBox.Controllers
             }
             else
             {
-                return JsonSerializer.Serialize(str);
+                return str;
             }
             
         }
