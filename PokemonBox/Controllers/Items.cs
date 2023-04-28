@@ -127,7 +127,7 @@ namespace PokemonBox.Controllers
             return JsonSerializer.Serialize(item);
         }
 
-        [HttpGet("AddItem")]
+        [HttpPost("AddItem")]
         public string AddItem([FromHeader] string SessionId, [FromQuery] string itemName, [FromQuery] string description, [FromQuery] string itemTypeName, [FromQuery] string itemImageLink)
         {
             var str = GetValidItemAdd(itemName, description, itemImageLink, itemTypeName);
