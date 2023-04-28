@@ -79,6 +79,26 @@ namespace PokemonBox
             }
         }
 
+        public uint SelectPokemonCount()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.SelectPokemonCount", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        var itemID = reader.GetOrdinal("PokemonCount");
+                        reader.Read();
+                        return (uint)reader.GetInt32(itemID);
+                    }
+                }
+            }
+        }
+
         private IReadOnlyList<Pokemon> TranslatePokeman(SqlDataReader reader)
         {
             //my plural distinction of pokemon, pokeman

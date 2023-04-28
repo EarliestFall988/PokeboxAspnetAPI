@@ -46,6 +46,13 @@ namespace PokemonBox.Controllers
             }
         }
 
+        [HttpGet("SelectPokemonCount")]
+        public string SelectPokemonCount()
+        {
+            uint item = DatabaseConnection.PokemonRepo.SelectPokemonCount();
+            return JsonSerializer.Serialize(item);
+        }
+
         /*********************************
         * 
         * PokemonOwned Methods
