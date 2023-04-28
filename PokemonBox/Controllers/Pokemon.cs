@@ -96,7 +96,7 @@ namespace PokemonBox.Controllers
         [HttpGet("AverageLevel")]
         public string AverageLevel()
         {
-            IReadOnlyDictionary<uint, decimal> pokemon = DatabaseConnection.PokeOwnedRepo.AverageLevel();
+            IReadOnlyDictionary<string, decimal> pokemon = DatabaseConnection.PokeOwnedRepo.AverageLevel();
             return JsonSerializer.Serialize(pokemon);
         }
 

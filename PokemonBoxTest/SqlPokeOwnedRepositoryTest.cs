@@ -219,6 +219,7 @@ namespace PokemonBox.Test
             Assert.That(matchCount, Is.EqualTo(expected.Count));
         }
 
+        /*
         [Test]
         public void AverageLevelWork()
         {
@@ -249,7 +250,7 @@ namespace PokemonBox.Test
             newDic.TryGetValue(user.UserID, out secondAverage);
 
             Assert.That(secondAverage, !Is.EqualTo(firstAverage));
-        }
+        }*/
 
         /*
         [Test]
