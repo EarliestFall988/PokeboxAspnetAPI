@@ -59,12 +59,25 @@ namespace PokemonBox.Controllers
         * 
         * ******************************/
         [HttpPost("CreatePokeOwned")]
-        public string CreatePokeOwned([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] string pokemonName, [FromQuery] string name, [FromQuery] pokeGender gender, [FromQuery] uint level)
+        public string CreatePokeOwned([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] string pokemonName, [FromQuery] string name, [FromQuery] string gender, [FromQuery] uint level)
         {
             var str = GetValidPokeOwnedAdd(username, pokemonName, name);
             if (str.Equals("Valid"))
             {
-                PokeOwned pokemon = DatabaseConnection.PokeOwnedRepo.CreatePokeOwned(username, pokemonName, name, gender, level);
+                pokeGender g;
+                if( gender == "0")
+                {
+                    g = pokeGender.female;
+                }
+                else if( gender == "1")
+                {
+                    g = pokeGender.male;
+                }
+                else
+                {
+                    g = pokeGender.unknown;
+                }
+                PokeOwned pokemon = DatabaseConnection.PokeOwnedRepo.CreatePokeOwned(username, pokemonName, name, g, level);
                 return JsonSerializer.Serialize(pokemon);
             }
             else

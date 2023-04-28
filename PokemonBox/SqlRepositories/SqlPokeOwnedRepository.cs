@@ -26,6 +26,20 @@ namespace PokemonBox
                 throw new ArgumentNullException(nameof(nickName));
             if (pokemonName == null)
                 throw new ArgumentNullException(nameof(pokemonName));
+            string g;
+
+            if(gender.Equals(pokeGender.female))
+            {
+                g = "0";
+            }
+            else if(gender.Equals(pokeGender.male))
+            {
+                g = "1";
+            }
+            else
+            {
+                g = "2";
+            }
 
             using (var transaction = new TransactionScope())
             {
@@ -494,11 +508,11 @@ namespace PokemonBox
                     leg = false;
                 }
 
-                if (gCheck.Equals("F"))
+                if (gCheck.Equals("0"))
                 {
                     g = pokeGender.female;
                 }
-                else if (gCheck.Equals("M"))
+                else if (gCheck.Equals("1"))
                 {
                     g = pokeGender.male;
                 }
