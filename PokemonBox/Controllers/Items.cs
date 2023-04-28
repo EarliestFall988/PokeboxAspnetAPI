@@ -143,6 +143,13 @@ namespace PokemonBox.Controllers
             
         }
 
+        [HttpGet("SelectItemCount")]
+        public string SelectItemCount()
+        {
+            uint item = DatabaseConnection.ItemRepo.SelectItemCount();
+            return JsonSerializer.Serialize(item);
+        }
+
         /*********************************
         * 
         * Helper Methods

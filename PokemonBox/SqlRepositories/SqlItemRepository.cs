@@ -133,6 +133,26 @@ namespace PokemonBox.SqlRepositories
 
         }
 
+        public uint SelectItemCount()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("Pokebox.SelectItemCount", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        var itemID = reader.GetOrdinal("ItemCount");
+                        reader.Read();
+                        return (uint)reader.GetInt32(itemID);
+                    }
+                }
+            }
+        }
+
         private Item TranslateItem(SqlDataReader reader)
         {
             var itemID = reader.GetOrdinal("ItemID");
@@ -141,7 +161,7 @@ namespace PokemonBox.SqlRepositories
             var dateAdded = reader.GetOrdinal("DateAdded");
             var description = reader.GetOrdinal("Description");
             var itemLink = reader.GetOrdinal("ItemImageLink");
-
+            reader.Read();
             return new Item(
                 (uint)reader.GetInt32(itemID),
                 (uint)reader.GetInt32(itemTypeID),
