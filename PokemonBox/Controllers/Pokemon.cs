@@ -35,7 +35,7 @@ namespace PokemonBox.Controllers
         public string AddPokemon([FromHeader] string SessionId, [FromQuery] string pokemonName, [FromQuery] string pokedexNumber, [FromQuery] string imageLink, [FromQuery] string isLegendary)
         {
             var str = GetValidPokemonAdd(pokemonName, int.Parse(pokedexNumber), imageLink);
-            if(str.Equals("Valid"))
+            if (str.Equals("Valid"))
             {
                 Models.Pokemon pokemon = DatabaseConnection.PokemonRepo.AddPokemon(pokemonName, uint.Parse(pokedexNumber), imageLink, bool.Parse(isLegendary));
                 return JsonSerializer.Serialize(pokemon);
@@ -55,14 +55,14 @@ namespace PokemonBox.Controllers
         public string CreatePokeOwned([FromHeader] string SessionId, [FromQuery] string username, [FromQuery] string pokemonName, [FromQuery] string name, [FromQuery] pokeGender gender, [FromQuery] uint level)
         {
             var str = GetValidPokeOwnedAdd(username, pokemonName, name);
-            if(str.Equals("Valid"))
+            if (str.Equals("Valid"))
             {
                 PokeOwned pokemon = DatabaseConnection.PokeOwnedRepo.CreatePokeOwned(username, pokemonName, name, gender, level);
                 return JsonSerializer.Serialize(pokemon);
             }
             else
             {
-                return JsonSerializer.Serialize(str);
+                return str;
             }
         }
 
@@ -112,7 +112,7 @@ namespace PokemonBox.Controllers
         {
             var start = new DateTime(int.Parse(startYear), int.Parse(startMonth), 1);
             var end = new DateTime(int.Parse(endYear), int.Parse(endMonth), 28);
-            
+
             IReadOnlyDictionary<string, uint> pokemon = DatabaseConnection.PokeOwnedRepo.PokeTypeCount(DateTime.SpecifyKind(start, DateTimeKind.Utc), DateTime.SpecifyKind(end, DateTimeKind.Utc));
             return JsonSerializer.Serialize(pokemon);
         }
@@ -150,7 +150,7 @@ namespace PokemonBox.Controllers
             {
                 return JsonSerializer.Serialize(str);
             }
-            
+
         }
 
         [HttpGet("SelectPokemonTypes")]
@@ -193,9 +193,9 @@ namespace PokemonBox.Controllers
             {
                 return APIUtilities.InputError("MUST HAVE IMAGE LINK");
             }
-            
+
             IReadOnlyList<Models.Pokemon> pokemon = DatabaseConnection.PokemonRepo.SelectPokemon();
-            foreach(var p in pokemon)
+            foreach (var p in pokemon)
             {
                 if (p.PokemonName.Equals(pokemonName))
                 {
@@ -232,12 +232,12 @@ namespace PokemonBox.Controllers
             bool check = false;
             foreach (var p in checkPokemon)
             {
-                if(pokemonName.Equals(p.PokemonName))
+                if (pokemonName.Equals(p.PokemonName))
                 {
                     check = true;
                 }
             }
-            if(!check)
+            if (!check)
             {
                 return APIUtilities.InputError("CANNOT ADD THERE IS NO SUCH POKEMON");
             }
