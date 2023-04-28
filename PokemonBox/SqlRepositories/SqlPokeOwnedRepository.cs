@@ -326,7 +326,7 @@ namespace PokemonBox
                 var userID = reader.GetInt32(u);
                 var username = reader.GetString(un);
                 var pokemonCount = reader.GetInt32(p);
-                var rank = reader.GetInt32(r);
+                var rank = reader.GetInt64(r);
                 var poke = new PokeRank((uint)userID, username, (uint)pokemonCount, (uint)rank);
                 list.Add(poke);
             }
